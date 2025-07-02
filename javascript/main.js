@@ -50,220 +50,238 @@ let aiChatbot = null;
 
 // 初始化圖表
 function initChart() {
-    const ctx = document.getElementById("co2Chart").getContext("2d");
+    try {
+        // 如果圖表實例已存在，先銷毀它
+        if (co2Chart) {
+            co2Chart.destroy();
+            console.log("銷毀舊圖表實例");
+        }
 
-    // 創建更柔和的漸層背景 - iOS 26 風格
-    const gradient1 = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient1.addColorStop(0, "rgba(0, 122, 255, 0.15)");
-    gradient1.addColorStop(1, "rgba(0, 122, 255, 0.02)");
+        const chartCanvas = document.getElementById("co2Chart");
+        if (!chartCanvas) {
+            console.error("找不到圖表畫布元素 #co2Chart");
+            return;
+        }
 
-    const gradient2 = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient2.addColorStop(0, "rgba(88, 86, 214, 0.15)");
-    gradient2.addColorStop(1, "rgba(88, 86, 214, 0.02)");
+        const ctx = chartCanvas.getContext("2d");
 
-    const gradient3 = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient3.addColorStop(0, "rgba(175, 82, 222, 0.15)");
-    gradient3.addColorStop(1, "rgba(175, 82, 222, 0.02)");
+        // 創建更柔和的漸層背景 - iOS 26 風格
+        const gradient1 = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient1.addColorStop(0, "rgba(0, 122, 255, 0.15)");
+        gradient1.addColorStop(1, "rgba(0, 122, 255, 0.02)");
 
-    co2Chart = new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: [],
-            datasets: [
-                {
-                    label: "🏢 中華辦7樓",
-                    data: [],
-                    borderColor: "rgba(0, 122, 255, 0.8)",
-                    backgroundColor: gradient1,
-                    borderWidth: 2.5,
-                    pointBackgroundColor: "rgba(0, 122, 255, 0.9)",
-                    pointBorderColor: "rgba(255, 255, 255, 0.8)",
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    pointHoverBackgroundColor: "rgba(0, 122, 255, 1)",
-                    pointHoverBorderColor: "rgba(255, 255, 255, 1)",
-                    pointHoverBorderWidth: 3,
-                    tension: 0.4,
-                    spanGaps: true,
-                    fill: true,
-                },
-                {
-                    label: "🏢 中華辦8樓",
-                    data: [],
-                    borderColor: "rgba(88, 86, 214, 0.8)",
-                    backgroundColor: gradient2,
-                    borderWidth: 2.5,
-                    pointBackgroundColor: "rgba(88, 86, 214, 0.9)",
-                    pointBorderColor: "rgba(255, 255, 255, 0.8)",
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    pointHoverBackgroundColor: "rgba(88, 86, 214, 1)",
-                    pointHoverBorderColor: "rgba(255, 255, 255, 1)",
-                    pointHoverBorderWidth: 3,
-                    tension: 0.4,
-                    spanGaps: true,
-                    fill: true,
-                },
-                {
-                    label: "🏢 衡陽辦",
-                    data: [],
-                    borderColor: "rgba(175, 82, 222, 0.8)",
-                    backgroundColor: gradient3,
-                    borderWidth: 2.5,
-                    pointBackgroundColor: "rgba(175, 82, 222, 0.9)",
-                    pointBorderColor: "rgba(255, 255, 255, 0.8)",
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    pointHoverBackgroundColor: "rgba(175, 82, 222, 1)",
-                    pointHoverBorderColor: "rgba(255, 255, 255, 1)",
-                    pointHoverBorderWidth: 3,
-                    tension: 0.4,
-                    spanGaps: true,
-                    fill: true,
-                },
-            ],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                intersect: false,
-                mode: "index",
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: "top",
-                    labels: {
-                        usePointStyle: true,
-                        pointStyle: "circle",
-                        padding: 20,
-                        font: {
-                            size: 13,
-                            weight: "500",
-                            family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                        },
-                        color: "#1d1d1f",
+        const gradient2 = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient2.addColorStop(0, "rgba(88, 86, 214, 0.15)");
+        gradient2.addColorStop(1, "rgba(88, 86, 214, 0.02)");
+
+        const gradient3 = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient3.addColorStop(0, "rgba(175, 82, 222, 0.15)");
+        gradient3.addColorStop(1, "rgba(175, 82, 222, 0.02)");
+
+        co2Chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: "🏢 中華辦7樓",
+                        data: [],
+                        borderColor: "rgba(0, 122, 255, 0.8)",
+                        backgroundColor: gradient1,
+                        borderWidth: 2.5,
+                        pointBackgroundColor: "rgba(0, 122, 255, 0.9)",
+                        pointBorderColor: "rgba(255, 255, 255, 0.8)",
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointHoverBackgroundColor: "rgba(0, 122, 255, 1)",
+                        pointHoverBorderColor: "rgba(255, 255, 255, 1)",
+                        pointHoverBorderWidth: 3,
+                        tension: 0.4,
+                        spanGaps: true,
+                        fill: true,
                     },
-                },
-                tooltip: {
-                    backgroundColor: "rgba(255, 255, 255, 0.95)",
-                    titleColor: "#1d1d1f",
-                    bodyColor: "#1d1d1f",
-                    borderColor: "rgba(255, 255, 255, 0.8)",
-                    borderWidth: 1,
-                    cornerRadius: 12,
-                    displayColors: true,
-                    padding: 12,
-                    caretSize: 6,
-                    callbacks: {
-                        title: function (tooltipItems) {
-                            return `時間：${tooltipItems[0].label}`;
-                        },
-                        label: function (context) {
-                            const label = context.dataset.label || "";
-                            const value = context.parsed.y;
-                            let status = "";
-                            if (value > 1200) status = " ⚠️ 超標";
-                            else if (value > 1000) status = " 🟡 注意";
-                            else status = " 🟢 安全";
-                            return `${label}：${value} ppm${status}`;
-                        },
+                    {
+                        label: "🏢 中華辦8樓",
+                        data: [],
+                        borderColor: "rgba(88, 86, 214, 0.8)",
+                        backgroundColor: gradient2,
+                        borderWidth: 2.5,
+                        pointBackgroundColor: "rgba(88, 86, 214, 0.9)",
+                        pointBorderColor: "rgba(255, 255, 255, 0.8)",
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointHoverBackgroundColor: "rgba(88, 86, 214, 1)",
+                        pointHoverBorderColor: "rgba(255, 255, 255, 1)",
+                        pointHoverBorderWidth: 3,
+                        tension: 0.4,
+                        spanGaps: true,
+                        fill: true,
                     },
-                },
+                    {
+                        label: "🏢 衡陽辦",
+                        data: [],
+                        borderColor: "rgba(175, 82, 222, 0.8)",
+                        backgroundColor: gradient3,
+                        borderWidth: 2.5,
+                        pointBackgroundColor: "rgba(175, 82, 222, 0.9)",
+                        pointBorderColor: "rgba(255, 255, 255, 0.8)",
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointHoverBackgroundColor: "rgba(175, 82, 222, 1)",
+                        pointHoverBorderColor: "rgba(255, 255, 255, 1)",
+                        pointHoverBorderWidth: 3,
+                        tension: 0.4,
+                        spanGaps: true,
+                        fill: true,
+                    },
+                ],
             },
-            scales: {
-                x: {
-                    title: {
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: "index",
+                },
+                plugins: {
+                    legend: {
                         display: true,
-                        text: "📊 時間軸",
-                        font: {
-                            size: 13,
-                            weight: "600",
-                            family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                        position: "top",
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                            padding: 20,
+                            font: {
+                                size: 13,
+                                weight: "500",
+                                family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                            },
+                            color: "#1d1d1f",
                         },
-                        color: "#1d1d1f",
                     },
-                    grid: {
-                        color: "rgba(0, 0, 0, 0.05)",
-                        lineWidth: 1,
-                    },
-                    ticks: {
-                        maxTicksLimit: 12,
-                        font: {
-                            size: 11,
-                            family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                        },
-                        color: "#6d6d70",
-                        callback: function (value, index) {
-                            const label = this.getLabelForValue(value);
-                            return label;
+                    tooltip: {
+                        backgroundColor: "rgba(255, 255, 255, 0.95)",
+                        titleColor: "#1d1d1f",
+                        bodyColor: "#1d1d1f",
+                        borderColor: "rgba(255, 255, 255, 0.8)",
+                        borderWidth: 1,
+                        cornerRadius: 12,
+                        displayColors: true,
+                        padding: 12,
+                        caretSize: 6,
+                        callbacks: {
+                            title: function (tooltipItems) {
+                                return `時間：${tooltipItems[0].label}`;
+                            },
+                            label: function (context) {
+                                const label = context.dataset.label || "";
+                                const value = context.parsed.y;
+                                let status = "";
+                                if (value > 1200) status = " ⚠️ 超標";
+                                else if (value > 1000) status = " 🟡 注意";
+                                else status = " 🟢 安全";
+                                return `${label}：${value} ppm${status}`;
+                            },
                         },
                     },
                 },
-                y: {
-                    title: {
-                        display: true,
-                        text: "🌱 CO₂ 濃度 (ppm)",
-                        font: {
-                            size: 13,
-                            weight: "600",
-                            family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "📊 時間軸",
+                            font: {
+                                size: 13,
+                                weight: "600",
+                                family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                            },
+                            color: "#1d1d1f",
                         },
-                        color: "#1d1d1f",
-                    },
-                    min: 300,
-                    // 移除固定的 max，讓圖表自動調整範圍
-                    suggestedMax: 1500, // 建議最大值，但會根據數據自動調整
-                    grid: {
-                        color: function (context) {
-                            // 根據 CO₂ 濃度設置更柔和的網格顏色
-                            if (context.tick.value >= 1200) return "rgba(255, 59, 48, 0.15)";
-                            if (context.tick.value >= 1000) return "rgba(255, 149, 0, 0.15)";
-                            return "rgba(0, 0, 0, 0.05)";
+                        grid: {
+                            color: "rgba(0, 0, 0, 0.05)",
+                            lineWidth: 1,
                         },
-                        lineWidth: function (context) {
-                            // 重要濃度線稍微加粗
-                            if (context.tick.value === 1000 || context.tick.value === 1200) {
-                                return 1.5;
-                            }
-                            return 1;
-                        },
-                    },
-                    ticks: {
-                        font: {
-                            size: 11,
-                            family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-                        },
-                        color: "#6d6d70",
-                        callback: function (value) {
-                            // 在重要濃度值旁添加標示
-                            if (value === 1200) return `${value} ⚠️`;
-                            if (value === 1000) return `${value} 🟡`;
-                            if (value === 400) return `${value} 🟢`;
-                            return value;
+                        ticks: {
+                            maxTicksLimit: 12,
+                            font: {
+                                size: 11,
+                                family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                            },
+                            color: "#6d6d70",
+                            callback: function (value, index) {
+                                const label = this.getLabelForValue(value);
+                                return label;
+                            },
                         },
                     },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "🌱 CO₂ 濃度 (ppm)",
+                            font: {
+                                size: 13,
+                                weight: "600",
+                                family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                            },
+                            color: "#1d1d1f",
+                        },
+                        min: 300,
+                        // 移除固定的 max，讓圖表自動調整範圍
+                        suggestedMax: 1500, // 建議最大值，但會根據數據自動調整
+                        grid: {
+                            color: function (context) {
+                                // 根據 CO₂ 濃度設置更柔和的網格顏色
+                                if (context.tick.value >= 1200) return "rgba(255, 59, 48, 0.15)";
+                                if (context.tick.value >= 1000) return "rgba(255, 149, 0, 0.15)";
+                                return "rgba(0, 0, 0, 0.05)";
+                            },
+                            lineWidth: function (context) {
+                                // 重要濃度線稍微加粗
+                                if (context.tick.value === 1000 || context.tick.value === 1200) {
+                                    return 1.5;
+                                }
+                                return 1;
+                            },
+                        },
+                        ticks: {
+                            font: {
+                                size: 11,
+                                family: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+                            },
+                            color: "#6d6d70",
+                            callback: function (value) {
+                                // 在重要濃度值旁添加標示
+                                if (value === 1200) return `${value} ⚠️`;
+                                if (value === 1000) return `${value} 🟡`;
+                                if (value === 400) return `${value} 🟢`;
+                                return value;
+                            },
+                        },
+                    },
+                },
+                elements: {
+                    point: {
+                        hoverRadius: 7,
+                    },
+                    line: {
+                        borderJoinStyle: "round",
+                        borderCapStyle: "round",
+                    },
+                },
+                animation: {
+                    duration: 800,
+                    easing: "easeOutCubic",
                 },
             },
-            elements: {
-                point: {
-                    hoverRadius: 7,
-                },
-                line: {
-                    borderJoinStyle: "round",
-                    borderCapStyle: "round",
-                },
-            },
-            animation: {
-                duration: 800,
-                easing: "easeOutCubic",
-            },
-        },
-    });
+        });
+
+        console.log("圖表初始化完成");
+    } catch (error) {
+        console.error("圖表初始化失敗:", error);
+    }
 }
 
 // 為每個辦公室找最新的有數據記錄（不限於今天）
@@ -517,11 +535,27 @@ async function loadCO2Data() {
     try {
         lastUpdateEl.textContent = "🔄 更新中...";
 
-        const res = await fetch(url);
-        const data = await res.json();
+        // 添加更詳細的錯誤處理
+        console.log("正在嘗試從以下 URL 獲取數據:", url);
+
+        const res = await fetch(url).catch((error) => {
+            console.error("Fetch 錯誤:", error);
+            throw new Error(`獲取數據時發生網絡錯誤: ${error.message}`);
+        });
+
+        if (!res.ok) {
+            console.error("回應狀態錯誤:", res.status, res.statusText);
+            throw new Error(`服務器錯誤: ${res.status} ${res.statusText}`);
+        }
+
+        const data = await res.json().catch((error) => {
+            console.error("JSON 解析錯誤:", error);
+            throw new Error("無法解析 JSON 數據");
+        });
 
         if (!data || data.length === 0) {
-            throw new Error("沒有找到數據");
+            console.error("空數據或無效數據格式:", data);
+            throw new Error("沒有找到數據或數據格式不正確");
         }
 
         // 獲取今天的數據 - 修正日期格式匹配
@@ -607,13 +641,128 @@ async function loadCO2Data() {
             .toString()
             .padStart(2, "0")} | ⏱️ 下次更新：${countdown}秒`;
 
+        // 顯示最新的10筆數據記錄
+        if (
+            window.recentDataModule &&
+            typeof window.recentDataModule.displayRecentData === "function"
+        ) {
+            try {
+                // 儲存完整數據供最新數據顯示使用
+                allData = data ? [...data] : [];
+                // 進行數據預處理，過濾掉可能的無效數據項
+                const validData = allData.filter((item) => item != null);
+                console.log(`向 recent-data 模組發送 ${validData.length} 筆數據`);
+                window.recentDataModule.displayRecentData(validData);
+            } catch (dataError) {
+                console.error("預處理最新數據記錄時發生錯誤:", dataError);
+                // 嘗試傳遞空數組，避免錯誤
+                window.recentDataModule.displayRecentData([]);
+            }
+        }
+
         // 重置倒數計時
         countdown = 10;
         startCountdown();
     } catch (err) {
         console.error("載入數據錯誤:", err);
-        document.getElementById("advice").innerHTML =
-            "❌ 無法讀取 Google Sheet，請確認網路連線與 Sheet 設定。";
+
+        // 提供更詳細的錯誤訊息和故障排除指南
+        let errorMessage = "❌ 無法讀取 Google Sheet 數據";
+        let troubleshoot = "";
+
+        if (err.message.includes("網絡錯誤")) {
+            troubleshoot = `
+                <div class="error-details">
+                    <p><strong>可能的原因:</strong></p>
+                    <ul>
+                        <li>網絡連接問題</li>
+                        <li>Opensheet.vercel.app 服務可能暫時無法使用</li>
+                    </ul>
+                    <p><strong>解決方案:</strong></p>
+                    <ul>
+                        <li>檢查您的網絡連接</li>
+                        <li>稍後再試</li>
+                    </ul>
+                </div>
+            `;
+        } else if (err.message.includes("服務器錯誤")) {
+            troubleshoot = `
+                <div class="error-details">
+                    <p><strong>可能的原因:</strong></p>
+                    <ul>
+                        <li>Sheet ID 或 Sheet 名稱錯誤</li>
+                        <li>Google Sheet 未設為公開訪問</li>
+                        <li>服務器端錯誤</li>
+                    </ul>
+                    <p><strong>解決方案:</strong></p>
+                    <ul>
+                        <li>檢查 main.js 中的 sheetId 和 sheetName 設定</li>
+                        <li>確保 Google Sheet 已設為公開或共享訪問</li>
+                    </ul>
+                </div>
+            `;
+        } else if (err.message.includes("JSON")) {
+            troubleshoot = `
+                <div class="error-details">
+                    <p><strong>可能的原因:</strong></p>
+                    <ul>
+                        <li>返回的數據格式不正確</li>
+                        <li>API 回應不是有效的 JSON</li>
+                    </ul>
+                    <p><strong>解決方案:</strong></p>
+                    <ul>
+                        <li>檢查 Google Sheet 格式是否符合要求</li>
+                        <li>確認 Opensheet API 是否正常運作</li>
+                    </ul>
+                </div>
+            `;
+        } else {
+            troubleshoot = `
+                <div class="error-details">
+                    <p><strong>錯誤詳情:</strong> ${err.message}</p>
+                    <p><strong>解決方案:</strong></p>
+                    <ul>
+                        <li>檢查 Sheet ID: <code>${sheetId}</code></li>
+                        <li>檢查 Sheet 名稱: <code>${sheetName}</code></li>
+                        <li>確認 Google Sheet 已設為公開訪問</li>
+                        <li>查看瀏覽器控制台獲取更多錯誤信息</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        document.getElementById("advice").innerHTML = `
+            ${errorMessage}
+            <button id="showErrorDetails" class="error-toggle-btn">顯示錯誤詳情</button>
+            <div class="error-troubleshoot" style="display:none">${troubleshoot}</div>
+        `;
+
+        // 添加顯示/隱藏錯誤詳情的功能
+        setTimeout(() => {
+            const errorToggleBtn = document.getElementById("showErrorDetails");
+            if (errorToggleBtn) {
+                errorToggleBtn.addEventListener("click", function () {
+                    const details = document.querySelector(".error-troubleshoot");
+                    if (details) {
+                        if (details.style.display === "none") {
+                            details.style.display = "block";
+                            this.textContent = "隱藏錯誤詳情";
+                        } else {
+                            details.style.display = "none";
+                            this.textContent = "顯示錯誤詳情";
+                        }
+                    }
+                });
+            }
+
+            // 添加診斷工具
+            const adviceElement = document.getElementById("advice");
+            if (window.diagnosticTools && adviceElement) {
+                window.diagnosticTools.addDiagnosticTool(adviceElement, sheetId, sheetName);
+            }
+        }, 100);
+
+        // 更新狀態區域
         lastUpdateEl.textContent = `❌ 更新失敗：${new Date()
             .getHours()
             .toString()
@@ -937,7 +1086,7 @@ function startAutoRefresh() {
         console.log("歷史模式中，不啟動自動更新");
         return;
     }
-    
+
     if (isInputMode) {
         console.log("手動輸入模式中，不啟動自動更新");
         return;
@@ -973,20 +1122,8 @@ window.addEventListener("DOMContentLoaded", function () {
         console.warn("⚠️ Google Apps Script URL 可能需要更新");
     }
 
-    // 初始化圖表
-    initChart();
-
-    // 載入初始數據
-    loadCO2Data();
-
-    // 啟動自動更新
-    startAutoRefresh();
-
-    // 初始化歷史數據功能
-    initHistoryFeature();
-
-    // 初始化數據輸入界面
-    initDataInput();
+    // 這邊的初始化由下方的統一初始化程序處理，不要在這重複執行
+    console.log("系統初始化中...");
 });
 
 // 頁面關閉時清理定時器
@@ -1283,6 +1420,14 @@ async function loadHistoryData(dateString) {
             lastUpdateEl.textContent = `📅 ${formattedDate} 數據 (共 ${dataCount} 筆記錄)`;
         } else {
             lastUpdateEl.textContent = `📅 ${formattedDate} 暫無數據記錄`;
+        }
+
+        // 在歷史模式下仍顯示最新的10筆數據記錄
+        if (
+            window.recentDataModule &&
+            typeof window.recentDataModule.displayRecentData === "function"
+        ) {
+            window.recentDataModule.displayRecentData(allData);
         }
     } catch (err) {
         console.error("載入歷史數據錯誤:", err);
@@ -1704,619 +1849,116 @@ function switchModeWithLoading(mode, switchFunction) {
     setTimeout(() => {
         switchFunction();
         console.log(`🔄 ${mode} 模式切換完成，界面正在優化中...`);
-    }, 300); // 短暫延遲讓loading動畫啟動
-
-    // 2秒後隱藏Loading
-    setTimeout(() => {
-        hideAILoading();
-    }, 2000);
+    }, 300);
 }
 
-// =============== 數據輸入功能 ===============
+// 初始化儀表板
+document.addEventListener("DOMContentLoaded", () => {
+    try {
+        console.log("🚀 開始初始化儀表板");
 
-// 全域變數用於數據輸入功能
-let inputDefaultDate = "";
-let inputDefaultTime = "";
+        // 初始化圖表
+        initChart();
+
+        // 初始化歷史數據功能
+        if (typeof initHistoryFeature === "function") {
+            initHistoryFeature();
+        } else {
+            console.warn("歷史功能初始化函數不存在");
+        }
+
+        // 初始化數據輸入界面
+        if (typeof initDataInput === "function") {
+            initDataInput();
+        } else {
+            console.warn("數據輸入初始化函數不存在");
+        }
+
+        // 初始化模式切換器
+        if (typeof initModeSwitchers === "function") {
+            initModeSwitchers();
+        } else {
+            console.warn("模式切換器初始化函數不存在");
+        }
+
+        // 載入數據
+        loadCO2Data();
+
+        // 開始自動更新
+        startAutoRefresh();
+
+        // 初始化AI聊天機器人
+        if (typeof initAIChatbot === "function") {
+            initAIChatbot();
+        }
+
+        console.log("儀表板初始化完成");
+    } catch (error) {
+        console.error("儀表板初始化失敗:", error);
+    }
+});
 
 // 初始化數據輸入界面
 function initDataInput() {
-    console.log("🔧 初始化數據輸入界面...");
+    console.log("初始化數據輸入界面");
 
-    // 延遲初始化，確保DOM完全載入
-    setTimeout(() => {
-        const form = document.getElementById("co2InputForm");
-        const clearBtn = document.getElementById("clearFormBtn");
-        const submitBtn = document.getElementById("submitDataBtn");
+    // 獲取表單和相關元素
+    const co2InputForm = document.getElementById("co2InputForm");
 
-        // 詳細檢查所有元素
-        console.log("🔍 檢查元素狀態:");
-        console.log("  form:", form ? "✅ 找到" : "❌ 缺失");
-        console.log("  clearBtn:", clearBtn ? "✅ 找到" : "❌ 缺失");
-        console.log("  submitBtn:", submitBtn ? "✅ 找到" : "❌ 缺失");
+    if (!co2InputForm) {
+        console.warn("找不到 CO2 輸入表單元素 (#co2InputForm)");
+        return;
+    }
 
-        if (!form) {
-            console.error("❌ 表單元素缺失，無法初始化數據輸入功能");
-            return;
-        }
+    // 設置當前日期和時間作為默認值
+    const inputDateEl = document.getElementById("inputDate");
+    const inputTimeEl = document.getElementById("inputTime");
 
-        if (!submitBtn) {
-            console.error("❌ 提交按鈕缺失，無法初始化數據輸入功能");
-            return;
-        }
-
-        console.log("✅ 關鍵元素存在，繼續初始化...");
-
-        // 設定預設日期和時間
+    if (inputDateEl && inputTimeEl) {
         const now = new Date();
-        const inputDefaultDate = now.toISOString().split("T")[0];
-        const inputDefaultTime = now.toTimeString().split(" ")[0].substring(0, 5);
+        const dateStr = now.toISOString().split("T")[0]; // YYYY-MM-DD 格式
+        const timeStr = now.toTimeString().split(" ")[0].substring(0, 5); // HH:MM 格式
 
-        const dateInput = document.getElementById("inputDate");
-        const timeInput = document.getElementById("inputTime");
+        inputDateEl.value = dateStr;
+        inputTimeEl.value = timeStr;
+    }
 
-        if (dateInput) {
-            dateInput.value = inputDefaultDate;
-            console.log("✅ 設定預設日期:", inputDefaultDate);
-        }
-        if (timeInput) {
-            timeInput.value = inputDefaultTime;
-            console.log("✅ 設定預設時間:", inputDefaultTime);
-        }
+    // 設置表單提交事件
+    if (co2InputForm) {
+        co2InputForm.addEventListener("submit", function (e) {
+            e.preventDefault();
 
-        // 清空表單
-        if (clearBtn) {
-            clearBtn.addEventListener("click", function () {
-                console.log("🗑️ 清空表單");
-                if (dateInput) dateInput.value = inputDefaultDate;
-                if (timeInput) timeInput.value = inputDefaultTime;
-                const officeAInput = document.getElementById("inputOfficeA");
-                const officeBInput = document.getElementById("inputOfficeB");
-                const officeCInput = document.getElementById("inputOfficeC");
-                if (officeAInput) officeAInput.value = "";
-                if (officeBInput) officeBInput.value = "";
-                if (officeCInput) officeCInput.value = "";
+            // 表單驗證和數據提交邏輯
+            const inputDate = document.getElementById("inputDate").value;
+            const inputTime = document.getElementById("inputTime").value;
+            const officeA = document.getElementById("officeACO2").value;
+            const officeB = document.getElementById("officeBCO2").value;
+            const officeC = document.getElementById("officeCCO2").value;
+
+            // 基本驗證
+            if (!inputDate || !inputTime) {
+                alert("請填寫日期和時間");
+                return;
+            }
+
+            if (!officeA && !officeB && !officeC) {
+                alert("請至少填寫一個辦公室的 CO₂ 值");
+                return;
+            }
+
+            // 這裡可以添加數據提交到 Google Sheet 的邏輯
+            console.log("準備提交數據:", {
+                date: inputDate,
+                time: inputTime,
+                officeA,
+                officeB,
+                officeC,
             });
-        }
 
-        // 表單提交事件
-        form.addEventListener("submit", async function (e) {
-            console.log("📤 表單提交事件觸發");
-            e.preventDefault();
-            try {
-                await submitCO2Data();
-            } catch (error) {
-                console.error("❌ 表單提交錯誤:", error);
+            // 如果已實現數據提交功能，可以呼叫相關函數
+            if (typeof submitCO2Data === "function") {
+                submitCO2Data(inputDate, inputTime, officeA, officeB, officeC);
             }
         });
-
-        // 添加直接點擊按鈕的事件監聽器（備用機制）
-        submitBtn.addEventListener("click", async function (e) {
-            console.log("🖱️ 提交按鈕直接點擊事件觸發");
-
-            // 檢查是否為表單內的提交按鈕
-            if (e.target.type === "submit" && e.target.closest("form")) {
-                console.log("✅ 這是表單提交按鈕，讓表單事件處理");
-                return; // 讓表單的submit事件處理
-            }
-
-            // 否則直接處理點擊
-            e.preventDefault();
-            try {
-                await submitCO2Data();
-            } catch (error) {
-                console.error("❌ 按鈕點擊錯誤:", error);
-            }
-        });
-
-        console.log("✅ 數據輸入界面初始化完成");
-
-        // 添加測試連接按鈕
-        addTestButton();
-    }, 100); // 100ms 延遲確保DOM完全載入
-}
-
-// 提交CO2數據到Google Sheet
-async function submitCO2Data() {
-    console.log("🚀 開始提交 CO2 數據...");
-
-    const submitBtn = document.getElementById("submitDataBtn");
-    const btnText = submitBtn?.querySelector(".btn-text");
-    const btnIcon = submitBtn?.querySelector(".btn-icon");
-
-    if (!submitBtn) {
-        console.error("❌ 找不到提交按鈕");
-        return;
     }
-
-    // 獲取表單數據
-    const formData = {
-        date: document.getElementById("inputDate")?.value,
-        time: document.getElementById("inputTime")?.value,
-        officeA: document.getElementById("inputOfficeA")?.value,
-        officeB: document.getElementById("inputOfficeB")?.value,
-        officeC: document.getElementById("inputOfficeC")?.value,
-    };
-
-    console.log("📋 表單數據:", formData);
-
-    // 驗證數據
-    if (!formData.date || !formData.time) {
-        showErrorMessage("請輸入日期和時間");
-        return;
-    }
-
-    if (!formData.officeA && !formData.officeB && !formData.officeC) {
-        showErrorMessage("請至少輸入一個辦公室的CO₂數據");
-        return;
-    }
-
-    // 驗證 CO₂ 數值範圍
-    const offices = [
-        { value: formData.officeA, name: "中華辦7樓" },
-        { value: formData.officeB, name: "中華辦8樓" },
-        { value: formData.officeC, name: "衡陽辦" },
-    ];
-
-    for (const office of offices) {
-        if (office.value && (office.value < 300 || office.value > 5000)) {
-            showErrorMessage(`${office.name} 的 CO₂ 值必須在 300-5000 ppm 範圍內`);
-            return;
-        }
-    }
-
-    // 更新按鈕狀態
-    submitBtn.disabled = true;
-    btnIcon.textContent = "⏳";
-    btnText.textContent = "提交中...";
-
-    // 顯示進度條
-    const progressEl = document.getElementById("submitProgress");
-    const progressFill = progressEl.querySelector(".progress-fill");
-    const progressText = progressEl.querySelector(".progress-text");
-
-    progressEl.classList.add("show");
-    progressText.textContent = "準備提交數據...";
-
-    // 模擬進度
-    let progress = 0;
-    const progressInterval = setInterval(() => {
-        progress += Math.random() * 20;
-        if (progress > 90) progress = 90;
-        progressFill.style.width = progress + "%";
-    }, 100);
-
-    try {
-        // 準備要寫入的數據行
-        const rowData = [
-            formData.date,
-            formData.time,
-            formData.officeA || "",
-            formData.officeB || "",
-            formData.officeC || "",
-        ];
-
-        console.log("準備提交數據:", rowData);
-
-        // 這裡需要實作寫入Google Sheet的邏輯
-        // 多重回退機制：依次嘗試不同的寫入方法
-        let writeSuccess = false;
-        let writeError = null;
-
-        try {
-            progressText.textContent = "嘗試 CORS 模式寫入...";
-            const result = await writeToGoogleSheet(rowData);
-            console.log("✅ CORS 模式寫入成功:", result);
-            progressText.textContent = "寫入成功！";
-            writeSuccess = true;
-        } catch (corsError) {
-            console.warn("⚠️ CORS 模式失敗，嘗試表單提交模式:", corsError.message);
-            writeError = corsError;
-
-            try {
-                progressText.textContent = "嘗試表單提交模式...";
-                const result = await writeToGoogleSheetJSONP(rowData);
-                console.log("✅ 表單提交模式成功:", result);
-                progressText.textContent = "寫入成功！";
-                writeSuccess = true;
-            } catch (jsonpError) {
-                console.warn("⚠️ 表單提交模式失敗，回退到模擬模式:", jsonpError.message);
-                progressText.textContent = "回退到模擬模式...";
-                writeError = jsonpError;
-
-                // 回退到模擬寫入
-                try {
-                    await simulateSheetWrite(rowData);
-                    console.log("✅ 模擬模式成功");
-                    progressText.textContent = "數據已保存（離線模式）";
-                    writeSuccess = true;
-
-                    // 模擬模式成功時顯示特殊消息
-                    showSuccessMessage("數據已保存（離線模式）- 請檢查網路連接後手動同步");
-                } catch (simulateError) {
-                    console.error("❌ 所有寫入方法都失敗了");
-                    writeError = simulateError;
-                    writeSuccess = false;
-                }
-            }
-        }
-
-        if (!writeSuccess) {
-            throw writeError || new Error("所有寫入方法都失敗");
-        }
-
-        // 完成進度
-        clearInterval(progressInterval);
-        progressFill.style.width = "100%";
-        progressText.textContent = "數據提交完成！";
-
-        // 提交成功
-        btnIcon.textContent = "✅";
-        btnText.textContent = "提交成功";
-
-        // 顯示成功訊息
-        if (writeSuccess && !progressText.textContent.includes("離線模式")) {
-            showSuccessMessage("數據已成功添加到 Google Sheet！");
-        }
-
-        // 清空表單
-        document.getElementById("inputDate").value = inputDefaultDate;
-        document.getElementById("inputTime").value = inputDefaultTime;
-        document.getElementById("inputOfficeA").value = "";
-        document.getElementById("inputOfficeB").value = "";
-        document.getElementById("inputOfficeC").value = "";
-
-        // 隱藏進度條
-        setTimeout(() => {
-            progressEl.classList.remove("show");
-        }, 1000);
-
-        // 2秒後重置按鈕
-        setTimeout(() => {
-            btnIcon.textContent = "📤";
-            btnText.textContent = "提交數據";
-            submitBtn.disabled = false;
-        }, 2000);
-
-        // 重新載入數據以顯示新加入的資料
-        setTimeout(() => {
-            loadCO2Data();
-        }, 1000);
-    } catch (error) {
-        console.error("提交數據失敗:", error);
-
-        // 停止進度條動畫
-        clearInterval(progressInterval);
-        progressFill.style.width = "100%";
-        progressText.textContent = "提交失敗";
-
-        // 提交失敗
-        btnIcon.textContent = "❌";
-        btnText.textContent = "提交失敗";
-
-        // 顯示錯誤訊息
-        showErrorMessage("數據提交失敗，請檢查網路連線後重試");
-
-        // 隱藏進度條
-        setTimeout(() => {
-            progressEl.classList.remove("show");
-        }, 2000);
-
-        // 2秒後重置按鈕
-        setTimeout(() => {
-            btnIcon.textContent = "📤";
-            btnText.textContent = "提交數據";
-            submitBtn.disabled = false;
-        }, 2000);
-    }
-}
-
-// 實際寫入Google Sheet
-async function writeToGoogleSheet(rowData) {
-    try {
-        const requestData = {
-            action: "addRow",
-            data: {
-                date: rowData[0],
-                time: rowData[1],
-                office_a: rowData[2],
-                office_b: rowData[3],
-                office_c: rowData[4],
-            },
-        };
-
-        console.log("準備發送到 Google Apps Script:", requestData);
-
-        // 使用 no-cors 模式來避免 CORS 問題
-        const response = await fetch(writeUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "text/plain", // 使用 text/plain 避免 preflight 檢查
-            },
-            mode: "no-cors", // 使用 no-cors 模式
-            body: JSON.stringify(requestData),
-        });
-
-        // 在 no-cors 模式下，我們無法讀取回應內容
-        // 但如果沒有拋出錯誤，就表示請求成功發送了
-        console.log("請求已發送到 Google Apps Script");
-
-        // 返回成功結果（因為 no-cors 模式無法檢查實際結果）
-        return {
-            success: true,
-            message: "數據已發送到 Google Sheet（no-cors 模式）",
-        };
-    } catch (error) {
-        console.error("寫入 Google Sheet 錯誤:", error);
-        throw error;
-    }
-}
-
-// 模擬寫入Google Sheet（實際專案中需要連接Google Sheets API）
-async function simulateSheetWrite(rowData) {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // 模擬90%成功率
-            if (Math.random() > 0.1) {
-                console.log("✅ 模擬寫入成功:", rowData);
-                resolve();
-            } else {
-                console.log("❌ 模擬寫入失敗");
-                reject(new Error("模擬網路錯誤"));
-            }
-        }, 1500); // 模擬網路延遲
-    });
-}
-
-// 顯示成功訊息
-function showSuccessMessage(message) {
-    console.log("✅ 成功:", message);
-    showNotification(message, "success");
-}
-
-// 顯示錯誤訊息
-function showErrorMessage(message) {
-    console.log("❌ 錯誤:", message);
-    showNotification(message, "error");
-}
-
-// 通用通知顯示函數
-function showNotification(message, type = "info") {
-    // 創建通知元素
-    const notification = document.createElement("div");
-    notification.className = `notification notification-${type}`;
-
-    // 設定圖標
-    let icon = "💬";
-    switch (type) {
-        case "success":
-            icon = "✅";
-            break;
-        case "error":
-            icon = "❌";
-            break;
-        case "warning":
-            icon = "⚠️";
-            break;
-        case "info":
-        default:
-            icon = "ℹ️";
-            break;
-    }
-
-    notification.innerHTML = `
-        <div class="notification-content">
-            <span class="notification-icon">${icon}</span>
-            <span class="notification-message">${message}</span>
-            <button class="notification-close" onclick="closeNotification(this)">×</button>
-        </div>
-    `;
-
-    // 添加到頁面
-    document.body.appendChild(notification);
-
-    // 觸發動畫
-    setTimeout(() => {
-        notification.classList.add("show");
-    }, 10);
-
-    // 自動關閉（成功訊息3秒，錯誤訊息5秒）
-    const autoCloseTime = type === "error" ? 5000 : 3000;
-    setTimeout(() => {
-        closeNotification(notification.querySelector(".notification-close"));
-    }, autoCloseTime);
-}
-
-// 關閉通知
-function closeNotification(closeBtn) {
-    const notification = closeBtn.closest(".notification");
-    if (notification) {
-        notification.classList.remove("show");
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }
-}
-
-// 替代的 JSONP 寫入方法（避免 CORS 問題）
-function writeToGoogleSheetJSONP(rowData) {
-    return new Promise((resolve, reject) => {
-        try {
-            const requestData = {
-                action: "addRow",
-                data: {
-                    date: rowData[0],
-                    time: rowData[1],
-                    office_a: rowData[2],
-                    office_b: rowData[3],
-                    office_c: rowData[4],
-                },
-            };
-
-            // 創建一個隱藏的 iframe 來發送請求
-            const iframe = document.createElement("iframe");
-            iframe.style.display = "none";
-            iframe.name = "hiddenFrame";
-            document.body.appendChild(iframe);
-
-            // 創建一個表單來發送 POST 請求
-            const form = document.createElement("form");
-            form.method = "POST";
-            form.action = writeUrl;
-            form.target = "hiddenFrame";
-
-            // 添加數據字段
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "data";
-            input.value = JSON.stringify(requestData);
-            form.appendChild(input);
-
-            document.body.appendChild(form);
-
-            // 設置超時處理
-            const timeout = setTimeout(() => {
-                // 清理
-                document.body.removeChild(iframe);
-                document.body.removeChild(form);
-                resolve({
-                    success: true,
-                    message: "數據已發送到 Google Sheet（表單提交模式）",
-                });
-            }, 3000); // 3秒後假設成功
-
-            // 提交表單
-            form.submit();
-
-            console.log("數據已通過表單提交發送到 Google Apps Script");
-        } catch (error) {
-            console.error("JSONP 寫入錯誤:", error);
-            reject(error);
-        }
-    });
-}
-
-// 測試 Google Apps Script 連接
-async function testGoogleAppsScriptConnection() {
-    try {
-        console.log("🔍 測試 Google Apps Script 連接...");
-
-        // 嘗試 GET 請求來測試連接
-        const response = await fetch(writeUrl, {
-            method: "GET",
-            mode: "cors",
-        });
-
-        if (response.ok) {
-            const result = await response.text();
-            console.log("✅ Google Apps Script 連接成功:", result);
-            return { success: true, data: result };
-        } else {
-            console.log("⚠️ Google Apps Script 回應狀態:", response.status);
-            return { success: false, error: `HTTP ${response.status}` };
-        }
-    } catch (error) {
-        console.log("❌ Google Apps Script 連接失敗:", error.message);
-        return { success: false, error: error.message };
-    }
-}
-
-// 添加測試按鈕功能
-function addTestButton() {
-    const inputForm = document.getElementById("co2InputForm");
-    if (!inputForm) return;
-
-    // 檢查是否已存在測試按鈕
-    if (document.getElementById("testConnectionBtn")) return;
-
-    const testBtn = document.createElement("button");
-    testBtn.type = "button";
-    testBtn.id = "testConnectionBtn";
-    testBtn.className = "btn-secondary";
-    testBtn.innerHTML = `
-        <span class="btn-icon">🔗</span>
-        <span class="btn-text">測試連接</span>
-    `;
-
-    testBtn.addEventListener("click", async function () {
-        const btnIcon = testBtn.querySelector(".btn-icon");
-        const btnText = testBtn.querySelector(".btn-text");
-
-        testBtn.disabled = true;
-        btnIcon.textContent = "⏳";
-        btnText.textContent = "測試中...";
-
-        const result = await testGoogleAppsScriptConnection();
-
-        if (result.success) {
-            btnIcon.textContent = "✅";
-            btnText.textContent = "連接成功";
-            showSuccessMessage("Google Apps Script 連接正常！");
-        } else {
-            btnIcon.textContent = "❌";
-            btnText.textContent = "連接失敗";
-            showErrorMessage(`連接失敗: ${result.error}`);
-        }
-
-        setTimeout(() => {
-            btnIcon.textContent = "🔗";
-            btnText.textContent = "測試連接";
-            testBtn.disabled = false;
-        }, 3000);
-    });
-
-    // 將測試按鈕插入到清空按鈕和提交按鈕之間
-    const formActions = inputForm.querySelector(".form-actions");
-    const submitBtn = document.getElementById("submitDataBtn");
-    if (formActions && submitBtn) {
-        formActions.insertBefore(testBtn, submitBtn);
-    }
-}
-
-// 切換到手動輸入模式
-function switchToInputMode() {
-    isHistoryMode = false;
-    isCompareMode = false;
-    isInputMode = true;
-
-    const todayModeBtn = document.getElementById("todayModeBtn");
-    const historyModeBtn = document.getElementById("historyModeBtn");
-    const compareModeBtn = document.getElementById("compareModeBtn");
-    const inputModeBtn = document.getElementById("inputModeBtn");
-    const historyControls = document.getElementById("historyControls");
-    const compareControls = document.getElementById("compareControls");
-    const inputControls = document.getElementById("inputControls");
-    const container = document.querySelector(".container");
-    const chartTitle = document.getElementById("chartTitle");
-
-    // 更新按鈕狀態
-    todayModeBtn.classList.remove("active");
-    historyModeBtn.classList.remove("active");
-    compareModeBtn.classList.remove("active");
-    inputModeBtn.classList.add("active");
-
-    // 顯示/隱藏控制區塊
-    historyControls.style.display = "none";
-    compareControls.style.display = "none";
-    inputControls.style.display = "block";
-
-    // 添加輸入模式樣式
-    container.classList.remove("history-mode");
-    container.classList.remove("compare-mode");
-    container.classList.add("input-mode");
-
-    // 隱藏比較數據顯示
-    hideCompareDataDisplay();
-
-    // 更新圖表標題
-    chartTitle.textContent = "今日 CO₂ 趨勢圖（手動輸入模式）";
-
-    // 停止自動更新（在輸入模式下不自動刷新，避免干擾用戶操作）
-    stopAutoRefresh();
-
-    // 載入今日數據但不啟動自動更新
-    loadCO2Data();
-
-    console.log("切換到手動輸入模式");
 }

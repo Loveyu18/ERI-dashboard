@@ -42,7 +42,7 @@ const qaDatabase = {
             <p><strong>🏢 辦公室資訊：</strong></p>
             <ul>
                 <li><strong>中華辦7樓：</strong>主要辦公區域</li>
-                <li><strong>中華辦11樓：</strong>會議室及其他辦公空間</li>
+                <li><strong>中華辦8樓：</strong>會議室及其他辦公空間</li>
                 <li><strong>衡陽辦：</strong>分部辦公室</li>
             </ul>
         </div>`,
@@ -111,7 +111,7 @@ const qaDatabase = {
             <p><strong>🎨 視覺元素：</strong></p>
             <ul>
                 <li><strong>藍色線：</strong>中華辦7樓數據</li>
-                <li><strong>紫色線：</strong>中華辦11樓數據</li>
+                <li><strong>紫色線：</strong>中華辦8樓數據</li>
                 <li><strong>粉色線：</strong>衡陽辦數據</li>
                 <li><strong>平滑曲線：</strong>使用 tension 效果讓趨勢更清晰</li>
             </ul>
@@ -236,7 +236,7 @@ const qaDatabase = {
                 <li><strong>日期：</strong>選擇數據記錄的日期</li>
                 <li><strong>時間：</strong>選擇數據記錄的時間點</li>
                 <li><strong>中華辦7樓：</strong>輸入該辦公室的 CO₂ 濃度</li>
-                <li><strong>中華辦11樓：</strong>輸入該辦公室的 CO₂ 濃度</li>
+                <li><strong>中華辦8樓：</strong>輸入該辦公室的 CO₂ 濃度</li>
                 <li><strong>衡陽辦：</strong>輸入該辦公室的 CO₂ 濃度</li>
             </ul>
             <p><strong>🔧 實用功能：</strong></p>

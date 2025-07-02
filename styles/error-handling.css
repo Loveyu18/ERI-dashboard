@@ -1,0 +1,101 @@
+/* 錯誤信息樣式 */
+.error-toggle-btn {
+    background: rgba(234, 67, 53, 0.1);
+    border: 1px solid rgba(234, 67, 53, 0.3);
+    color: #ea4335;
+    border-radius: 6px;
+    padding: 6px 12px;
+    margin: 10px 0;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.error-toggle-btn:hover {
+    background: rgba(234, 67, 53, 0.2);
+    box-shadow: 0 2px 6px rgba(234, 67, 53, 0.2);
+}
+
+.error-troubleshoot {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 10px;
+    font-size: 13px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.error-details {
+    color: #444;
+}
+
+.error-details strong {
+    color: #333;
+}
+
+.error-details ul {
+    padding-left: 20px;
+    margin: 8px 0;
+}
+
+.error-details li {
+    margin-bottom: 5px;
+}
+
+.error-details code {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+/* 添加診斷工具按鈕 */
+.diagnostic-tool {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.diagnostic-btn {
+    background: rgba(66, 133, 244, 0.1);
+    border: 1px solid rgba(66, 133, 244, 0.3);
+    color: #4285f4;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.diagnostic-btn:hover {
+    background: rgba(66, 133, 244, 0.2);
+}
+
+/* 診斷結果區域 */
+.diagnostic-results {
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.03);
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: monospace;
+    max-height: 150px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.test-success {
+    color: #34a853;
+}
+
+.test-warning {
+    color: #fbbc05;
+}
+
+.test-error {
+    color: #ea4335;
+}

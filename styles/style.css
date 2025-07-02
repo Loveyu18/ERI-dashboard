@@ -76,24 +76,7 @@ h1 {
 }
 
 .update-info {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.75);
-    border-radius: 16px;
-    font-size: 14px;
-    color: #1d1d1f;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 0.85) inset,
-        0 0 20px rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(25px) saturate(1.1);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-}
-
-#lastUpdate {
-    font-weight: 500;
-    color: #1d1d1f;
+    display: none;
 }
 
 .status-section {
