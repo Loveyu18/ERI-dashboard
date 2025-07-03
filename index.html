@@ -32,113 +32,115 @@
     </div>
 
 
-    <!-- 更新資訊 (精簡版) -->
-    <div class="update-info-compact">
-        <span class="update-icon">🕒</span>
-        <span id="lastUpdate">載入數據...</span>
-    </div>
 
-    <!-- 模式控制面板 -->
-    <div class="dashboard-controls">
-        <!-- 控制面板開關 -->
-        <button id="controlToggleBtn" class="control-toggle-btn">
-            <span class="toggle-icon">⚙️</span>
-            <span class="toggle-text">控制面板</span>
-        </button>
 
-        <!-- 側面控制面板 -->
-        <div class="control-panel" id="controlPanel" style="transform: translateX(110%);">
-            <div class="panel-header">
-                <h3>儀表板控制</h3>
-                <button class="close-panel-btn" id="closePanelBtn">×</button>
-            </div>
 
-            <!-- 模式切換區塊 -->
-            <div class="panel-section">
-                <h4 class="section-title">模式選擇</h4>
-                <div class="mode-toggle">
-                    <button id="todayModeBtn" class="mode-btn active">📊 即時模式</button>
-                    <button id="historyModeBtn" class="mode-btn">📅 歷史查看</button>
-                    <button id="compareModeBtn" class="mode-btn">⚖️ 對比模式</button>
-                    <button id="inputModeBtn" class="mode-btn">📝 手動輸入</button>
+
+    <div class="container main-content">
+        <!-- 模式控制面板 -->
+        <div class="dashboard-controls">
+            <!-- 控制面板開關 -->
+            <button id="controlToggleBtn" class="control-toggle-btn">
+                <span class="toggle-icon">⚙️</span>
+                <span class="toggle-text">控制面板</span>
+            </button>
+
+            <!-- 側面控制面板 -->
+            <div class="control-panel" id="controlPanel" style="transform: translateX(110%);">
+                <div class="panel-header">
+                    <h3>儀表板控制</h3>
+                    <button class="close-panel-btn" id="closePanelBtn">×</button>
                 </div>
-            </div>
 
-            <!-- 歷史日期選擇區塊 -->
-            <div class="panel-section history-controls" id="historyControls" style="display: none;">
-                <h4 class="section-title">歷史數據</h4>
-                <div class="date-picker-wrapper">
-                    <label for="datePicker">選擇日期</label>
-                    <input type="date" id="datePicker" />
+                <!-- 模式切換區塊 -->
+                <div class="panel-section">
+                    <h4 class="section-title">模式選擇</h4>
+                    <div class="mode-toggle">
+                        <button id="todayModeBtn" class="mode-btn active">📊 即時模式</button>
+                        <button id="historyModeBtn" class="mode-btn">📅 歷史查看</button>
+                        <button id="compareModeBtn" class="mode-btn">⚖️ 對比模式</button>
+                        <button id="inputModeBtn" class="mode-btn">📝 手動輸入</button>
+                    </div>
                 </div>
-                <button id="backToTodayBtn" class="panel-btn">🏠 回到今日</button>
-            </div>
 
-            <!-- 比較模式控制區塊 -->
-            <div class="panel-section compare-controls" id="compareControls" style="display: none;">
-                <h4 class="section-title">對比設定</h4>
-                <div class="date-picker-wrapper">
-                    <label for="compareDatePicker">對比日期</label>
-                    <input type="date" id="compareDatePicker" />
+                <!-- 歷史日期選擇區塊 -->
+                <div class="panel-section history-controls" id="historyControls" style="display: none;">
+                    <h4 class="section-title">歷史數據</h4>
+                    <div class="date-picker-wrapper">
+                        <label for="datePicker">選擇日期</label>
+                        <input type="date" id="datePicker" />
+                    </div>
+                    <button id="backToTodayBtn" class="panel-btn">🏠 回到今日</button>
                 </div>
-                <button id="resetCompareBtn" class="panel-btn">🔄 重設對比</button>
-            </div>
 
-            <!-- 手動輸入控制區塊 -->
-            <div class="panel-section input-controls" id="inputControls" style="display: none;">
-                <h4 class="section-title">手動輸入</h4>
-                <div class="input-form-container">
-                    <p class="input-description">手動輸入 CO₂ 數據將同步到 Google Sheet</p>
+                <!-- 比較模式控制區塊 -->
+                <div class="panel-section compare-controls" id="compareControls" style="display: none;">
+                    <h4 class="section-title">對比設定</h4>
+                    <div class="date-picker-wrapper">
+                        <label for="compareDatePicker">對比日期</label>
+                        <input type="date" id="compareDatePicker" />
+                    </div>
+                    <button id="resetCompareBtn" class="panel-btn">🔄 重設對比</button>
+                </div>
 
-                    <form class="co2-input-form" id="co2InputForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="inputDate">📅 日期</label>
-                                <input type="date" id="inputDate" required>
+                <!-- 手動輸入控制區塊 -->
+                <div class="panel-section input-controls" id="inputControls" style="display: none;">
+                    <h4 class="section-title">手動輸入</h4>
+                    <div class="input-form-container">
+                        <p class="input-description">手動輸入 CO₂ 數據將同步到 Google Sheet</p>
+
+                        <form class="co2-input-form" id="co2InputForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="inputDate">📅 日期</label>
+                                    <input type="date" id="inputDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputTime">⏰ 時間</label>
+                                    <input type="time" id="inputTime" required>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="inputTime">⏰ 時間</label>
-                                <input type="time" id="inputTime" required>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="inputOfficeA">🏢 中華辦7樓 (ppm)</label>
+                                    <input type="number" id="inputOfficeA" min="300" max="5000" placeholder="例: 650">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputOfficeB">🏢 中華辦8樓 (ppm)</label>
+                                    <input type="number" id="inputOfficeB" min="300" max="5000" placeholder="例: 720">
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputOfficeC">🏢 衡陽辦 (ppm)</label>
+                                    <input type="number" id="inputOfficeC" min="300" max="5000" placeholder="例: 580">
+                                </div>
                             </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" id="clearFormBtn">🗑️ 清空</button>
+                                <button type="submit" class="btn-primary" id="submitDataBtn">
+                                    <span class="btn-icon">📤</span>
+                                    <span class="btn-text">提交數據</span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- 數據提交進度條 -->
+                        <div class="submit-progress" id="submitProgress">
+                            <div class="progress-bar">
+                                <div class="progress-fill"></div>
+                            </div>
+                            <div class="progress-text">正在提交數據...</div>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="inputOfficeA">🏢 中華辦7樓 (ppm)</label>
-                                <input type="number" id="inputOfficeA" min="300" max="5000" placeholder="例: 650">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputOfficeB">🏢 中華辦8樓 (ppm)</label>
-                                <input type="number" id="inputOfficeB" min="300" max="5000" placeholder="例: 720">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputOfficeC">🏢 衡陽辦 (ppm)</label>
-                                <input type="number" id="inputOfficeC" min="300" max="5000" placeholder="例: 580">
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn-secondary" id="clearFormBtn">🗑️ 清空</button>
-                            <button type="submit" class="btn-primary" id="submitDataBtn">
-                                <span class="btn-icon">📤</span>
-                                <span class="btn-text">提交數據</span>
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- 數據提交進度條 -->
-                    <div class="submit-progress" id="submitProgress">
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
-                        </div>
-                        <div class="progress-text">正在提交數據...</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="container main-content">
+        <!-- 更新資訊 (精簡版) -->
+        <div class="update-info-compact">
+            <span class="update-icon">🕒</span>
+            <span id="lastUpdate">載入數據...</span>
+        </div>
         <h1>CO₂ 監測儀表板</h1>
 
         <section class="status-section">

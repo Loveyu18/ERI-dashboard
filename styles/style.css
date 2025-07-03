@@ -732,7 +732,7 @@ h1 {
 @media (min-width: 1400px) {
     .main-content-wrapper {
         display: grid;
-        grid-template-columns: 1fr 2fr;
+        grid-template-columns: 2fr 3fr;
         gap: 24px;
         margin-top: 20px;
     }
