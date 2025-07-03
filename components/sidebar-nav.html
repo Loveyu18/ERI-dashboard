@@ -1,0 +1,144 @@
+<!-- 側邊導覽列組件 -->
+<div class="sidebar-nav" id="sidebarNav">
+    <!-- 收合狀態的外部開關按鈕 -->
+    <button class="sidebar-toggle-external" id="sidebarToggleExternal">
+        <span class="toggle-icon">⟩</span>
+    </button>
+
+    <!-- 導覽列主體 -->
+    <div class="sidebar-content" id="sidebarContent">
+        <!-- 導覽列開關按鈕 -->
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <span class="toggle-icon">⟨</span>
+        </button>
+
+        <!-- 品牌區域 -->
+        <div class="brand-section">
+            <div class="brand-logo">
+                <img src="./image/eri-logo.png" alt="環資國際 Logo" class="logo-img">
+            </div>
+            <div class="brand-text">
+                <h2 class="brand-title-zh">環資國際</h2>
+                <p class="brand-title-en">Environmental Resource & Information</p>
+            </div>
+        </div>
+
+        <!-- 導覽菜單 -->
+        <nav class="nav-menu">
+            <div class="nav-section">
+                <h3 class="nav-section-title">監測系統</h3>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link active" data-page="dashboard">
+                            <span class="nav-icon">📊</span>
+                            <span class="nav-text">CO₂ 儀表板</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="air-quality.html" class="nav-link" data-page="air-quality">
+                            <span class="nav-icon">🌬️</span>
+                            <span class="nav-text">空氣品質</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="temperature.html" class="nav-link" data-page="temperature">
+                            <span class="nav-icon">🌡️</span>
+                            <span class="nav-text">溫濕度監測</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3 class="nav-section-title">數據管理</h3>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="data-export.html" class="nav-link" data-page="data-export">
+                            <span class="nav-icon">📤</span>
+                            <span class="nav-text">數據匯出</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="reports.html" class="nav-link" data-page="reports">
+                            <span class="nav-icon">📋</span>
+                            <span class="nav-text">報告生成</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="analytics.html" class="nav-link" data-page="analytics">
+                            <span class="nav-icon">📈</span>
+                            <span class="nav-text">數據分析</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3 class="nav-section-title">系統設定</h3>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="settings.html" class="nav-link" data-page="settings">
+                            <span class="nav-icon">⚙️</span>
+                            <span class="nav-text">系統設定</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="users.html" class="nav-link" data-page="users">
+                            <span class="nav-icon">👥</span>
+                            <span class="nav-text">使用者管理</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="help.html" class="nav-link" data-page="help">
+                            <span class="nav-icon">❓</span>
+                            <span class="nav-text">說明文件</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3 class="nav-section-title">更多功能</h3>
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="backup.html" class="nav-link" data-page="backup">
+                            <span class="nav-icon">💾</span>
+                            <span class="nav-text">資料備份</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="notifications.html" class="nav-link" data-page="notifications">
+                            <span class="nav-icon">🔔</span>
+                            <span class="nav-text">通知設定</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="logs.html" class="nav-link" data-page="logs">
+                            <span class="nav-icon">📝</span>
+                            <span class="nav-text">系統日誌</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="maintenance.html" class="nav-link" data-page="maintenance">
+                            <span class="nav-icon">🔧</span>
+                            <span class="nav-text">維護工具</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- 底部信息 -->
+        <div class="sidebar-footer">
+            <div class="version-info">
+                <span class="version-text">版本 1.0.0</span>
+            </div>
+            <div class="copyright">
+                <p>© 2025 環資國際</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 遮罩層 -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+</div>

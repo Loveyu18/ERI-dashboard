@@ -1,3 +1,55 @@
+/* 側邊導覽列適配樣式 - 液態玻璃風格 */
+.main-content {
+    transition: margin-left 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+        transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* 硬體加速優化 */
+    will-change: margin-left, transform;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+/* 當側邊欄打開時調整主要內容的左邊距 */
+@media (min-width: 769px) {
+    .sidebar-nav:not(.collapsed) ~ .main-content {
+        margin-left: 320px; /* 300px 導覽列寬度 + 20px 間隔 */
+        transform: translateX(0) scale(0.98);
+    }
+
+    .sidebar-nav.collapsed ~ .main-content {
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* 調整控制面板按鈕位置，避免與側邊欄按鈕重疊 */
+.control-toggle-btn {
+    top: 20px;
+    right: 20px;
+    left: auto;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* 確保側邊欄層級正確 */
+.sidebar-nav {
+    z-index: 2000;
+}
+
+.control-panel {
+    z-index: 1500;
+}
+
+.ai-loading-overlay {
+    z-index: 3000;
+}
+
+.chatbot-container {
+    z-index: 1600;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Noto Sans TC", sans-serif;
     background: linear-gradient(
@@ -418,14 +470,7 @@ h1 {
     width: 220px;
 }
 
-button {
-    padding: 10px 24px;
-    background-color: #0077aa;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
+
 
 .advice-section {
     margin-top: 20px;
