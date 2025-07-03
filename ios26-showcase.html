@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS 26 Liquid Glass UI 優化展示 - 環資國際</title>
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/control-panel.css">
+    <link rel="stylesheet" href="./styles/recent-data.css">
+    <link rel="stylesheet" href="./styles/error-handling.css">
+    <link rel="stylesheet" href="./styles/sidebar-nav.css">
+    <style>
+        /* 展示頁面特殊樣式 */
+        .showcase-container {
+            max-width: 1600px;
+            margin: 20px auto;
+            padding: 40px;
+        }
+
+        .showcase-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .showcase-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg,
+                    rgba(102, 126, 234, 1) 0%,
+                    rgba(88, 86, 214, 1) 30%,
+                    rgba(118, 75, 162, 1) 70%,
+                    rgba(102, 126, 234, 1) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: -0.04em;
+        }
+
+        .showcase-subtitle {
+            font-size: 1.2rem;
+            color: rgba(29, 29, 31, 0.7);
+            font-weight: 500;
+            margin-bottom: 40px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow:
+                0 16px 48px rgba(0, 0, 0, 0.06),
+                0 4px 16px rgba(0, 0, 0, 0.04),
+                0 1px 0 rgba(255, 255, 255, 0.9) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(30px) saturate(1.8);
+            -webkit-backdrop-filter: blur(30px) saturate(1.8);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow:
+                0 32px 80px rgba(0, 0, 0, 0.1),
+                0 16px 32px rgba(0, 0, 0, 0.08),
+                0 1px 0 rgba(255, 255, 255, 0.95) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.4);
+        }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.1) 0%,
+                    transparent 50%,
+                    rgba(255, 255, 255, 0.05) 100%);
+            pointer-events: none;
+            border-radius: 24px;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .feature-description {
+            color: rgba(29, 29, 31, 0.8);
+            line-height: 1.6;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            color: rgba(29, 29, 31, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .feature-list li::before {
+            content: "✨";
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .tech-specs {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 20px;
+            padding: 32px;
+            margin: 60px 0;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(20px);
+        }
+
+        .tech-specs h2 {
+            color: rgba(102, 126, 234, 1);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-item {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(15px);
+        }
+
+        .tech-item h3 {
+            color: #1d1d1f;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .tech-item p {
+            color: rgba(29, 29, 31, 0.8);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .showcase-footer {
+            text-align: center;
+            margin-top: 80px;
+            padding: 40px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 24px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .showcase-footer h2 {
+            color: rgba(102, 126, 234, 1);
+            margin-bottom: 20px;
+        }
+
+        .showcase-footer p {
+            color: rgba(29, 29, 31, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="showcase-container">
+        <div class="showcase-header">
+            <h1 class="showcase-title">iOS 26 Liquid Glass UI</h1>
+            <p class="showcase-subtitle">環資國際 CO₂ 監測儀表板 - 完整 UI/UX 優化展示</p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🌊</span>
+                <h3 class="feature-title">液態玻璃效果</h3>
+                <p class="feature-description">採用最新的 iOS 26 設計語言，所有元素都具備毛玻璃背景模糊效果</p>
+                <ul class="feature-list">
+                    <li>backdrop-filter: blur(40px) saturate(1.8)</li>
+                    <li>半透明背景與邊框</li>
+                    <li>多層陰影立體效果</li>
+                    <li>內發光與外發光</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🎨</span>
+                <h3 class="feature-title">現代化色彩系統</h3>
+                <p class="feature-description">精心設計的漸變色彩搭配，營造溫馨而專業的視覺體驗</p>
+                <ul class="feature-list">
+                    <li>主色調：藍紫漸變</li>
+                    <li>輔助色：粉紅與橙色點綴</li>
+                    <li>透明度層次分明</li>
+                    <li>高對比度文字</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">✨</span>
+                <h3 class="feature-title">流暢動畫效果</h3>
+                <p class="feature-description">所有交互都具備平滑的動畫過渡，提升使用者體驗</p>
+                <ul class="feature-list">
+                    <li>cubic-bezier 緩動函數</li>
+                    <li>硬體加速優化</li>
+                    <li>懸停與點擊回饋</li>
+                    <li>元素縮放與位移</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📱</span>
+                <h3 class="feature-title">響應式設計</h3>
+                <p class="feature-description">完美適配各種螢幕尺寸，從手機到大螢幕都有最佳體驗</p>
+                <ul class="feature-list">
+                    <li>彈性網格布局</li>
+                    <li>自適應字體大小</li>
+                    <li>觸控友好的交互</li>
+                    <li>行動優先設計</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🎛️</span>
+                <h3 class="feature-title">側邊導覽列</h3>
+                <p class="feature-description">完全重新設計的導覽系統，具備豐富的視覺效果</p>
+                <ul class="feature-list">
+                    <li>展開/收合動畫</li>
+                    <li>液態玻璃滾動條</li>
+                    <li>垂直置中對齊</li>
+                    <li>LOGO 與品牌展示</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">💬</span>
+                <h3 class="feature-title">AI 聊天機器人</h3>
+                <p class="feature-description">增強的聊天介面，提供更好的使用者支援體驗</p>
+                <ul class="feature-list">
+                    <li>浮動按鈕設計</li>
+                    <li>脈動環效果</li>
+                    <li>展開式聊天視窗</li>
+                    <li>快速問題面板</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📊</span>
+                <h3 class="feature-title">數據視覺化</h3>
+                <p class="feature-description">重新設計的數據展示卡片，更清晰易讀</p>
+                <ul class="feature-list">
+                    <li>狀態指示器動畫</li>
+                    <li>懸停效果增強</li>
+                    <li>彩色頂部指示條</li>
+                    <li>數據對比模式</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">⚙️</span>
+                <h3 class="feature-title">控制面板</h3>
+                <p class="feature-description">全新的控制面板設計，操作更加直觀便捷</p>
+                <ul class="feature-list">
+                    <li>側滑展開設計</li>
+                    <li>模式切換按鈕</li>
+                    <li>表單輸入優化</li>
+                    <li>提交進度顯示</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="tech-specs">
+            <h2>🔧 技術規格</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h3>CSS 特效</h3>
+                    <p>backdrop-filter、transform、transition、box-shadow、gradient 等現代 CSS 技術</p>
+                </div>
+                <div class="tech-item">
+                    <h3>動畫引擎</h3>
+                    <p>使用 cubic-bezier 緩動函數，硬體加速優化，60fps 流暢動畫</p>
+                </div>
+                <div class="tech-item">
+                    <h3>色彩系統</h3>
+                    <p>RGBA 透明度控制，HSL 色相調整，多層次漸變效果</p>
+                </div>
+                <div class="tech-item">
+                    <h3>字體系統</h3>
+                    <p>SF Pro Display 系統字體，Microsoft JhengHei 中文字體</p>
+                </div>
+                <div class="tech-item">
+                    <h3>布局系統</h3>
+                    <p>Flexbox 和 Grid 混合布局，響應式斷點設計</p>
+                </div>
+                <div class="tech-item">
+                    <h3>瀏覽器支援</h3>
+                    <p>Chrome 88+、Safari 14+、Firefox 94+、Edge 88+</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="showcase-footer">
+            <h2>🎉 優化完成</h2>
+            <p>
+                經過全面的 UI/UX 重新設計，現在的 CO₂ 監測儀表板完全符合 iOS 26 液態玻璃設計規範。
+                每個元素都具備毛玻璃效果、流暢動畫、響應式適配，為使用者提供現代化且專業的視覺體驗。
+            </p>
+            <p>
+                <strong>主要改善項目：</strong>側邊導覽列、聊天機器人、控制面板、數據卡片、表格樣式、
+                載入動畫、按鈕效果、滾動條美化等。
+            </p>
+        </div>
+    </div>
+
+    <script src="./javascript/sidebar-nav.js"></script>
+</body>
+
+</html>
