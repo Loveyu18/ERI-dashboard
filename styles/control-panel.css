@@ -8,119 +8,201 @@
     height: auto;
 }
 
-/* 更新時間資訊的新位置 */
+/* 更新時間資訊 - 增強液態玻璃效果 */
 .update-info-compact {
     position: fixed;
     top: 20px;
-    right: 170px;
+    right: 200px;
     z-index: 99;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 8px 15px;
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.35);
+    padding: 12px 20px;
+    border-radius: 16px;
     font-size: 13px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04),
+        0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     display: flex;
     align-items: center;
-    gap: 6px;
-    color: #555;
-    transition: all 0.3s ease;
+    gap: 8px;
+    color: #1d1d1f;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-weight: 500;
+    letter-spacing: -0.01em;
 }
 
-/* 更新時間資訊懸浮效果 */
 .update-info-compact:hover {
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.45);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.06),
+        0 1px 0 rgba(255, 255, 255, 0.9) inset;
+    border-color: rgba(255, 255, 255, 0.6);
 }
 
 .update-info-compact .update-icon {
     color: #4285f4;
-    font-size: 14px;
+    font-size: 15px;
+    filter: drop-shadow(0 1px 2px rgba(66, 133, 244, 0.3));
 }
 
-/* 控制面板開關按鈕 */
+/* 控制面板開關按鈕 - 增強液態玻璃效果 */
 .control-toggle-btn {
     position: absolute;
     top: 0;
     right: 0;
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    padding: 8px 16px;
-    gap: 6px;
+    background: rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    padding: 12px 20px;
+    gap: 8px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    font-weight: 500;
-    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04),
+        0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    font-weight: 600;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 102;
+    display: flex;
+    align-items: center;
+    color: #1d1d1f;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    letter-spacing: -0.01em;
 }
 
 .control-toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.95);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.45);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.08),
+        0 1px 0 rgba(255, 255, 255, 0.9) inset;
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.control-toggle-btn:active {
+    transform: translateY(-1px) scale(1.02);
+    transition: all 0.1s ease;
 }
 
 .toggle-icon {
     font-size: 1.2em;
 }
 
-/* 側面控制面板 */
+/* 側面控制面板 - 增強液態玻璃效果 */
 .control-panel {
     position: absolute;
-    top: 40px;
+    top: 50px;
     right: 0;
-    width: 350px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
-    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    transform: translateX(110%); /* 確保面板默認隱藏 */
-    visibility: hidden; /* 添加隱藏屬性，確保不可見 */
-    opacity: 0; /* 設置透明度為0 */
-    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), visibility 0.4s, opacity 0.4s;
+    width: 380px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(30px) saturate(1.8);
+    -webkit-backdrop-filter: blur(30px) saturate(1.8);
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.04),
+        0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 0 0 1px rgba(255, 255, 255, 0.3);
+    padding: 32px;
+    transform: translateX(110%);
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 101;
-    max-height: 90vh;
+    max-height: 85vh;
     overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .control-panel.open {
     transform: translateX(0);
-    visibility: visible; /* 顯示面板 */
-    opacity: 1; /* 恢復完全不透明 */
+    visibility: visible;
+    opacity: 1;
 }
 
+.control-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    pointer-events: none;
+    border-radius: 24px;
+}
+
+/* 面板標題區域 - 增強液態玻璃效果 */
 .panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.panel-header::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        transparent 100%
+    );
 }
 
 .panel-header h3 {
     margin: 0;
-    color: #333;
-    font-size: 1.3em;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1d1d1f;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #007aff, #5856d6, #af52de);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
 }
 
+/* 關閉面板按鈕 - 增強液態玻璃效果 */
 .close-panel-btn {
-    background: none;
-    border: none;
-    font-size: 1.5em;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    color: #666;
-    padding: 0;
-    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #6d6d70;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
 .close-panel-btn:hover {
-    color: #000;
+    background: rgba(255, 59, 48, 0.2);
+    color: #ff3b30;
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(255, 59, 48, 0.2), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+    border-color: rgba(255, 59, 48, 0.3);
 }
 
+/* 面板區塊 - 增強液態玻璃效果 */
 .panel-section {
     margin-bottom: 24px;
     padding-bottom: 20px;
