@@ -729,7 +729,7 @@ h1 {
 }
 
 /* 大螢幕並排布局 */
-@media (min-width: 1400px) {
+@media (min-width: 1700px) {
     .main-content-wrapper {
         display: grid;
         grid-template-columns: 2fr 3fr;
@@ -740,7 +740,7 @@ h1 {
     .advice-section {
         margin-top: 0;
         height: fit-content;
-        max-height: 400px;
+        /* max-height: 400px; */
         overflow-y: auto;
     }
 
