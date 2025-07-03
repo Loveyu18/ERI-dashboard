@@ -4,18 +4,15 @@ const sheetName = "data";
 const url = `https://opensheet.vercel.app/${sheetId}/${sheetName}`;
 
 // Google Apps Script Web App URL for writing data
-// 請將此 URL 替換為您的 Google Apps Script Web App URL
 const writeUrl =
     "https://script.google.com/macros/s/AKfycbydqUsKWXbKcsjvLtbaW1uySjHypWYlf4FSLXcSSBHlNm_A8I94eRdTUidG5jCzgHWK/exec";
 
+
+
 // 檢查 Google Apps Script URL 是否設置正確
 function validateGoogleAppsScriptUrl() {
-    const defaultUrl =
-        "https://script.google.com/macros/s/AKfycbydqUsKWXbKcsjvLtbaW1uySjHypWYlf4FSLXcSSBHlNm_A8I94eRdTUidG5jCzgHWK/exec";
-
-    if (!writeUrl || writeUrl === defaultUrl) {
-        console.warn("⚠️ 警告：您可能還在使用示例 Google Apps Script URL");
-        console.warn("請將 writeUrl 變數更新為您自己的 Google Apps Script Web App URL");
+    if (!writeUrl) {
+        console.error("❌ 錯誤：writeUrl 未設置");
         return false;
     }
 
@@ -24,6 +21,7 @@ function validateGoogleAppsScriptUrl() {
         return false;
     }
 
+    console.log("✅ Google Apps Script URL 驗證通過");
     return true;
 }
 
@@ -1407,6 +1405,13 @@ function switchToInputMode() {
     }
 
     console.log("切換到手動輸入模式");
+
+    // 更新描述文字
+    const inputDescription = document.querySelector(".input-description");
+    if (inputDescription) {
+        inputDescription.innerHTML = "手動輸入 CO₂ 數據將同步到 Google Sheet";
+        inputDescription.style.color = "";
+    }
 }
 
 // 重設比較模式
@@ -2081,9 +2086,9 @@ async function submitCO2Data(date, time, officeA, officeB, officeC) {
         const data = {
             date: formattedDate,
             time: time,
-            中華辦7樓: officeA || "", // 如果沒有輸入則傳送空字符串
-            中華辦8樓: officeB || "",
-            衡陽辦: officeC || "",
+            office_a: officeA || "", // 中華辦7樓
+            office_b: officeB || "", // 中華辦8樓
+            office_c: officeC || "", // 衡陽辦
             submitted_by: "手動輸入", // 標記數據來源
             timestamp: new Date().toISOString(), // 添加提交時間戳
         };
@@ -2098,13 +2103,23 @@ async function submitCO2Data(date, time, officeA, officeB, officeC) {
 
         console.log("準備發送數據到 Google Sheets:", data);
 
-        // 發送數據到 Google Apps Script
-        const response = await fetch(writeUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
+        // 將數據轉換為URL參數（使用GET請求避免CORS問題）
+        const params = new URLSearchParams();
+        params.append("date", data.date);
+        params.append("time", data.time);
+        params.append("office_a", data.office_a);
+        params.append("office_b", data.office_b);
+        params.append("office_c", data.office_c);
+        params.append("submitted_by", data.submitted_by);
+        params.append("timestamp", data.timestamp);
+
+        const requestUrl = `${writeUrl}?${params.toString()}`;
+        console.log("發送請求URL:", requestUrl);
+
+        // 使用GET請求發送數據到 Google Apps Script
+        const response = await fetch(requestUrl, {
+            method: "GET",
+            mode: "cors",
         });
 
         // 更新進度
@@ -2119,6 +2134,11 @@ async function submitCO2Data(date, time, officeA, officeB, officeC) {
 
         const result = await response.json();
         console.log("提交響應:", result);
+
+        // 檢查 Google Apps Script 的響應
+        if (result.success === false) {
+            throw new Error(result.message || "Google Apps Script 返回失敗狀態");
+        }
 
         // 更新進度為完成
         if (submitProgress) {
@@ -2178,4 +2198,211 @@ async function submitCO2Data(date, time, officeA, officeB, officeC) {
         alert(`提交失敗: ${error.message}\n請檢查網路連接和 Google Apps Script 設置。`);
         return false;
     }
+}
+
+// 測試與 Google Apps Script 的連線
+async function testGoogleAppsScriptConnection() {
+    console.log("=== 開始測試 Google Apps Script 連線 ===");
+
+    try {
+        // 驗證 URL 設定
+        if (!validateGoogleAppsScriptUrl()) {
+            throw new Error("Google Apps Script URL 未正確設置");
+        }
+
+        console.log("✅ URL 驗證通過");
+        console.log("測試 URL:", writeUrl);
+
+        // 準備測試資料
+        const testData = {
+            date: "2025/7/3",
+            time: new Date().toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" }),
+            office_a: "999",
+            office_b: "888",
+            office_c: "777",
+            submitted_by: "網頁連線測試",
+            timestamp: new Date().toISOString(),
+        };
+
+        console.log("測試資料:", testData);
+
+        // 建立測試請求
+        const params = new URLSearchParams();
+        Object.keys(testData).forEach((key) => {
+            params.append(key, testData[key]);
+        });
+
+        const requestUrl = `${writeUrl}?${params.toString()}`;
+        console.log("測試請求 URL:", requestUrl);
+
+        // 發送測試請求
+        console.log("發送測試請求...");
+        const response = await fetch(requestUrl, {
+            method: "GET",
+            mode: "cors",
+        });
+
+        console.log("響應狀態:", response.status, response.statusText);
+        console.log("響應標頭:", Object.fromEntries(response.headers.entries()));
+
+        if (!response.ok) {
+            throw new Error(`HTTP 錯誤: ${response.status} ${response.statusText}`);
+        }
+
+        const responseText = await response.text();
+        console.log("響應內容 (原始):", responseText);
+
+        let result;
+        try {
+            result = JSON.parse(responseText);
+        } catch (parseError) {
+            console.error("無法解析 JSON 響應:", parseError);
+            throw new Error("Google Apps Script 返回的不是有效的 JSON 格式");
+        }
+
+        console.log("解析後的響應:", result);
+
+        if (result.success === false) {
+            throw new Error(result.message || "Google Apps Script 返回失敗狀態");
+        }
+
+        console.log("✅ 連線測試成功！");
+        console.log("=== 測試完成 ===");
+
+        return {
+            success: true,
+            message: "連線測試成功",
+            response: result,
+            testData: testData,
+        };
+    } catch (error) {
+        console.error("❌ 連線測試失敗:", error);
+        console.log("=== 測試失敗 ===");
+
+        return {
+            success: false,
+            message: error.message,
+            error: error.toString(),
+        };
+    }
+}
+
+// 在控制台中提供測試功能
+if (typeof window !== "undefined") {
+    window.testGoogleAppsScriptConnection = testGoogleAppsScriptConnection;
+    window.submitCO2Data = submitCO2Data;
+
+    // 新增詳細的診斷函數
+    window.detailedDebugSubmit = async function (date, time, officeA, officeB, officeC) {
+        console.log("=== 詳細診斷開始 ===");
+
+        // 1. 檢查參數
+        console.log("1. 輸入參數:");
+        console.log("  - date:", date);
+        console.log("  - time:", time);
+        console.log("  - officeA:", officeA);
+        console.log("  - officeB:", officeB);
+        console.log("  - officeC:", officeC);
+
+        // 2. 檢查 URL 設定
+        console.log("2. URL 設定:");
+        console.log("  - writeUrl:", writeUrl);
+        console.log("  - URL 驗證:", validateGoogleAppsScriptUrl());
+
+        // 3. 格式化資料
+        const [year, month, day] = date.split("-");
+        const formattedDate = `${year}/${parseInt(month)}/${parseInt(day)}`;
+
+        const data = {
+            date: formattedDate,
+            time: time,
+            office_a: officeA || "",
+            office_b: officeB || "",
+            office_c: officeC || "",
+            submitted_by: "詳細診斷測試",
+            timestamp: new Date().toISOString(),
+        };
+
+        console.log("3. 格式化後的資料:", data);
+
+        // 4. 建立請求參數
+        const params = new URLSearchParams();
+        Object.keys(data).forEach((key) => {
+            params.append(key, data[key]);
+            console.log(`  - ${key}: ${data[key]}`);
+        });
+
+        const requestUrl = `${writeUrl}?${params.toString()}`;
+        console.log("4. 完整請求 URL:", requestUrl);
+
+        // 5. 發送請求並詳細記錄
+        try {
+            console.log("5. 發送請求...");
+
+            const response = await fetch(requestUrl, {
+                method: "GET",
+                mode: "cors",
+            });
+
+            console.log("6. 響應資訊:");
+            console.log("  - 狀態:", response.status);
+            console.log("  - 狀態文字:", response.statusText);
+            console.log("  - OK:", response.ok);
+            console.log("  - 類型:", response.type);
+            console.log("  - URL:", response.url);
+
+            // 檢查響應標頭
+            console.log("7. 響應標頭:");
+            for (const [key, value] of response.headers.entries()) {
+                console.log(`  - ${key}: ${value}`);
+            }
+
+            // 獲取響應內容
+            const responseText = await response.text();
+            console.log("8. 響應內容 (原始):", responseText);
+
+            // 嘗試解析 JSON
+            let result;
+            try {
+                result = JSON.parse(responseText);
+                console.log("9. 解析後的 JSON:", result);
+            } catch (parseError) {
+                console.error("9. JSON 解析失敗:", parseError);
+                console.log("響應內容不是有效的 JSON 格式");
+                return { success: false, error: "JSON 解析失敗" };
+            }
+
+            // 檢查結果
+            console.log("10. 結果分析:");
+            console.log("  - 成功:", result.success);
+            console.log("  - 訊息:", result.message);
+            if (result.data) {
+                console.log("  - 資料:", result.data);
+            }
+
+            console.log("=== 詳細診斷完成 ===");
+            return result;
+        } catch (error) {
+            console.error("❌ 請求失敗:", error);
+            console.log("錯誤詳情:", error.toString());
+            console.log("=== 詳細診斷失敗 ===");
+            return { success: false, error: error.toString() };
+        }
+    };
+
+    // 新增簡化的測試函數
+    window.quickTest = async function () {
+        const now = new Date();
+        const dateStr = now.toISOString().split("T")[0];
+        const timeStr = now.toTimeString().split(" ")[0].substring(0, 5);
+
+        console.log("🚀 快速測試開始...");
+        return await window.detailedDebugSubmit(dateStr, timeStr, "600", "700", "800");
+    };
+
+    console.log("✅ 測試功能已載入，可以在控制台中使用:");
+    console.log("  - testGoogleAppsScriptConnection() - 測試 Google Apps Script 連線");
+    console.log("  - submitCO2Data(date, time, officeA, officeB, officeC) - 提交 CO2 數據");
+    console.log("  - detailedDebugSubmit(date, time, officeA, officeB, officeC) - 詳細診斷提交");
+    console.log("  - quickTest() - 快速測試 (使用當前時間)");
 }
