@@ -1396,13 +1396,13 @@ function switchToInputMode() {
     if (inputDate && inputTime) {
         // 設置日期格式為 YYYY-MM-DD
         const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
         inputDate.value = `${year}-${month}-${day}`;
 
         // 設置時間格式為 HH:MM
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
         inputTime.value = `${hours}:${minutes}`;
     }
 
@@ -1911,7 +1911,7 @@ function switchModeWithLoading(mode, switchFunction) {
     setTimeout(() => {
         switchFunction();
         console.log(`🔄 ${mode} 模式切換完成，界面正在優化中...`);
-        
+
         // 模式切換完成後隱藏 Loading
         setTimeout(() => {
             hideAILoading();
@@ -2027,24 +2027,24 @@ function initDataInput() {
                 submitCO2Data(inputDate, inputTime, officeA, officeB, officeC);
             }
         });
-        
+
         // 添加清空表單按鈕事件處理
         const clearFormBtn = document.getElementById("clearFormBtn");
         if (clearFormBtn) {
-            clearFormBtn.addEventListener("click", function() {
+            clearFormBtn.addEventListener("click", function () {
                 // 清空所有輸入欄位
                 document.getElementById("inputOfficeA").value = "";
                 document.getElementById("inputOfficeB").value = "";
                 document.getElementById("inputOfficeC").value = "";
-                
+
                 // 重設日期和時間為當前時間
                 const now = new Date();
                 const dateStr = now.toISOString().split("T")[0];
                 const timeStr = now.toTimeString().split(" ")[0].substring(0, 5);
-                
+
                 document.getElementById("inputDate").value = dateStr;
                 document.getElementById("inputTime").value = timeStr;
-                
+
                 console.log("表單已清空");
             });
         }
@@ -2054,40 +2054,40 @@ function initDataInput() {
 // 提交 CO2 數據到 Google Sheets
 async function submitCO2Data(date, time, officeA, officeB, officeC) {
     console.log("開始提交 CO2 數據...");
-    
+
     // 顯示提交進度
     const submitProgress = document.getElementById("submitProgress");
     if (submitProgress) {
         submitProgress.style.display = "block";
-        
+
         const progressFill = submitProgress.querySelector(".progress-fill");
         const progressText = submitProgress.querySelector(".progress-text");
-        
+
         if (progressFill) progressFill.style.width = "10%";
         if (progressText) progressText.textContent = "準備提交數據...";
     }
-    
+
     try {
         // 驗證 Google Apps Script URL 設定
         if (!validateGoogleAppsScriptUrl()) {
             throw new Error("Google Apps Script URL 未正確設置");
         }
-        
+
         // 格式化日期為 YYYY/M/D 格式 (與其他數據統一格式)
         const [year, month, day] = date.split("-");
         const formattedDate = `${year}/${parseInt(month)}/${parseInt(day)}`;
-        
+
         // 準備要提交的數據
         const data = {
             date: formattedDate,
             time: time,
-            "中華辦7樓": officeA || "", // 如果沒有輸入則傳送空字符串
-            "中華辦8樓": officeB || "",
-            "衡陽辦": officeC || "",
+            中華辦7樓: officeA || "", // 如果沒有輸入則傳送空字符串
+            中華辦8樓: officeB || "",
+            衡陽辦: officeC || "",
             submitted_by: "手動輸入", // 標記數據來源
-            timestamp: new Date().toISOString() // 添加提交時間戳
+            timestamp: new Date().toISOString(), // 添加提交時間戳
         };
-        
+
         // 更新進度
         if (submitProgress) {
             const progressFill = submitProgress.querySelector(".progress-fill");
@@ -2095,31 +2095,31 @@ async function submitCO2Data(date, time, officeA, officeB, officeC) {
             if (progressFill) progressFill.style.width = "30%";
             if (progressText) progressText.textContent = "發送數據中...";
         }
-        
+
         console.log("準備發送數據到 Google Sheets:", data);
-        
+
         // 發送數據到 Google Apps Script
         const response = await fetch(writeUrl, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         });
-        
+
         // 更新進度
         if (submitProgress) {
             const progressFill = submitProgress.querySelector(".progress-fill");
             if (progressFill) progressFill.style.width = "70%";
         }
-        
+
         if (!response.ok) {
             throw new Error(`提交失敗: ${response.status} ${response.statusText}`);
         }
-        
+
         const result = await response.json();
         console.log("提交響應:", result);
-        
+
         // 更新進度為完成
         if (submitProgress) {
             const progressFill = submitProgress.querySelector(".progress-fill");
@@ -2127,35 +2127,33 @@ async function submitCO2Data(date, time, officeA, officeB, officeC) {
             if (progressFill) progressFill.style.width = "100%";
             if (progressText) progressText.textContent = "數據已成功提交！";
         }
-        
+
         // 延遲後隱藏進度條並清空表單
         setTimeout(() => {
             if (submitProgress) submitProgress.style.display = "none";
-            
+
             // 清空表單中的 CO2 數值 (保留日期和時間)
             const inputOfficeA = document.getElementById("inputOfficeA");
             const inputOfficeB = document.getElementById("inputOfficeB");
             const inputOfficeC = document.getElementById("inputOfficeC");
-            
+
             if (inputOfficeA) inputOfficeA.value = "";
             if (inputOfficeB) inputOfficeB.value = "";
             if (inputOfficeC) inputOfficeC.value = "";
-            
+
             // 顯示成功訊息
             alert("CO₂ 數據已成功提交！");
-            
+
             // 重新載入數據以顯示最新狀態
-            if (typeof loadCO2Data === 'function') {
+            if (typeof loadCO2Data === "function") {
                 loadCO2Data();
             }
-            
         }, 2000);
-        
+
         return true;
-        
     } catch (error) {
         console.error("提交數據時發生錯誤:", error);
-        
+
         // 顯示錯誤狀態
         if (submitProgress) {
             const progressFill = submitProgress.querySelector(".progress-fill");
@@ -2166,7 +2164,7 @@ async function submitCO2Data(date, time, officeA, officeB, officeC) {
             }
             if (progressText) progressText.textContent = `錯誤: ${error.message}`;
         }
-        
+
         // 延遲後隱藏進度條
         setTimeout(() => {
             if (submitProgress) {
@@ -2175,7 +2173,7 @@ async function submitCO2Data(date, time, officeA, officeB, officeC) {
                 if (progressFill) progressFill.style.backgroundColor = "";
             }
         }, 3000);
-        
+
         // 顯示錯誤訊息
         alert(`提交失敗: ${error.message}\n請檢查網路連接和 Google Apps Script 設置。`);
         return false;
