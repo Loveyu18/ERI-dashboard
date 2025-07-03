@@ -1,0 +1,292 @@
+/* ===============================================
+   CSS 變數定義 - ERI Dashboard Design System
+   =============================================== */
+
+:root {
+  /* ========== 色彩系統 ========== */
+  
+  /* 主色調 */
+  --primary-blue: rgba(102, 126, 234, 1);
+  --primary-purple: rgba(118, 75, 162, 1);
+  --primary-red: rgba(255, 122, 122, 1);
+  --primary-orange: rgba(255, 149, 0, 1);
+  
+  /* 漸層色 */
+  --gradient-blue: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(88, 86, 214, 0.6) 50%, rgba(102, 126, 234, 0.8) 100%);
+  --gradient-purple: linear-gradient(135deg, rgba(118, 75, 162, 0.8) 0%, rgba(175, 82, 222, 0.6) 50%, rgba(118, 75, 162, 0.8) 100%);
+  --gradient-red: linear-gradient(135deg, rgba(255, 122, 122, 0.8) 0%, rgba(255, 149, 0, 0.6) 50%, rgba(255, 122, 122, 0.8) 100%);
+  
+  /* 背景色 */
+  --bg-primary: rgba(255, 255, 255, 0.25);
+  --bg-secondary: rgba(255, 255, 255, 0.35);
+  --bg-tertiary: rgba(255, 255, 255, 0.45);
+  --bg-overlay: rgba(255, 255, 255, 0.12);
+  
+  /* 邊框色 */
+  --border-light: rgba(255, 255, 255, 0.3);
+  --border-medium: rgba(255, 255, 255, 0.4);
+  --border-strong: rgba(255, 255, 255, 0.5);
+  --border-dark: rgba(255, 255, 255, 0.7);
+  
+  /* 文字色 */
+  --text-primary: #1d1d1f;
+  --text-secondary: #6d6d70;
+  --text-light: rgba(255, 255, 255, 0.8);
+  --text-white: #ffffff;
+  
+  /* 陰影色 */
+  --shadow-light: rgba(0, 0, 0, 0.04);
+  --shadow-medium: rgba(0, 0, 0, 0.08);
+  --shadow-strong: rgba(0, 0, 0, 0.12);
+  
+  /* ========== 尺寸系統 ========== */
+  
+  /* 間距 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-2xl: 24px;
+  --spacing-3xl: 32px;
+  --spacing-4xl: 40px;
+  --spacing-5xl: 48px;
+  
+  /* 字體大小 */
+  --font-xs: 10px;
+  --font-sm: 11px;
+  --font-md: 12px;
+  --font-lg: 14px;
+  --font-xl: 15px;
+  --font-2xl: 16px;
+  --font-3xl: 18px;
+  --font-4xl: 20px;
+  --font-5xl: 24px;
+  --font-6xl: 32px;
+  --font-7xl: 36px;
+  --font-8xl: 44px;
+  
+  /* 圓角 */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 28px;
+  --radius-full: 50%;
+  
+  /* ========== 毛玻璃效果 ========== */
+  
+  /* 背景模糊 */
+  --blur-xs: blur(5px);
+  --blur-sm: blur(10px);
+  --blur-md: blur(15px);
+  --blur-lg: blur(20px);
+  --blur-xl: blur(25px);
+  --blur-2xl: blur(30px);
+  --blur-3xl: blur(40px);
+  
+  /* 完整的 backdrop-filter 效果 */
+  --glass-light: blur(15px) saturate(1.1);
+  --glass-medium: blur(20px) saturate(1.8);
+  --glass-strong: blur(30px) saturate(1.8);
+  --glass-intense: blur(40px) saturate(1.8);
+  
+  /* ========== 陰影系統 ========== */
+  
+  /* 卡片陰影 */
+  --shadow-card: 
+    0 16px 48px var(--shadow-medium),
+    0 4px 16px var(--shadow-light),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+    
+  --shadow-card-hover: 
+    0 32px 80px var(--shadow-strong),
+    0 16px 32px var(--shadow-medium),
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.4);
+    
+  /* 按鈕陰影 */
+  --shadow-button: 
+    0 6px 16px var(--shadow-medium),
+    0 2px 4px var(--shadow-light),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    
+  --shadow-button-hover: 
+    0 12px 24px var(--shadow-strong),
+    0 4px 8px var(--shadow-medium),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+    
+  /* 容器陰影 */
+  --shadow-container: 
+    0 20px 60px var(--shadow-medium),
+    0 8px 32px var(--shadow-light),
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.3);
+    
+  /* ========== 過渡動畫 ========== */
+  
+  /* 動畫時間 */
+  --transition-fast: 0.15s;
+  --transition-normal: 0.3s;
+  --transition-slow: 0.6s;
+  --transition-very-slow: 0.8s;
+  
+  /* 動畫曲線 */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  /* 完整的過渡效果 */
+  --transition-all: all var(--transition-normal) var(--ease-in-out);
+  --transition-transform: transform var(--transition-slow) var(--ease-bounce);
+  --transition-opacity: opacity var(--transition-fast) var(--ease-out);
+  
+  /* ========== 響應式斷點 ========== */
+  
+  /* 斷點值 */
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1400px;
+  
+  /* ========== 層級系統 ========== */
+  
+  /* z-index 值 */
+  --z-background: 0;
+  --z-normal: 1;
+  --z-tooltip: 100;
+  --z-overlay: 1000;
+  --z-modal: 1500;
+  --z-sidebar: 2000;
+  --z-loading: 3000;
+  
+  /* ========== 特殊效果 ========== */
+  
+  /* 發光效果 */
+  --glow-blue: 0 0 20px rgba(102, 126, 234, 0.3);
+  --glow-purple: 0 0 20px rgba(118, 75, 162, 0.3);
+  --glow-red: 0 0 20px rgba(255, 122, 122, 0.3);
+  
+  /* 脈衝動畫 */
+  --pulse-duration: 2s;
+  --pulse-scale: 1.1;
+}
+
+/* ========== 暗色模式支援 ========== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --bg-primary: rgba(0, 0, 0, 0.3);
+    --bg-secondary: rgba(0, 0, 0, 0.4);
+    --bg-tertiary: rgba(0, 0, 0, 0.5);
+    --bg-overlay: rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* ========== 列印樣式 ========== */
+@media print {
+  :root {
+    --text-primary: #000000;
+    --text-secondary: #666666;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f5;
+    --bg-tertiary: #eeeeee;
+    --shadow-card: none;
+    --shadow-button: none;
+    --shadow-container: none;
+  }
+}
+
+/* ========== 動畫關鍵幀 ========== */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(var(--pulse-scale));
+    opacity: 0.7;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+/* ========== 工具類 ========== */
+
+/* 文字工具類 */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+/* 顯示/隱藏工具類 */
+.hidden { display: none !important; }
+.visible { display: block !important; }
+
+/* 間距工具類 */
+.m-0 { margin: 0; }
+.p-0 { padding: 0; }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.pt-sm { padding-top: var(--spacing-sm); }
+.pb-sm { padding-bottom: var(--spacing-sm); }
+
+/* 圓角工具類 */
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* 陰影工具類 */
+.shadow-card { box-shadow: var(--shadow-card); }
+.shadow-button { box-shadow: var(--shadow-button); }
+.shadow-container { box-shadow: var(--shadow-container); }
+
+/* 過渡工具類 */
+.transition-all { transition: var(--transition-all); }
+.transition-transform { transition: var(--transition-transform); }
+.transition-opacity { transition: var(--transition-opacity); }
+
+/* 毛玻璃效果工具類 */
+.glass-light { backdrop-filter: var(--glass-light); -webkit-backdrop-filter: var(--glass-light); }
+.glass-medium { backdrop-filter: var(--glass-medium); -webkit-backdrop-filter: var(--glass-medium); }
+.glass-strong { backdrop-filter: var(--glass-strong); -webkit-backdrop-filter: var(--glass-strong); }
+.glass-intense { backdrop-filter: var(--glass-intense); -webkit-backdrop-filter: var(--glass-intense); }

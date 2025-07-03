@@ -1,0 +1,737 @@
+/**
+ * 組件樣式 (Component Styles)
+ * 包含按鈕、表單、卡片、模態框等組件樣式
+ */
+
+/* ========== 按鈕組件 ========== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.2;
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-base);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    white-space: nowrap;
+    user-select: none;
+    min-height: 40px;
+}
+
+.btn:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* 按鈕變體 */
+.btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+}
+
+.btn-secondary {
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: var(--color-text-inverse);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-secondary-hover);
+    border-color: var(--color-secondary-hover);
+}
+
+.btn-outline {
+    background-color: transparent;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-outline:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.btn-ghost {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--color-text-primary);
+}
+
+.btn-ghost:hover {
+    background-color: var(--color-bg-secondary);
+}
+
+.btn-success {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+    color: var(--color-text-inverse);
+}
+
+.btn-success:hover {
+    background-color: var(--color-success-hover);
+    border-color: var(--color-success-hover);
+}
+
+.btn-warning {
+    background-color: var(--color-warning);
+    border-color: var(--color-warning);
+    color: var(--color-text-inverse);
+}
+
+.btn-warning:hover {
+    background-color: var(--color-warning-hover);
+    border-color: var(--color-warning-hover);
+}
+
+.btn-error {
+    background-color: var(--color-error);
+    border-color: var(--color-error);
+    color: var(--color-text-inverse);
+}
+
+.btn-error:hover {
+    background-color: var(--color-error-hover);
+    border-color: var(--color-error-hover);
+}
+
+/* 按鈕尺寸 */
+.btn-sm {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    min-height: 32px;
+}
+
+.btn-lg {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-md);
+    min-height: 48px;
+}
+
+/* 按鈕狀態 */
+.btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.btn.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+/* 按鈕群組 */
+.btn-group {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.btn-group .btn {
+    flex: 1;
+}
+
+.btn-group-vertical {
+    flex-direction: column;
+}
+
+/* ========== 表單組件 ========== */
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+}
+
+.form-label.required::after {
+    content: ' *';
+    color: var(--color-error);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-base);
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    transition: all var(--transition-base);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.form-input:invalid,
+.form-select:invalid,
+.form-textarea:invalid {
+    border-color: var(--color-error);
+}
+
+.form-textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* 表單狀態 */
+.form-group.success .form-input,
+.form-group.success .form-select,
+.form-group.success .form-textarea {
+    border-color: var(--color-success);
+}
+
+.form-group.warning .form-input,
+.form-group.warning .form-select,
+.form-group.warning .form-textarea {
+    border-color: var(--color-warning);
+}
+
+.form-group.error .form-input,
+.form-group.error .form-select,
+.form-group.error .form-textarea {
+    border-color: var(--color-error);
+}
+
+.form-hint {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+}
+
+.form-hint.success {
+    color: var(--color-success);
+}
+
+.form-hint.warning {
+    color: var(--color-warning);
+}
+
+.form-hint.error {
+    color: var(--color-error);
+}
+
+/* 複選框和單選按鈕 */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.form-check-input {
+    width: auto;
+    margin: 0;
+}
+
+.form-check-label {
+    margin: 0;
+    font-weight: var(--font-weight-normal);
+    cursor: pointer;
+}
+
+/* ========== 卡片組件 ========== */
+.room-card {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-base);
+    padding: var(--spacing-md);
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.room-card:hover {
+    box-shadow: var(--shadow-base);
+    transform: translateY(-2px);
+}
+
+.room-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+}
+
+.room-name {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-heading);
+}
+
+.room-status {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    border-radius: var(--border-radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.room-data {
+    margin-bottom: var(--spacing-sm);
+}
+
+.co2-value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-heading);
+}
+
+.co2-value .unit {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text-secondary);
+}
+
+.timestamp {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background-color: var(--color-bg-secondary);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: var(--spacing-sm);
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: var(--color-primary);
+    transition: width var(--transition-base);
+}
+
+/* 房間狀態顏色 */
+.room-card.excellent {
+    border-left: 4px solid var(--color-success);
+}
+
+.room-card.excellent .room-status {
+    background-color: var(--color-success);
+    color: var(--color-text-inverse);
+}
+
+.room-card.excellent .progress-fill {
+    background-color: var(--color-success);
+}
+
+.room-card.good {
+    border-left: 4px solid var(--color-info);
+}
+
+.room-card.good .room-status {
+    background-color: var(--color-info);
+    color: var(--color-text-inverse);
+}
+
+.room-card.good .progress-fill {
+    background-color: var(--color-info);
+}
+
+.room-card.fair {
+    border-left: 4px solid var(--color-warning);
+}
+
+.room-card.fair .room-status {
+    background-color: var(--color-warning);
+    color: var(--color-text-inverse);
+}
+
+.room-card.fair .progress-fill {
+    background-color: var(--color-warning);
+}
+
+.room-card.poor {
+    border-left: 4px solid var(--color-error);
+}
+
+.room-card.poor .room-status {
+    background-color: var(--color-error);
+    color: var(--color-text-inverse);
+}
+
+.room-card.poor .progress-fill {
+    background-color: var(--color-error);
+}
+
+/* ========== 載入指示器 ========== */
+.loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--z-index-modal);
+}
+
+.loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-text {
+    margin-top: var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+/* ========== 錯誤容器 ========== */
+.error-container {
+    position: fixed;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    z-index: var(--z-index-toast);
+    max-width: 400px;
+}
+
+.error-message {
+    background-color: var(--color-error);
+    color: var(--color-text-inverse);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-base);
+    margin-bottom: var(--spacing-sm);
+    box-shadow: var(--shadow-lg);
+    animation: slideIn 0.3s ease-out;
+}
+
+.error-content {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.error-icon {
+    font-size: var(--font-size-lg);
+    flex-shrink: 0;
+}
+
+.error-text {
+    flex: 1;
+    font-size: var(--font-size-sm);
+}
+
+.error-close {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    padding: 0;
+    margin-left: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+.error-close:hover {
+    opacity: 0.8;
+}
+
+/* ========== 狀態訊息 ========== */
+.status-message {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-base);
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+.status-message.success {
+    background-color: var(--color-success);
+    color: var(--color-text-inverse);
+}
+
+.status-message.warning {
+    background-color: var(--color-warning);
+    color: var(--color-text-inverse);
+}
+
+.status-message.error {
+    background-color: var(--color-error);
+    color: var(--color-text-inverse);
+}
+
+.status-message.info {
+    background-color: var(--color-info);
+    color: var(--color-text-inverse);
+}
+
+/* ========== 倒數計時器 ========== */
+.countdown {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+}
+
+.countdown-label {
+    font-weight: var(--font-weight-medium);
+}
+
+.countdown-value {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+}
+
+.countdown.warning .countdown-value {
+    color: var(--color-warning);
+}
+
+.countdown.notice .countdown-value {
+    color: var(--color-info);
+}
+
+/* ========== 比較顯示 ========== */
+.compare-display {
+    background-color: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-base);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.compare-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.compare-section {
+    padding: var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-base);
+}
+
+.compare-section h4 {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text-heading);
+}
+
+.compare-rooms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-sm);
+}
+
+.compare-summary {
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--spacing-md);
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.summary-item {
+    text-align: center;
+    padding: var(--spacing-sm);
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--border-radius-base);
+}
+
+.summary-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.summary-value {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.summary-value.increase {
+    color: var(--color-error);
+}
+
+.summary-value.decrease {
+    color: var(--color-success);
+}
+
+.summary-value.neutral {
+    color: var(--color-text-secondary);
+}
+
+/* ========== 統計資訊 ========== */
+.statistics-container {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-base);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.stat-item {
+    text-align: center;
+    padding: var(--spacing-sm);
+    background-color: var(--color-bg-primary);
+    border-radius: var(--border-radius-base);
+}
+
+.stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-value {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+}
+
+/* ========== 無數據顯示 ========== */
+.no-data-message {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--color-text-secondary);
+}
+
+.no-data-icon {
+    font-size: var(--font-size-xxl);
+    margin-bottom: var(--spacing-md);
+}
+
+.no-data-text {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-xs);
+}
+
+.no-data-subtitle {
+    font-size: var(--font-size-sm);
+}
+
+/* ========== 動畫 ========== */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ========== 響應式調整 ========== */
+@media (max-width: 768px) {
+    .compare-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .compare-rooms {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .error-container {
+        left: var(--spacing-sm);
+        right: var(--spacing-sm);
+        max-width: none;
+    }
+}
+
+/* ========== 深色模式 ========== */
+@media (prefers-color-scheme: dark) {
+    .loading-indicator {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+}

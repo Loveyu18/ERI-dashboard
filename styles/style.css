@@ -185,8 +185,8 @@ h1::after {
 
 .status-section {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
     margin: 20px 0;
     padding: 0 4px;
     overflow: visible; /* 允許比較數據顯示在外部 */
@@ -196,7 +196,7 @@ h1::after {
 @media (min-width: 1024px) {
     .status-section {
         grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
+        gap: 20px;
     }
 }
 
@@ -204,7 +204,7 @@ h1::after {
 @media (min-width: 1400px) {
     .status-section {
         grid-template-columns: repeat(3, 1fr);
-        gap: 28px;
+        gap: 22px;
         margin: 24px 0;
     }
 }
@@ -269,7 +269,7 @@ h1::after {
 /* 房間狀態卡片 - 增強液態玻璃效果 */
 .room {
     background: rgba(255, 255, 255, 0.35);
-    border-radius: 24px;
+    border-radius: 20px;
     padding: 0;
     border: 1px solid rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(30px) saturate(1.8);
@@ -279,10 +279,10 @@ h1::after {
         0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 0 0 1px rgba(255, 255, 255, 0.2);
     position: relative;
     overflow: hidden;
-    min-height: 150px;
+    min-height: 120px;
     display: flex;
     flex-direction: column;
-    aspect-ratio: 1 / 0.9;
+    aspect-ratio: 1 / 0.75;
     max-width: 100%;
 }
 
@@ -370,18 +370,18 @@ h1::after {
 .room-header {
     display: flex;
     align-items: center;
-    padding: 18px 20px 14px;
-    gap: 12px;
+    padding: 14px 16px 10px;
+    gap: 10px;
     position: relative;
     z-index: 3;
 }
 
 .room-icon {
-    font-size: 22px;
-    width: 38px;
-    height: 38px;
+    font-size: 18px;
+    width: 32px;
+    height: 32px;
     background: rgba(255, 255, 255, 0.9);
-    border-radius: 12px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -397,7 +397,7 @@ h1::after {
 }
 
 .room .name {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 700;
     color: #1d1d1f;
     margin: 0;
@@ -413,7 +413,7 @@ h1::after {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4px 20px 12px;
+    padding: 2px 16px 8px;
     text-align: center;
     position: relative;
 }
@@ -421,13 +421,13 @@ h1::after {
 .co2-reading {
     display: flex;
     align-items: baseline;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 6px;
+    margin-bottom: 12px;
     justify-content: center;
 }
 
 .room .value {
-    font-size: 44px;
+    font-size: 36px;
     font-weight: 800;
     color: #1d1d1f;
     letter-spacing: -0.04em;
@@ -443,12 +443,12 @@ h1::after {
 }
 
 .unit {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     color: #6d6d70;
     letter-spacing: -0.02em;
     align-self: flex-end;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
 }
 
 .status-indicator {
@@ -459,12 +459,12 @@ h1::after {
 
 /* 狀態指示器 - 增強液態玻璃效果 */
 .room .status {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    padding: 12px 20px;
-    border-radius: 18px;
+    padding: 8px 16px;
+    border-radius: 16px;
     display: inline-block;
-    min-width: 130px;
+    min-width: 110px;
     backdrop-filter: blur(20px) saturate(1.8);
     -webkit-backdrop-filter: blur(20px) saturate(1.8);
     border: 1px solid rgba(255, 255, 255, 0.5);
@@ -473,7 +473,7 @@ h1::after {
         0 1px 0 rgba(255, 255, 255, 0.8) inset;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
     text-align: center;
     position: relative;
@@ -509,11 +509,11 @@ h1::after {
 
 /* 房間底部區域 */
 .room-footer {
-    padding: 16px 20px 18px;
+    padding: 12px 16px 14px;
     border-top: 1px solid rgba(255, 255, 255, 0.6);
     background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(15px);
-    border-radius: 0 0 20px 20px;
+    border-radius: 0 0 18px 18px;
     position: relative;
 }
 
@@ -521,8 +521,8 @@ h1::after {
     content: "";
     position: absolute;
     top: 0;
-    left: 18px;
-    right: 18px;
+    left: 14px;
+    right: 14px;
     height: 1px;
     background: linear-gradient(
         90deg,
@@ -533,7 +533,7 @@ h1::after {
 }
 
 .room .last-update {
-    font-size: 13px;
+    font-size: 12px;
     color: #6d6d70;
     font-weight: 600;
     text-align: center;
