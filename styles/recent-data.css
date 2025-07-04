@@ -99,7 +99,7 @@
     border-radius: 20px;
 }
 
-/* 表格容器 - 液態玻璃滾動條 */
+/* 表格容器 - 液態玻璃滾动條 */
 .recent-data-table-wrapper {
     overflow-x: auto;
     margin-top: 16px;
@@ -164,6 +164,16 @@
     font-size: 13px;
 }
 
+/* 表頭中的單位標示樣式 */
+.recent-data-table th small {
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(29, 29, 31, 0.7);
+    display: block;
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+}
+
 .recent-data-table tbody tr {
     transition: all 0.3s ease;
 }
@@ -202,33 +212,176 @@
     color: #ea4335;
 }
 
-/* 媒體查詢 - 適應小屏幕 */
-@media screen and (max-width: 768px) {
-    .recent-data-table th,
-    .recent-data-table td {
-        padding: 6px 8px;
-        font-size: 12px;
+/* 數字動畫效果樣式 */
+@keyframes numberPulse {
+    0% {
+        transform: scale(1);
     }
-
-    .recent-data-table-wrapper {
-        max-height: 200px;
+    50% {
+        transform: scale(1.1);
+        color: #007AFF;
+        text-shadow: 0 0 10px rgba(0, 122, 255, 0.3);
     }
-
-    .advice-content {
-        font-size: 13px;
+    100% {
+        transform: scale(1);
     }
 }
 
-/* 動畫效果 - 新數據閃爍效果 */
-@keyframes newDataHighlight {
+@keyframes fadeInOut {
     0% {
-        background-color: rgba(66, 133, 244, 0.2);
+        opacity: 0;
+        transform: translateY(-50%) scale(0.8);
+    }
+    20% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+    80% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50%) scale(0.8);
+    }
+}
+
+@keyframes valueHighlight {
+    0% {
+        background-color: transparent;
+    }
+    50% {
+        background-color: rgba(0, 122, 255, 0.15);
+        box-shadow: 0 0 15px rgba(0, 122, 255, 0.2);
     }
     100% {
         background-color: transparent;
     }
 }
 
-.new-data-row {
-    animation: newDataHighlight 2s ease-out;
+@keyframes dataRowSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 數值變化指示器樣式 */
+.value-change-indicator {
+    font-weight: bold;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+/* 表格數據動畫增強 */
+.recent-data-table tbody tr {
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.recent-data-table tbody tr:hover {
+    background-color: rgba(0, 122, 255, 0.05);
+    transform: translateX(2px);
+}
+
+.recent-data-table td {
+    position: relative;
+    transition: all 0.2s ease-in-out;
+}
+
+/* 數值單元格特殊效果 */
+.recent-data-table td.co2-normal,
+.recent-data-table td.co2-warning,
+.recent-data-table td.co2-danger {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.recent-data-table td.co2-normal {
+    animation: valueHighlight 0.8s ease-in-out;
+}
+
+.recent-data-table td.co2-warning {
+    animation: valueHighlight 0.8s ease-in-out;
+}
+
+.recent-data-table td.co2-danger {
+    animation: valueHighlight 1s ease-in-out;
+}
+
+/* 新數據行高亮效果 */
+.recent-data-table tbody tr.new-data {
+    animation: dataRowSlideIn 0.6s ease-out;
+    background: linear-gradient(90deg, 
+        rgba(0, 122, 255, 0.08) 0%, 
+        rgba(0, 122, 255, 0.02) 100%);
+}
+
+/* 圖表容器動畫 */
+.chart-container {
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.chart-container.updating {
+    transform: scale(0.98);
+    opacity: 0.9;
+}
+
+/* 數字跳動效果類 */
+.number-bounce {
+    animation: numberPulse 0.6s ease-in-out;
+}
+
+/* 手動刷新按鈕動畫增強 */
+.manual-refresh-btn {
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.manual-refresh-btn:active {
+    transform: scale(0.95);
+}
+
+.manual-refresh-btn .refresh-icon {
+    transition: transform 0.6s ease-in-out;
+}
+
+.manual-refresh-btn:hover .refresh-icon {
+    transform: rotate(180deg);
+}
+
+/* 圖表動畫增強 */
+#co2Chart {
+    transition: filter 0.3s ease-in-out;
+}
+
+/* 數據更新指示器動畫 */
+@keyframes dataUpdate {
+    0% {
+        opacity: 0.5;
+        transform: scale(0.98);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.01);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.data-updating {
+    animation: dataUpdate 0.8s ease-in-out;
+}
+
+/* 最後更新時間動畫 */
+#lastUpdate {
+    transition: all 0.3s ease-in-out;
+}
+
+#lastUpdate.updating {
+    color: #007AFF;
+    transform: scale(1.05);
 }

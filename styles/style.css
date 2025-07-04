@@ -3274,61 +3274,106 @@ h1::after {
     }
 }
 
-/* 手動刷新按鈕樣式 */
+/* 手動刷新按鈕樣式 - iOS 26 液態玻璃風格 */
 .manual-refresh-btn {
-    background: rgba(0, 122, 255, 0.1);
-    border: 1px solid rgba(0, 122, 255, 0.2);
-    border-radius: 10px;
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 600;
+    background: rgba(0, 122, 255, 0.12);
+    backdrop-filter: blur(16px) saturate(1.6) brightness(1.1);
+    -webkit-backdrop-filter: blur(16px) saturate(1.6) brightness(1.1);
+    border: 1px solid rgba(0, 122, 255, 0.25);
+    border-radius: 14px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 650;
     color: #007aff;
     cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-    backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    min-width: 70px;
-    height: 32px;
+    gap: 6px;
+    min-width: 80px;
+    height: 38px;
     box-sizing: border-box;
     overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(0, 122, 255, 0.12), 0 1px 4px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    letter-spacing: -0.01em;
+}
+
+/* 按鈕內部光效 */
+.manual-refresh-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 122, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(0, 122, 255, 0.03) 100%
+    );
+    border-radius: inherit;
+    z-index: -1;
 }
 
 .manual-refresh-btn:hover {
-    background: rgba(0, 122, 255, 0.15);
-    box-shadow: 0 4px 8px rgba(0, 122, 255, 0.2);
-    border-color: rgba(0, 122, 255, 0.3);
+    background: rgba(0, 122, 255, 0.18);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 122, 255, 0.2), 0 4px 12px rgba(0, 122, 255, 0.15),
+        0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    border-color: rgba(0, 122, 255, 0.35);
 }
 
 .manual-refresh-btn:active {
-    transform: scale(0.95);
+    transform: translateY(-1px) scale(0.98);
+    transition: all 0.1s ease;
 }
 
 .manual-refresh-btn .refresh-icon {
     animation: none;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+    position: relative;
+    z-index: 1;
 }
 
 .manual-refresh-btn .refresh-text {
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
+    position: relative;
+    z-index: 1;
 }
 
 .manual-refresh-btn.refreshing .refresh-icon {
-    animation: spin 1s linear infinite;
+    animation: smoothSpin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
 }
 
 .manual-refresh-btn.refreshing {
     pointer-events: none;
-    opacity: 0.6;
+    opacity: 0.7;
+    background: rgba(0, 122, 255, 0.08);
+}
+
+/* 更平滑的旋轉動畫 */
+@keyframes smoothSpin {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
 }
 
 /* 更新狀態文字樣式 */

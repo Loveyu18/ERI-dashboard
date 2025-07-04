@@ -15,6 +15,21 @@
 </head>
 
 <body>
+    <!-- AI Loading Overlay -->
+    <div class="ai-loading-overlay" id="aiLoadingOverlay">
+        <div class="loading-content">
+            <div class="loading-animation">
+                <div class="loading-spinner">
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring"></div>
+                    <div class="spinner-ring"></div>
+                </div>
+            </div>
+            <div class="loading-text" id="loadingText">🤖 AI 正在智能切換模式...</div>
+            <div class="loading-subtext" id="loadingSubtext">正在優化界面與數據載入</div>
+        </div>
+    </div>
+
     <!-- 側邊導覽列容器 (將由 JavaScript 載入組件) -->
     <div id="sidebarContainer"></div>
 
@@ -38,7 +53,7 @@
                 <div class="mode-buttons">
                     <button id="todayModeBtn" class="mode-btn active">
                         <span class="btn-icon">📊</span>
-                        <span class="btn-text">即時模式</span>
+                        <span class="btn-text">本日數據</span>
                     </button>
                     <button id="historyModeBtn" class="mode-btn">
                         <span class="btn-icon">📅</span>
@@ -261,9 +276,9 @@
                                 <tr>
                                     <th>日期</th>
                                     <th>時間</th>
-                                    <th>中華辦7樓</th>
-                                    <th>中華辦8樓</th>
-                                    <th>衡陽辦</th>
+                                    <th>中華辦7樓<br><small>(ppm)</small></th>
+                                    <th>中華辦8樓<br><small>(ppm)</small></th>
+                                    <th>衡陽辦<br><small>(ppm)</small></th>
                                 </tr>
                             </thead>
                             <tbody id="recentDataBody">

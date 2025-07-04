@@ -1,43 +1,140 @@
-/* 頂部儀表板工具列樣式 */
+/* 頂部儀表板工具列樣式 - iOS 26 液態玻璃風格 */
 .dashboard-toolbar {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(20px) saturate(1.8);
-    -webkit-backdrop-filter: blur(20px) saturate(1.8);
-    border-radius: 20px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04),
-        0 1px 0 rgba(255, 255, 255, 0.8) inset;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(40px) saturate(2) brightness(1.05);
+    -webkit-backdrop-filter: blur(40px) saturate(2) brightness(1.05);
+    border-radius: 28px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 
+        /* 主要陰影 */ 0 20px 60px rgba(0, 0, 0, 0.08),
+        /* 中等陰影 */ 0 8px 24px rgba(0, 0, 0, 0.05), /* 細節陰影 */ 0 2px 8px rgba(0, 0, 0, 0.03),
+        /* 內光效果 */ inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     position: relative;
     z-index: 100;
+    overflow: visible;
+    animation: toolbarEntrance 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* 入場動畫 */
+@keyframes toolbarEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.98);
+        backdrop-filter: blur(5px) saturate(1);
+        -webkit-backdrop-filter: blur(5px) saturate(1);
+    }
+    60% {
+        opacity: 0.8;
+        transform: translateY(-5px) scale(0.99);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        backdrop-filter: blur(40px) saturate(2) brightness(1.05);
+        -webkit-backdrop-filter: blur(40px) saturate(2) brightness(1.05);
+    }
+}
+
+/* 添加動態光效背景 */
+.dashboard-toolbar::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 122, 122, 0.06) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border-radius: inherit;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* 懸停時的增強效果 */
+.dashboard-toolbar:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12), 0 12px 32px rgba(0, 0, 0, 0.08),
+        0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .toolbar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    position: relative;
+}
+
+/* 為標題區域添加微妙的分隔線光效 */
+.toolbar-header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 20%,
+        rgba(102, 126, 234, 0.3) 50%,
+        rgba(255, 255, 255, 0.4) 80%,
+        transparent 100%
+    );
 }
 
 .dashboard-title {
     margin: 0;
-    font-size: 28px;
-    font-weight: 700;
+    font-size: 32px;
+    font-weight: 800;
     color: #1d1d1f;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #667eea 60%, #764ba2 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease-in-out infinite, titleGlow 8s ease-in-out infinite;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* 標題漸變動畫 */
+@keyframes gradientShift {
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes titleGlow {
+    0%,
+    100% {
+        filter: drop-shadow(0 0 0px rgba(102, 126, 234, 0));
+    }
+    50% {
+        filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.3));
+    }
 }
 
 .mode-control-bar {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    position: relative;
+    z-index: 150;
 }
 
 .mode-buttons {
@@ -49,21 +146,27 @@
 .mode-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    border: 2px solid rgba(102, 126, 234, 0.2);
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
+    gap: 10px;
+    padding: 16px 24px;
+    border: 1.5px solid rgba(102, 126, 234, 0.15);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(20px) saturate(1.8) brightness(1.05);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8) brightness(1.05);
     color: #667eea;
-    font-weight: 600;
-    font-size: 14px;
+    font-weight: 650;
+    font-size: 15px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    animation: subtleFloat 6s ease-in-out infinite;
+    animation-delay: calc(var(--delay, 0) * 0.5s);
 }
 
+/* 按鈕內部光效 */
 .mode-btn::before {
     content: "";
     position: absolute;
@@ -71,8 +174,14 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transition: left 0.5s;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        transparent 100%
+    );
+    transition: left 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    z-index: 1;
 }
 
 .mode-btn:hover::before {
@@ -80,20 +189,41 @@
 }
 
 .mode-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-3px) scale(1.02);
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2), 0 4px 16px rgba(102, 126, 234, 0.15),
+        0 2px 8px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    animation-play-state: paused;
 }
 
 .mode-btn.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
     color: white;
-    border-color: transparent;
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    border-color: rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4), 0 4px 16px rgba(102, 126, 234, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    animation: none;
+}
+
+.mode-btn.active:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 16px 48px rgba(102, 126, 234, 0.5), 0 8px 24px rgba(102, 126, 234, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.mode-btn .btn-icon,
+.mode-btn .btn-text {
+    position: relative;
+    z-index: 2;
 }
 
 .mode-btn .btn-icon {
-    font-size: 16px;
+    font-size: 18px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .dynamic-controls {
@@ -103,66 +233,111 @@
     align-items: center;
     gap: 16px;
     flex-wrap: wrap;
+    z-index: 150;
+    overflow: visible;
 }
 
 .control-group {
     position: absolute;
     top: 100%;
-    left: 0;
-    right: 0;
-    z-index: 1000; /* 提高 z-index */
-    margin-top: 8px;
-    padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.98); /* 提高不透明度 */
-    backdrop-filter: blur(20px) saturate(1.8);
-    -webkit-backdrop-filter: blur(20px) saturate(1.8);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.6); /* 加強邊框 */
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 16px rgba(0, 0, 0, 0.08),
-        0 1px 0 rgba(255, 255, 255, 0.9) inset;
+    z-index: 2000;
+    margin-top: 12px;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(32px) saturate(2) brightness(1.08);
+    -webkit-backdrop-filter: blur(32px) saturate(2) brightness(1.08);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), 0 8px 32px rgba(0, 0, 0, 0.08),
+        0 4px 16px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.2);
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-15px) scale(0.95);
     visibility: hidden;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     flex-wrap: wrap;
     gap: 16px;
-    min-width: 300px;
     pointer-events: none;
-    will-change: opacity, transform, visibility; /* 優化動畫效能 */
+    will-change: opacity, transform, visibility;
+    overflow: visible;
+    white-space: nowrap;
+    /* 移除固定的 left 定位，改由 JavaScript 動態設置 */
+}
+
+/* 歷史模式控制組 */
+.control-group.history-controls {
+    width: 280px;
+    transform-origin: center top;
+    transform: translateY(-15px) scale(0.95);
+}
+
+/* 對比模式控制組 */
+.control-group.compare-controls {
+    width: 280px;
+    transform-origin: center top;
+    transform: translateY(-15px) scale(0.95);
+}
+
+/* 手動輸入控制組 */
+.control-group.input-controls {
+    width: 200px;
+    transform-origin: center top;
+    transform: translateY(-15px) scale(0.95);
+}
+
+/* 為控制組添加背景光效 */
+.control-group::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(118, 75, 162, 0.04) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+    border-radius: inherit;
+    z-index: -1;
+    pointer-events: none;
 }
 
 .control-group.show {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     visibility: visible;
-    pointer-events: auto; /* 顯示狀態下啟用點擊事件 */
+    pointer-events: auto;
 }
 
-.control-group::before {
-    content: "";
-    position: absolute;
-    top: -8px;
-    left: 24px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 8px solid rgba(255, 255, 255, 0.98);
-    z-index: 1001;
+/* 歷史模式顯示動畫 */
+.control-group.history-controls.show {
+    transform: translateY(0) scale(1);
+}
+
+/* 對比模式顯示動畫 */
+.control-group.compare-controls.show {
+    transform: translateY(0) scale(1);
+}
+
+/* 手動輸入顯示動畫 */
+.control-group.input-controls.show {
+    transform: translateY(0) scale(1);
 }
 
 .control-group::after {
     content: "";
     position: absolute;
     top: -9px;
-    left: 24px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 0;
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid rgba(255, 255, 255, 0.6);
-    z-index: 1000;
+    border-bottom: 8px solid rgba(255, 255, 255, 0.8);
+    z-index: 2001;
 }
+
+/* 移除特定的箭頭定位，統一使用居中定位 */
 
 /* 確保控制組內的元素正確排列 */
 .control-group {
@@ -171,61 +346,85 @@
 }
 
 .control-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #4a4a4a;
+    font-size: 15px;
+    font-weight: 650;
+    color: #1a1a1a;
     white-space: nowrap;
+    letter-spacing: -0.01em;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
 }
 
 .date-input {
-    padding: 8px 12px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 8px;
-    background: white;
+    padding: 12px 16px;
+    border: 1.5px solid rgba(102, 126, 234, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px) saturate(1.5);
+    -webkit-backdrop-filter: blur(12px) saturate(1.5);
     font-size: 14px;
-    min-width: 140px;
-    transition: all 0.3s ease;
+    font-weight: 500;
+    min-width: 150px;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    color: #222;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .date-input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.4);
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    transform: translateY(-1px);
 }
 
 .action-btn {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
+    gap: 8px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 8px;
+    border-radius: 14px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 650;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: -0.01em;
 }
 
 .action-btn.primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
     color: white;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25), 0 2px 8px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .action-btn.primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.35), 0 4px 16px rgba(102, 126, 234, 0.25),
+        0 2px 8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .action-btn.secondary {
-    background: rgba(255, 255, 255, 0.8);
-    color: #667eea;
-    border: 1px solid rgba(102, 126, 234, 0.2);
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(16px) saturate(1.6);
+    -webkit-backdrop-filter: blur(16px) saturate(1.6);
+    color: #4a5fc7;
+    border: 1.5px solid rgba(102, 126, 234, 0.25);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.1), 0 1px 4px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .action-btn.secondary:hover {
-    background: rgba(102, 126, 234, 0.1);
-    border-color: rgba(102, 126, 234, 0.3);
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(102, 126, 234, 0.35);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15), 0 4px 12px rgba(102, 126, 234, 0.1),
+        0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 /* 控制面板樣式 */
@@ -238,32 +437,59 @@
     height: auto;
 }
 
-/* 更新時間資訊 - 整合到頂部工具列 */
+/* 更新時間資訊 - iOS 26 液態玻璃風格 */
 .update-info-compact {
-    background: rgba(255, 255, 255, 0.6);
-    padding: 8px 12px;
-    border-radius: 10px;
-    font-size: 13px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(16px) saturate(1.6) brightness(1.1);
+    -webkit-backdrop-filter: blur(16px) saturate(1.6) brightness(1.1);
+    padding: 12px 18px;
+    border-radius: 16px;
+    font-size: 14px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
     color: #1d1d1f;
-    transition: all 0.3s ease;
-    font-weight: 500;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    font-weight: 600;
     white-space: nowrap;
+    letter-spacing: -0.01em;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 為更新資訊添加微妙的漸變背景 */
+.update-info-compact::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(102, 126, 234, 0.03) 0%,
+        rgba(255, 255, 255, 0.05) 50%,
+        rgba(118, 75, 162, 0.03) 100%
+    );
+    border-radius: inherit;
+    z-index: -1;
 }
 
 .update-info-compact:hover {
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .update-info-compact .update-icon {
-    color: #4285f4;
-    font-size: 14px;
+    color: #667eea;
+    font-size: 16px;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 /* 控制面板開關按鈕 - 增強液態玻璃效果 */
@@ -890,5 +1116,199 @@ input[type="date"] {
 
     .control-label {
         text-align: center;
+    }
+}
+
+/* 小螢幕優化 - iOS 26 液態玻璃響應式 */
+@media (max-width: 480px) {
+    .dashboard-toolbar {
+        padding: 20px 16px;
+        margin: 10px;
+        border-radius: 24px;
+        backdrop-filter: blur(30px) saturate(1.8) brightness(1.05);
+        -webkit-backdrop-filter: blur(30px) saturate(1.8) brightness(1.05);
+    }
+
+    .toolbar-header {
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+    }
+
+    .dashboard-title {
+        font-size: 26px;
+        font-weight: 750;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .update-info-compact {
+        font-size: 12px;
+        padding: 8px 14px;
+        gap: 6px;
+        align-self: center;
+    }
+
+    .mode-control-bar {
+        gap: 12px;
+    }
+
+    .mode-buttons {
+        gap: 8px;
+    }
+
+    .mode-btn {
+        padding: 12px 16px;
+        font-size: 13px;
+        min-width: unset;
+        flex: 1;
+        justify-content: center;
+        border-radius: 16px;
+    }
+
+    .mode-btn .btn-icon {
+        font-size: 16px;
+    }
+
+    .control-group {
+        margin-top: 8px;
+        padding: 16px;
+        border-radius: 16px;
+        min-width: auto;
+        left: -5px;
+        right: -5px;
+    }
+
+    .date-input {
+        min-width: 120px;
+        font-size: 13px;
+        padding: 10px 14px;
+    }
+
+    .action-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        border-radius: 12px;
+    }
+
+    .manual-refresh-btn {
+        min-width: 70px;
+        height: 34px;
+        padding: 8px 14px;
+        font-size: 12px;
+        border-radius: 12px;
+    }
+
+    .manual-refresh-btn .refresh-icon {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* 超小螢幕優化 */
+@media (max-width: 360px) {
+    .dashboard-title {
+        font-size: 22px;
+        line-height: 1.2;
+    }
+
+    .mode-btn .btn-text {
+        font-size: 12px;
+    }
+
+    .mode-btn .btn-icon {
+        font-size: 14px;
+    }
+
+    .update-info-compact {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+}
+
+/* 為不同按鈕設置不同的延遲 */
+.mode-btn:nth-child(1) {
+    --delay: 0;
+}
+.mode-btn:nth-child(2) {
+    --delay: 1;
+}
+.mode-btn:nth-child(3) {
+    --delay: 2;
+}
+.mode-btn:nth-child(4) {
+    --delay: 3;
+}
+
+/* 確保動態控制區域有正確的層級 */
+.mode-control-bar {
+    position: relative;
+    z-index: 150;
+}
+
+.dynamic-controls {
+    z-index: 150;
+}
+
+/* 防止其他內容覆蓋控制面板 */
+.main-content-wrapper {
+    position: relative;
+    z-index: 50;
+}
+
+.status-section {
+    position: relative;
+    z-index: 50;
+}
+
+/* 響應式控制組定位優化 */
+@media (max-width: 768px) {
+    /* 小螢幕時統一左對齊，避免超出邊界 */
+    .control-group.history-controls,
+    .control-group.compare-controls {
+        left: 0;
+        right: 0;
+        width: auto;
+        max-width: calc(100vw - 80px);
+        transform-origin: left top;
+    }
+
+    .control-group.input-controls {
+        left: 0;
+        right: 0;
+        width: auto;
+        max-width: calc(100vw - 80px);
+        transform-origin: left top;
+    }
+
+    /* 小螢幕時箭頭統一左對齊 */
+    .control-group.history-controls::after,
+    .control-group.compare-controls::after,
+    .control-group.input-controls::after {
+        left: 40px;
+        right: auto;
+        transform: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .control-group {
+        padding: 16px 20px;
+        gap: 12px;
+        margin-top: 8px;
+        border-radius: 16px;
+    }
+
+    .control-group.history-controls,
+    .control-group.compare-controls,
+    .control-group.input-controls {
+        left: -5px;
+        right: -5px;
+        width: auto;
+        max-width: none;
+    }
+
+    .control-group::after {
+        left: 30px;
     }
 }

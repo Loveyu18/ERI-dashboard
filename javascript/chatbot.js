@@ -73,7 +73,7 @@ const qaDatabase = {
                 <li><strong>切換模式：</strong>點擊頂部的「📅 歷史查看」按鈕</li>
                 <li><strong>選擇日期：</strong>使用日期選擇器選擇要查看的歷史日期</li>
                 <li><strong>查看數據：</strong>卡片和圖表會顯示該日期的歷史數據</li>
-                <li><strong>回到今日：</strong>點擊「🏠 回到今日」按鈕返回即時模式</li>
+                <li><strong>回到今日：</strong>點擊「🏠 回到今日」按鈕返回本日數據模式</li>
             </ol>
             <p><strong>📈 圖表功能：</strong></p>
             <ul>
@@ -101,7 +101,7 @@ const qaDatabase = {
                 <li><strong>差異指示：</strong>會顯示今日相比對比日期的數值差異</li>
                 <li><strong>狀態對比：</strong>同時顯示兩個日期的空氣品質狀態</li>
             </ul>
-            <p><strong>🔄 重設對比：</strong>點擊「🔄 重設對比」可清除對比數據回到今日模式。</p>
+            <p><strong>🔄 重設對比：</strong>點擊「🔄 重設對比」可清除對比數據回到本日數據模式。</p>
         </div>`,
     },
     "chart-analysis": {
@@ -489,13 +489,8 @@ function autoCollapseQuickQuestionsPanel() {
 
 // 聊天輸入功能初始化
 function initChatInput() {
-    console.log("🔍 開始初始化聊天輸入功能...");
-
     const chatInput = document.getElementById("chatInput");
     const sendButton = document.getElementById("sendButton");
-
-    console.log("聊天輸入框:", chatInput);
-    console.log("發送按鈕:", sendButton);
 
     if (!chatInput || !sendButton) {
         console.error("❌ 聊天輸入元素未找到");
@@ -504,16 +499,13 @@ function initChatInput() {
 
     // 綁定發送按鈕點擊事件
     sendButton.addEventListener("click", function () {
-        console.log("🖱️ 發送按鈕被點擊");
         handleUserInput();
     });
 
     // 綁定 Enter 鍵發送
     chatInput.addEventListener("keypress", function (e) {
-        console.log("⌨️ 按鍵事件:", e.key);
         if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            console.log("📤 Enter 鍵發送");
             handleUserInput();
         }
     });
@@ -521,7 +513,6 @@ function initChatInput() {
     // 輸入時動態控制發送按鈕狀態
     chatInput.addEventListener("input", function () {
         const hasText = this.value.trim().length > 0;
-        console.log("📝 輸入變化:", this.value, "有文字:", hasText);
         sendButton.style.opacity = hasText ? "1" : "0.5";
         sendButton.disabled = !hasText;
     });
@@ -529,16 +520,12 @@ function initChatInput() {
     // 初始化發送按鈕狀態
     sendButton.style.opacity = "0.5";
     sendButton.disabled = true;
-
-    console.log("✅ 聊天輸入功能初始化完成");
 }
 
 // 處理用戶輸入
 function handleUserInput() {
     const chatInput = document.getElementById("chatInput");
     const userMessage = chatInput.value.trim();
-
-    console.log("📝 用戶輸入:", userMessage);
 
     if (!userMessage) return;
 
@@ -640,7 +627,6 @@ function scrollToBottom() {
 // 關鍵字檢測和回應
 function detectKeywordAndRespond(userMessage) {
     const message = userMessage.toLowerCase();
-    console.log("🔍 檢測關鍵字:", message);
 
     // 關鍵字對應QA的映射表
     const keywordToQA = {
@@ -713,18 +699,15 @@ function detectKeywordAndRespond(userMessage) {
     for (const [keyword, qaKey] of Object.entries(keywordToQA)) {
         if (message.includes(keyword)) {
             matchedQA = qaKey;
-            console.log(`✅ 找到匹配關鍵字: "${keyword}" -> ${qaKey}`);
             break;
         }
     }
 
     if (matchedQA && qaDatabase[matchedQA]) {
         // 找到匹配的QA，直接回應答案
-        console.log("📖 回應QA答案");
         addBotMessage(qaDatabase[matchedQA].answer);
     } else {
         // 沒有找到匹配的關鍵字，進行閒聊或提供建議
-        console.log("💬 進行閒聊回應");
         const chatResponse = generateChatResponse(userMessage);
         addBotMessage(chatResponse);
     }
@@ -789,8 +772,6 @@ function generateChatResponse(userMessage) {
 
 // 初始化聊天機器人所有功能
 function initChatbot() {
-    console.log("🚀 開始初始化聊天機器人...");
-
     // 檢查必要的 DOM 元素
     const chatbotButton = document.querySelector(".chatbot-button");
     const chatbotWindow = document.querySelector(".chatbot-window");
@@ -804,15 +785,12 @@ function initChatbot() {
     let isExpanded = false;
 
     chatbotButton.addEventListener("click", function () {
-        console.log("🖱️ 聊天機器人按鈕被點擊");
         isExpanded = !isExpanded;
 
         if (isExpanded) {
             chatbotWindow.classList.add("expanded");
-            console.log("📖 打開聊天視窗");
         } else {
             chatbotWindow.classList.remove("expanded");
-            console.log("📖 關閉聊天視窗");
         }
     });
 
@@ -820,7 +798,6 @@ function initChatbot() {
     const closeButton = document.querySelector("#closeChatbot");
     if (closeButton) {
         closeButton.addEventListener("click", function () {
-            console.log("❌ 點擊關閉按鈕");
             isExpanded = false;
             chatbotWindow.classList.remove("expanded");
         });
@@ -831,7 +808,6 @@ function initChatbot() {
         if (isExpanded && !e.target.closest(".chatbot-container")) {
             isExpanded = false;
             chatbotWindow.classList.remove("expanded");
-            console.log("📖 點擊外部關閉聊天視窗");
         }
     });
 
@@ -840,7 +816,6 @@ function initChatbot() {
         if (e.key === "Escape" && isExpanded) {
             isExpanded = false;
             chatbotWindow.classList.remove("expanded");
-            console.log("⌨️ ESC 鍵關閉聊天視窗");
         }
     });
 
@@ -867,17 +842,6 @@ function initChatbot() {
         setTimeout(() => {
             initChatInput();
         }, 800);
-
-        // 檢查初始化結果
-        setTimeout(() => {
-            const expandedCategory = document.querySelector(
-                ".quick-questions-content .question-category.expanded"
-            );
-            const visibleCards = document.querySelectorAll(
-                ".quick-questions-content .question-category.expanded .question-card"
-            );
-            console.log("✅ 聊天機器人功能已完全載入");
-        }, 1000);
 
         console.log("✅ 聊天機器人初始化完成");
         return true;

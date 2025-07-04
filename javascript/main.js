@@ -7,8 +7,6 @@ const url = `https://opensheet.vercel.app/${sheetId}/${sheetName}`;
 const writeUrl =
     "https://script.google.com/macros/s/AKfycbydqUsKWXbKcsjvLtbaW1uySjHypWYlf4FSLXcSSBHlNm_A8I94eRdTUidG5jCzgHWK/exec";
 
-
-
 // 檢查 Google Apps Script URL 是否設置正確
 function validateGoogleAppsScriptUrl() {
     if (!writeUrl) {
@@ -52,7 +50,6 @@ function initChart() {
         // 如果圖表實例已存在，先銷毀它
         if (co2Chart) {
             co2Chart.destroy();
-            console.log("銷毀舊圖表實例");
         }
 
         const chartCanvas = document.getElementById("co2Chart");
@@ -275,8 +272,6 @@ function initChart() {
                 },
             },
         });
-
-        console.log("圖表初始化完成");
     } catch (error) {
         console.error("圖表初始化失敗:", error);
     }
@@ -308,7 +303,6 @@ function getLatestDataForEachRoom(data) {
                 if (rawValue && !isNaN(parseInt(rawValue))) {
                     room.value = parseInt(rawValue);
                     room.timestamp = `${dateStr} ${timeStr}`;
-                    console.log(`找到 ${room.column} 最新數據: ${room.value} at ${room.timestamp}`);
                 }
             }
         });
@@ -319,7 +313,6 @@ function getLatestDataForEachRoom(data) {
         }
     }
 
-    console.log("各辦公室最新數據:", rooms);
     return rooms;
 }
 
@@ -336,8 +329,6 @@ function getLatestDataForEachRoomByDate(data, targetDateString) {
         const dateStr = row["日期"] || row["date"];
         return dateStr && dateStr.toString().trim() === targetDateString;
     });
-
-    console.log(`獲取 ${targetDateString} 的數據，找到 ${dayData.length} 筆記錄`);
 
     // 從最新的數據開始往前找
     for (let i = dayData.length - 1; i >= 0; i--) {
@@ -357,9 +348,6 @@ function getLatestDataForEachRoomByDate(data, targetDateString) {
                 if (rawValue && !isNaN(parseInt(rawValue))) {
                     room.value = parseInt(rawValue);
                     room.timestamp = `${dateStr} ${timeStr}`;
-                    console.log(
-                        `找到 ${room.column} 在 ${targetDateString} 的最新數據: ${room.value} at ${room.timestamp}`
-                    );
                 }
             }
         });
@@ -376,11 +364,9 @@ function getLatestDataForEachRoomByDate(data, targetDateString) {
         if (room.value === null) {
             room.value = 0;
             room.timestamp = `${targetDateString} 00:00:00`;
-            console.log(`${room.column} 在 ${targetDateString} 沒有數據，使用預設值`);
         }
     });
 
-    console.log(`${targetDateString} 各辦公室最新數據:`, rooms);
     return rooms;
 }
 
@@ -402,8 +388,6 @@ function getDataForDate(data, targetDate) {
         // 比較日期字符串
         return dateStr.toString().trim() === targetDate;
     });
-
-    console.log(`找到 ${targetDate} 的數據筆數:`, targetDateData.length);
 
     // 為每個辦公室找最新的數據
     Object.keys(rooms).forEach((roomKey) => {
@@ -459,9 +443,6 @@ function getDataForDate(data, targetDate) {
                     if (rawValue && !isNaN(parseInt(rawValue))) {
                         room.value = parseInt(rawValue);
                         room.timestamp = `${dateStr} ${timeStr}`;
-                        console.log(
-                            `${room.column} 找到最近的歷史數據: ${room.value} at ${room.timestamp}`
-                        );
                         break;
                     }
                 }
@@ -469,7 +450,6 @@ function getDataForDate(data, targetDate) {
         }
     });
 
-    console.log(`${targetDate} 數據結果:`, rooms);
     return rooms;
 }
 
@@ -478,27 +458,18 @@ function getRecentData(data, days = 7) {
     const today = new Date();
     const recentData = [];
 
-    console.log("開始獲取最近幾天的數據...");
-
     // 獲取最近N天的日期
     for (let i = 0; i < days; i++) {
         const date = new Date(today);
         date.setDate(date.getDate() - i);
         const dateString = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 
-        console.log(`檢查日期: ${dateString}`);
-
         // 找出這一天的數據
         const dayData = data.filter((row) => {
             const dateStr = row["日期"] || row["date"];
-            const matches = dateStr && dateStr.toString().trim() === dateString;
-            if (matches) {
-                console.log(`找到 ${dateString} 的數據:`, row);
-            }
-            return matches;
+            return dateStr && dateStr.toString().trim() === dateString;
         });
 
-        console.log(`${dateString} 有 ${dayData.length} 筆數據`);
         recentData.push(...dayData);
     }
 
@@ -516,7 +487,6 @@ function getRecentData(data, days = 7) {
         return timeA.localeCompare(timeB);
     });
 
-    console.log(`總共獲取最近${days}天的數據:`, recentData.length, "筆");
     return recentData;
 }
 
@@ -524,7 +494,6 @@ function getRecentData(data, days = 7) {
 async function loadCO2Data() {
     // 如果在歷史模式，不執行今日數據載入
     if (isHistoryMode) {
-        console.log("歷史模式中，跳過今日數據載入");
         return;
     }
 
@@ -532,9 +501,6 @@ async function loadCO2Data() {
 
     try {
         lastUpdateEl.textContent = "🔄 更新中...";
-
-        // 添加更詳細的錯誤處理
-        console.log("正在嘗試從以下 URL 獲取數據:", url);
 
         const res = await fetch(url).catch((error) => {
             console.error("Fetch 錯誤:", error);
@@ -559,17 +525,12 @@ async function loadCO2Data() {
         // 獲取今天的數據 - 修正日期格式匹配
         const today = new Date();
         const todayString = `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`;
-        console.log("今天的日期:", todayString);
-        console.log("所有數據:", data);
 
         const todayData = data.filter((row) => {
             // 檢查日期欄位
             const dateStr = row["日期"] || row["date"];
-            console.log("檢查行數據:", row);
-            console.log("日期欄位:", dateStr);
 
             if (!dateStr) {
-                console.log("日期欄位為空");
                 return false;
             }
 
@@ -610,10 +571,8 @@ async function loadCO2Data() {
         let chartTitle = "今日 CO₂ 趨勢圖";
 
         if (todayData.length === 0) {
-            console.log("今天沒有數據，載入最近7天的數據");
             chartData = getRecentData(data, 7);
             chartTitle = "近期 CO₂ 趨勢圖 (最近7天)";
-            console.log("使用最近7天的數據:", chartData.length, "筆");
         }
 
         updateChart(chartData);
@@ -624,20 +583,12 @@ async function loadCO2Data() {
             chartTitleEl.textContent = chartTitle;
         }
 
-        // 調試信息
-        console.log("今天的數據筆數:", todayData.length);
-        console.log("今天的數據:", todayData);
-        console.log("圖表使用的數據筆數:", chartData.length);
-
-        // 更新時間和倒數計時
+        // 更新時間（手動刷新模式）
         const now = new Date();
         lastUpdateEl.textContent = `📊 最後更新：${now.getHours().toString().padStart(2, "0")}:${now
             .getMinutes()
             .toString()
-            .padStart(2, "0")}:${now
-            .getSeconds()
-            .toString()
-            .padStart(2, "0")} | ⏱️ 下次更新：${countdown}秒`;
+            .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")} | 🔄 手動刷新模式`;
 
         // 顯示最新的10筆數據記錄
         if (
@@ -649,7 +600,6 @@ async function loadCO2Data() {
                 allData = data ? [...data] : [];
                 // 進行數據預處理，過濾掉可能的無效數據項
                 const validData = allData.filter((item) => item != null);
-                console.log(`向 recent-data 模組發送 ${validData.length} 筆數據`);
                 window.recentDataModule.displayRecentData(validData);
             } catch (dataError) {
                 console.error("預處理最新數據記錄時發生錯誤:", dataError);
@@ -658,9 +608,7 @@ async function loadCO2Data() {
             }
         }
 
-        // 重置倒數計時
-        countdown = 10;
-        startCountdown();
+        // 數據載入成功 - 手動刷新模式
     } catch (err) {
         console.error("載入數據錯誤:", err);
 
@@ -767,11 +715,9 @@ async function loadCO2Data() {
             .padStart(2, "0")}:${new Date()
             .getMinutes()
             .toString()
-            .padStart(2, "0")} | ⏱️ 重試：${countdown}秒`;
+            .padStart(2, "0")} | 🔄 手動刷新模式`;
 
-        // 即使失敗也要重置倒數計時
-        countdown = 10;
-        startCountdown();
+        // 手動刷新模式 - 不需要自動重試
     }
 }
 
@@ -865,8 +811,6 @@ function updateRoom(roomKey, value, displayName, timestamp) {
             } else {
                 lastUpdateEl.textContent = `📅 ${formattedDate} ${formattedTime}`;
             }
-
-            console.log("最終顯示:", lastUpdateEl.textContent);
         } catch (e) {
             console.error("時間戳解析錯誤:", e, "原始時間戳:", timestamp);
             // 如果解析失敗，直接顯示原始時間戳的簡化版本
@@ -949,7 +893,8 @@ function updateAdvice(maxValue, values) {
 function updateChart(todayData) {
     if (!co2Chart) return;
 
-    console.log("updateChart 被調用，數據:", todayData);
+    // 添加圖表更新動畫
+    animateChartDataUpdate();
 
     const labels = [];
     const dataA = [];
@@ -992,23 +937,11 @@ function updateChart(todayData) {
                 dataA.push(valueA);
                 dataB.push(valueB);
                 dataC.push(valueC);
-
-                console.log(
-                    `數據添加成功: 時間=${timeLabel}, A=${valueA}, B=${valueB}, C=${valueC}`
-                );
             } catch (e) {
                 console.error("無法解析時間:", dateStr, timeStr, e);
             }
-        } else {
-            console.warn("日期或時間欄位為空:", { dateStr, timeStr });
         }
     });
-
-    console.log(`成功處理 ${labels.length} 筆數據`);
-    console.log("時間標籤:", labels);
-    console.log("圖表數據 A:", dataA);
-    console.log("圖表數據 B:", dataB);
-    console.log("圖表數據 C:", dataC);
 
     // 動態調整 Y 軸範圍
     const allValues = [...dataA, ...dataB, ...dataC].filter(
@@ -1042,10 +975,21 @@ function updateChart(todayData) {
     co2Chart.data.datasets[0].data = dataA;
     co2Chart.data.datasets[1].data = dataB;
     co2Chart.data.datasets[2].data = dataC;
+    
+    // 為圖表容器添加更新中的樣式
+    const chartContainer = document.querySelector('.chart-container');
+    if (chartContainer) {
+        chartContainer.classList.add('updating');
+        setTimeout(() => {
+            chartContainer.classList.remove('updating');
+        }, 1000);
+    }
+    
     co2Chart.update();
 }
 
-// 手動刷新模式 - 已移除自動更新與倒計時功能
+// 手動刷新按鈕事件處理 - 將移動到主要的初始化函數中
+
 
 // 當頁面載入時自動執行
 window.addEventListener("DOMContentLoaded", function () {
@@ -1054,8 +998,31 @@ window.addEventListener("DOMContentLoaded", function () {
         console.warn("⚠️ Google Apps Script URL 可能需要更新");
     }
 
-    // 這邊的初始化由下方的統一初始化程序處理，不要在這重複執行
-    console.log("系統初始化中...");
+    // 初始化圖表
+    try {
+        initChart();
+        console.log("✅ 圖表初始化成功");
+    } catch (error) {
+        console.error("❌ 圖表初始化失敗:", error);
+    }
+
+    // 初始化歷史數據功能
+    try {
+        initHistoryFeature();
+        console.log("✅ 歷史數據功能初始化成功");
+    } catch (error) {
+        console.error("❌ 歷史數據功能初始化失敗:", error);
+    }
+
+    // 載入初始數據
+    try {
+        loadCO2Data();
+        console.log("✅ 開始載入CO2數據");
+    } catch (error) {
+        console.error("❌ 載入CO2數據失敗:", error);
+    }
+
+    console.log("✅ 系統初始化完成");
 });
 
 // 頁面關閉時清理（手動刷新模式不需要清理定時器）
@@ -1140,6 +1107,83 @@ function initHistoryFeature() {
     resetCompareBtn.addEventListener("click", function () {
         resetCompareMode();
     });
+
+    // 設置控制組動態定位
+    setupControlGroupPositioning();
+}
+
+// 動態定位控制組的函數
+function positionControlGroup(buttonId, controlGroupId) {
+    const button = document.getElementById(buttonId);
+    const controlGroup = document.getElementById(controlGroupId);
+
+    if (!button || !controlGroup) {
+        console.warn(`定位失敗: 找不到元素 ${buttonId} 或 ${controlGroupId}`);
+        return;
+    }
+
+    // 只有當控制組可見時才進行定位
+    if (controlGroup.style.display === "none" || !controlGroup.offsetParent) {
+        console.log(`跳過定位 ${controlGroupId}: 元素不可見`);
+        return;
+    }
+
+    // 獲取按鈕的位置和尺寸
+    const buttonRect = button.getBoundingClientRect();
+    const modeControlBar = document.querySelector(".mode-control-bar");
+
+    if (!modeControlBar) {
+        console.warn("找不到 mode-control-bar 容器");
+        return;
+    }
+
+    const modeControlBarRect = modeControlBar.getBoundingClientRect();
+
+    // 計算按鈕相對於 mode-control-bar 的位置
+    const buttonLeft = buttonRect.left - modeControlBarRect.left;
+    const buttonWidth = buttonRect.width;
+    const controlGroupWidth = controlGroup.offsetWidth;
+
+    // 計算控制組的居中位置（相對於按鈕）
+    const centerPosition = buttonLeft + buttonWidth / 2 - controlGroupWidth / 2;
+
+    // 確保控制組不會超出容器邊界
+    const containerWidth = modeControlBar.offsetWidth;
+    const minLeft = 8; // 留一些邊距
+    const maxLeft = containerWidth - controlGroupWidth - 8;
+
+    const finalLeft = Math.max(minLeft, Math.min(maxLeft, centerPosition));
+
+    // 應用定位
+    controlGroup.style.left = `${finalLeft}px`;
+
+    console.log(
+        `定位 ${controlGroupId}: 按鈕位置=${buttonLeft}px, 按鈕寬度=${buttonWidth}px, 控制組寬度=${controlGroupWidth}px, 最終位置=${finalLeft}px`
+    );
+}
+
+// 更新所有控制組的位置
+function updateAllControlGroupPositions() {
+    // 使用 requestAnimationFrame 確保 DOM 更新完成後再計算位置
+    requestAnimationFrame(() => {
+        positionControlGroup("historyModeBtn", "historyControls");
+        positionControlGroup("compareModeBtn", "compareControls");
+        positionControlGroup("inputModeBtn", "inputControls");
+    });
+}
+
+// 視窗大小改變時重新定位
+function setupControlGroupPositioning() {
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            updateAllControlGroupPositions();
+        }, 100);
+    });
+
+    // 初始化時設置位置
+    updateAllControlGroupPositions();
 }
 
 // 切換到今日模式
@@ -1185,7 +1229,8 @@ function switchToTodayMode() {
     // 載入今日數據
     loadCO2Data();
 
-    console.log("切換到今日模式");
+    // 更新控制組位置
+    updateAllControlGroupPositions();
 }
 
 // 切換到歷史模式
@@ -1215,6 +1260,11 @@ function switchToHistoryMode() {
     compareControls.style.display = "none";
     inputControls.style.display = "none";
 
+    // 立即更新該控制組的位置
+    setTimeout(() => {
+        positionControlGroup("historyModeBtn", "historyControls");
+    }, 10);
+
     // 添加歷史模式樣式，移除其他模式樣式
     container.classList.add("history-mode");
     container.classList.remove("compare-mode");
@@ -1230,7 +1280,8 @@ function switchToHistoryMode() {
     selectedDate = datePicker.value;
     loadHistoryData(selectedDate);
 
-    console.log("切換到歷史模式");
+    // 更新控制組位置
+    updateAllControlGroupPositions();
 }
 
 // 切換到比較模式
@@ -1260,6 +1311,11 @@ function switchToCompareMode() {
     compareControls.style.display = "flex";
     inputControls.style.display = "none";
 
+    // 立即更新該控制組的位置
+    setTimeout(() => {
+        positionControlGroup("compareModeBtn", "compareControls");
+    }, 10);
+
     // 添加比較模式樣式
     container.classList.remove("history-mode");
     container.classList.add("compare-mode");
@@ -1273,7 +1329,8 @@ function switchToCompareMode() {
     // 載入比較數據
     loadCompareData();
 
-    console.log("切換到比較模式");
+    // 更新控制組位置
+    updateAllControlGroupPositions();
 }
 
 // 切換到手動輸入模式
@@ -1302,6 +1359,11 @@ function switchToInputMode() {
     historyControls.style.display = "none";
     compareControls.style.display = "none";
     inputControls.style.display = "flex";
+
+    // 立即更新該控制組的位置
+    setTimeout(() => {
+        positionControlGroup("inputModeBtn", "inputControls");
+    }, 10);
 
     // 添加手動輸入模式樣式
     container.classList.remove("history-mode");
@@ -1334,14 +1396,15 @@ function switchToInputMode() {
         inputTime.value = `${hours}:${minutes}`;
     }
 
-    console.log("切換到手動輸入模式");
-
     // 更新描述文字
     const inputDescription = document.querySelector(".input-description");
     if (inputDescription) {
         inputDescription.innerHTML = "手動輸入 CO₂ 數據將同步到 Google Sheet";
         inputDescription.style.color = "";
     }
+
+    // 更新控制組位置
+    updateAllControlGroupPositions();
 }
 
 // 重設比較模式
@@ -1352,8 +1415,6 @@ function resetCompareMode() {
 
     // 重新載入只有今日數據
     loadCompareData();
-
-    console.log("重設比較模式");
 }
 
 // 載入歷史數據
@@ -1754,6 +1815,7 @@ function updateChartWithCompareData(todayData, compareData) {
 
     // 動態調整 Y 軸
     const allValues = allDatasets.flatMap((dataset) =>
+       
         dataset.data.filter((value) => value !== null)
     );
 
@@ -1774,6 +1836,19 @@ function updateLastUpdateTime() {
     const lastUpdateEl = document.getElementById("lastUpdate");
     const now = new Date();
 
+    // 添加更新動畫效果
+    if (lastUpdateEl) {
+        addPulseEffect(lastUpdateEl);
+        
+        // 添加閃爍效果表示數據正在更新
+        lastUpdateEl.style.opacity = '0.7';
+        lastUpdateEl.style.transition = 'opacity 0.3s ease-in-out';
+        
+        setTimeout(() => {
+            lastUpdateEl.style.opacity = '';
+        }, 300);
+    }
+
     if (isCompareMode) {
         const timeString = `${now.getHours().toString().padStart(2, "0")}:${now
             .getMinutes()
@@ -1783,10 +1858,7 @@ function updateLastUpdateTime() {
     } else if (isHistoryMode) {
         lastUpdateEl.textContent = `📅 歷史查看模式 - ${selectedDate}`;
     } else {
-        const timeString = `${now.getHours().toString().padStart(2, "0")}:${now
-            .getMinutes()
-            .toString()
-            .padStart(2, "0")}`;
+        const timeString = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
         lastUpdateEl.textContent = `📊 最後更新：${timeString}`;
     }
 }
@@ -1854,490 +1926,142 @@ function switchModeWithLoading(mode, switchFunction) {
     }, 300);
 }
 
-// 初始化儀表板
-document.addEventListener("DOMContentLoaded", () => {
-    try {
-        console.log("🚀 開始初始化儀表板");
+// =============== 數字動畫效果 ===============
 
-        // 初始化圖表
-        initChart();
-
-        // 初始化歷史數據功能
-        if (typeof initHistoryFeature === "function") {
-            initHistoryFeature();
+// 數字計數動畫函數
+function animateNumber(element, startValue, endValue, duration = 1000, suffix = '') {
+    if (!element) return;
+    
+    // 清理數值，確保是數字
+    const start = typeof startValue === 'number' ? startValue : parseFloat(startValue) || 0;
+    const end = typeof endValue === 'number' ? endValue : parseFloat(endValue) || 0;
+    
+    if (isNaN(start) || isNaN(end)) return;
+    
+    const startTime = Date.now();
+    const difference = end - start;
+    
+    function updateNumber() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // 使用緩動函數讓動畫更自然
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const currentValue = start + (difference * easeOutQuart);
+        
+        // 更新元素內容
+        element.textContent = Math.round(currentValue) + suffix;
+        
+        // 添加動畫樣式
+        element.style.transform = `scale(${1 + Math.sin(progress * Math.PI) * 0.1})`;
+        element.style.color = getAnimationColor(progress);
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateNumber);
         } else {
-            console.warn("歷史功能初始化函數不存在");
-        }
-
-        // 初始化數據輸入界面
-        if (typeof initDataInput === "function") {
-            initDataInput();
-        } else {
-            console.warn("數據輸入初始化函數不存在");
-        }
-
-        // 初始化模式切換器
-        if (typeof initModeSwitchers === "function") {
-            initModeSwitchers();
-        } else {
-            console.warn("模式切換器初始化函數不存在");
-        }
-
-        // 載入數據
-        loadCO2Data();
-
-        // 初始化手動數據更新系統
-        if (typeof ManualDataUpdater !== 'undefined') {
-            manualDataUpdater = new ManualDataUpdater();
-            console.log("✅ 手動數據更新系統已初始化");
-        } else {
-            console.warn("手動數據更新模組未載入");
-        }
-
-        // 初始化AI聊天機器人
-        if (typeof initAIChatbot === "function") {
-            initAIChatbot();
-        }
-
-        console.log("儀表板初始化完成");
-    } catch (error) {
-        console.error("儀表板初始化失敗:", error);
-    }
-});
-
-// 初始化數據輸入界面
-function initDataInput() {
-    console.log("初始化數據輸入界面");
-
-    // 獲取表單和相關元素
-    const co2InputForm = document.getElementById("co2InputForm");
-
-    if (!co2InputForm) {
-        console.warn("找不到 CO2 輸入表單元素 (#co2InputForm)");
-        return;
-    }
-
-    // 設置當前日期和時間作為默認值
-    const inputDateEl = document.getElementById("inputDate");
-    const inputTimeEl = document.getElementById("inputTime");
-
-    if (inputDateEl && inputTimeEl) {
-        const now = new Date();
-        const dateStr = now.toISOString().split("T")[0]; // YYYY-MM-DD 格式
-        const timeStr = now.toTimeString().split(" ")[0].substring(0, 5); // HH:MM 格式
-
-        inputDateEl.value = dateStr;
-        inputTimeEl.value = timeStr;
-    }
-
-    // 設置表單提交事件
-    if (co2InputForm) {
-        co2InputForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            // 表單驗證和數據提交邏輯
-            const inputDate = document.getElementById("inputDate").value;
-            const inputTime = document.getElementById("inputTime").value;
-            const officeA = document.getElementById("inputOfficeA").value;
-            const officeB = document.getElementById("inputOfficeB").value;
-            const officeC = document.getElementById("inputOfficeC").value;
-
-            // 基本驗證
-            if (!inputDate || !inputTime) {
-                alert("請填寫日期和時間");
-                return;
-            }
-
-            if (!officeA && !officeB && !officeC) {
-                alert("請至少填寫一個辦公室的 CO₂ 值");
-                return;
-            }
-
-            // 這裡可以添加數據提交到 Google Sheet 的邏輯
-            console.log("準備提交數據:", {
-                date: inputDate,
-                time: inputTime,
-                officeA,
-                officeB,
-                officeC,
-            });
-
-            // 如果已實現數據提交功能，可以呼叫相關函數
-            if (typeof submitCO2Data === "function") {
-                submitCO2Data(inputDate, inputTime, officeA, officeB, officeC);
-            }
-        });
-
-        // 添加清空表單按鈕事件處理
-        const clearFormBtn = document.getElementById("clearFormBtn");
-        if (clearFormBtn) {
-            clearFormBtn.addEventListener("click", function () {
-                // 清空所有輸入欄位
-                document.getElementById("inputOfficeA").value = "";
-                document.getElementById("inputOfficeB").value = "";
-                document.getElementById("inputOfficeC").value = "";
-
-                // 重設日期和時間為當前時間
-                const now = new Date();
-                const dateStr = now.toISOString().split("T")[0];
-                const timeStr = now.toTimeString().split(" ")[0].substring(0, 5);
-
-                document.getElementById("inputDate").value = dateStr;
-                document.getElementById("inputTime").value = timeStr;
-
-                console.log("表單已清空");
-            });
+            // 動畫結束，恢復原始樣式
+            element.style.transform = '';
+            element.style.color = '';
         }
     }
+    
+    requestAnimationFrame(updateNumber);
 }
 
-// 提交 CO2 數據到 Google Sheets
-async function submitCO2Data(date, time, officeA, officeB, officeC) {
-    console.log("開始提交 CO2 數據...");
-
-    // 顯示提交進度
-    const submitProgress = document.getElementById("submitProgress");
-    if (submitProgress) {
-        submitProgress.style.display = "block";
-
-        const progressFill = submitProgress.querySelector(".progress-fill");
-        const progressText = submitProgress.querySelector(".progress-text");
-
-        if (progressFill) progressFill.style.width = "10%";
-        if (progressText) progressText.textContent = "準備提交數據...";
-    }
-
-    try {
-        // 驗證 Google Apps Script URL 設定
-        if (!validateGoogleAppsScriptUrl()) {
-            throw new Error("Google Apps Script URL 未正確設置");
-        }
-
-        // 格式化日期為 YYYY/M/D 格式 (與其他數據統一格式)
-        const [year, month, day] = date.split("-");
-        const formattedDate = `${year}/${parseInt(month)}/${parseInt(day)}`;
-
-        // 準備要提交的數據
-        const data = {
-            date: formattedDate,
-            time: time,
-            office_a: officeA || "", // 中華辦7樓
-            office_b: officeB || "", // 中華辦8樓
-            office_c: officeC || "", // 衡陽辦
-            submitted_by: "手動輸入", // 標記數據來源
-            timestamp: new Date().toISOString(), // 添加提交時間戳
-        };
-
-        // 更新進度
-        if (submitProgress) {
-            const progressFill = submitProgress.querySelector(".progress-fill");
-            const progressText = submitProgress.querySelector(".progress-text");
-            if (progressFill) progressFill.style.width = "30%";
-            if (progressText) progressText.textContent = "發送數據中...";
-        }
-
-        console.log("準備發送數據到 Google Sheets:", data);
-
-        // 將數據轉換為URL參數（使用GET請求避免CORS問題）
-        const params = new URLSearchParams();
-        params.append("date", data.date);
-        params.append("time", data.time);
-        params.append("office_a", data.office_a);
-        params.append("office_b", data.office_b);
-        params.append("office_c", data.office_c);
-        params.append("submitted_by", data.submitted_by);
-        params.append("timestamp", data.timestamp);
-
-        const requestUrl = `${writeUrl}?${params.toString()}`;
-        console.log("發送請求URL:", requestUrl);
-
-        // 使用GET請求發送數據到 Google Apps Script
-        const response = await fetch(requestUrl, {
-            method: "GET",
-            mode: "cors",
-        });
-
-        // 更新進度
-        if (submitProgress) {
-            const progressFill = submitProgress.querySelector(".progress-fill");
-            if (progressFill) progressFill.style.width = "70%";
-        }
-
-        if (!response.ok) {
-            throw new Error(`提交失敗: ${response.status} ${response.statusText}`);
-        }
-
-        const result = await response.json();
-        console.log("提交響應:", result);
-
-        // 檢查 Google Apps Script 的響應
-        if (result.success === false) {
-            throw new Error(result.message || "Google Apps Script 返回失敗狀態");
-        }
-
-        // 更新進度為完成
-        if (submitProgress) {
-            const progressFill = submitProgress.querySelector(".progress-fill");
-            const progressText = submitProgress.querySelector(".progress-text");
-            if (progressFill) progressFill.style.width = "100%";
-            if (progressText) progressText.textContent = "數據已成功提交！";
-        }
-
-        // 延遲後隱藏進度條並清空表單
-        setTimeout(() => {
-            if (submitProgress) submitProgress.style.display = "none";
-
-            // 清空表單中的 CO2 數值 (保留日期和時間)
-            const inputOfficeA = document.getElementById("inputOfficeA");
-            const inputOfficeB = document.getElementById("inputOfficeB");
-            const inputOfficeC = document.getElementById("inputOfficeC");
-
-            if (inputOfficeA) inputOfficeA.value = "";
-            if (inputOfficeB) inputOfficeB.value = "";
-            if (inputOfficeC) inputOfficeC.value = "";
-
-            // 顯示成功訊息
-            alert("CO₂ 數據已成功提交！");
-
-            // 重新載入數據以顯示最新狀態
-            if (typeof loadCO2Data === "function") {
-                loadCO2Data();
-            }
-        }, 2000);
-
-        return true;
-    } catch (error) {
-        console.error("提交數據時發生錯誤:", error);
-
-        // 顯示錯誤狀態
-        if (submitProgress) {
-            const progressFill = submitProgress.querySelector(".progress-fill");
-            const progressText = submitProgress.querySelector(".progress-text");
-            if (progressFill) {
-                progressFill.style.width = "100%";
-                progressFill.style.backgroundColor = "#ff3b30";
-            }
-            if (progressText) progressText.textContent = `錯誤: ${error.message}`;
-        }
-
-        // 延遲後隱藏進度條
-        setTimeout(() => {
-            if (submitProgress) {
-                submitProgress.style.display = "none";
-                const progressFill = submitProgress.querySelector(".progress-fill");
-                if (progressFill) progressFill.style.backgroundColor = "";
-            }
-        }, 3000);
-
-        // 顯示錯誤訊息
-        alert(`提交失敗: ${error.message}\n請檢查網路連接和 Google Apps Script 設置。`);
-        return false;
-    }
+// 獲取動畫過程中的顏色
+function getAnimationColor(progress) {
+    // 從藍色漸變到默認顏色
+    const blue = Math.round(255 * (1 - progress));
+    const opacity = 0.3 + (0.7 * progress);
+    return `rgba(0, 122, ${blue}, ${opacity})`;
 }
 
-// 測試與 Google Apps Script 的連線
-async function testGoogleAppsScriptConnection() {
-    console.log("=== 開始測試 Google Apps Script 連線 ===");
-
-    try {
-        // 驗證 URL 設定
-        if (!validateGoogleAppsScriptUrl()) {
-            throw new Error("Google Apps Script URL 未正確設置");
-        }
-
-        console.log("✅ URL 驗證通過");
-        console.log("測試 URL:", writeUrl);
-
-        // 準備測試資料
-        const testData = {
-            date: "2025/7/3",
-            time: new Date().toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" }),
-            office_a: "999",
-            office_b: "888",
-            office_c: "777",
-            submitted_by: "網頁連線測試",
-            timestamp: new Date().toISOString(),
-        };
-
-        console.log("測試資料:", testData);
-
-        // 建立測試請求
-        const params = new URLSearchParams();
-        Object.keys(testData).forEach((key) => {
-            params.append(key, testData[key]);
-        });
-
-        const requestUrl = `${writeUrl}?${params.toString()}`;
-        console.log("測試請求 URL:", requestUrl);
-
-        // 發送測試請求
-        console.log("發送測試請求...");
-        const response = await fetch(requestUrl, {
-            method: "GET",
-            mode: "cors",
-        });
-
-        console.log("響應狀態:", response.status, response.statusText);
-        console.log("響應標頭:", Object.fromEntries(response.headers.entries()));
-
-        if (!response.ok) {
-            throw new Error(`HTTP 錯誤: ${response.status} ${response.statusText}`);
-        }
-
-        const responseText = await response.text();
-        console.log("響應內容 (原始):", responseText);
-
-        let result;
-        try {
-            result = JSON.parse(responseText);
-        } catch (parseError) {
-            console.error("無法解析 JSON 響應:", parseError);
-            throw new Error("Google Apps Script 返回的不是有效的 JSON 格式");
-        }
-
-        console.log("解析後的響應:", result);
-
-        if (result.success === false) {
-            throw new Error(result.message || "Google Apps Script 返回失敗狀態");
-        }
-
-        console.log("✅ 連線測試成功！");
-        console.log("=== 測試完成 ===");
-
-        return {
-            success: true,
-            message: "連線測試成功",
-            response: result,
-            testData: testData,
-        };
-    } catch (error) {
-        console.error("❌ 連線測試失敗:", error);
-        console.log("=== 測試失敗 ===");
-
-        return {
-            success: false,
-            message: error.message,
-            error: error.toString(),
-        };
-    }
+// 為表格數據添加動畫效果
+function animateTableData(oldData, newData) {
+    const table = document.getElementById('recentDataTable');
+    if (!table) return;
+    
+    // 添加表格更新動畫
+    table.style.opacity = '0.7';
+    table.style.transform = 'translateY(-5px)';
+    table.style.transition = 'all 0.3s cubic-bezier(0.23, 1, 0.32, 1)';
+    
+    setTimeout(() => {
+        table.style.opacity = '';
+        table.style.transform = '';
+    }, 300);
 }
 
-// 在控制台中提供測試功能
-if (typeof window !== "undefined") {
-    window.testGoogleAppsScriptConnection = testGoogleAppsScriptConnection;
-    window.submitCO2Data = submitCO2Data;
+// 為數值單元格添加閃爍效果
+function addValueChangeEffect(cell, oldValue, newValue) {
+    if (!cell || oldValue === newValue) return;
+    
+    // 添加變化指示器
+    const indicator = document.createElement('span');
+    indicator.className = 'value-change-indicator';
+    indicator.textContent = newValue > oldValue ? '↗' : '↘';
+    indicator.style.cssText = `
+        position: absolute;
+        right: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        color: ${newValue > oldValue ? '#34C759' : '#FF3B30'};
+        animation: fadeInOut 2s ease-in-out;
+    `;
+    
+    cell.style.position = 'relative';
+    cell.appendChild(indicator);
+    
+    // 2秒後移除指示器
+    setTimeout(() => {
+        if (indicator.parentNode) {
+            indicator.parentNode.removeChild(indicator);
+        }
+    }, 2000);
+}
 
-    // 新增詳細的診斷函數
-    window.detailedDebugSubmit = async function (date, time, officeA, officeB, officeC) {
-        console.log("=== 詳細診斷開始 ===");
-
-        // 1. 檢查參數
-        console.log("1. 輸入參數:");
-        console.log("  - date:", date);
-        console.log("  - time:", time);
-        console.log("  - officeA:", officeA);
-        console.log("  - officeB:", officeB);
-        console.log("  - officeC:", officeC);
-
-        // 2. 檢查 URL 設定
-        console.log("2. URL 設定:");
-        console.log("  - writeUrl:", writeUrl);
-        console.log("  - URL 驗證:", validateGoogleAppsScriptUrl());
-
-        // 3. 格式化資料
-        const [year, month, day] = date.split("-");
-        const formattedDate = `${year}/${parseInt(month)}/${parseInt(day)}`;
-
-        const data = {
-            date: formattedDate,
-            time: time,
-            office_a: officeA || "",
-            office_b: officeB || "",
-            office_c: officeC || "",
-            submitted_by: "詳細診斷測試",
-            timestamp: new Date().toISOString(),
-        };
-
-        console.log("3. 格式化後的資料:", data);
-
-        // 4. 建立請求參數
-        const params = new URLSearchParams();
-        Object.keys(data).forEach((key) => {
-            params.append(key, data[key]);
-            console.log(`  - ${key}: ${data[key]}`);
-        });
-
-        const requestUrl = `${writeUrl}?${params.toString()}`;
-        console.log("4. 完整請求 URL:", requestUrl);
-
-        // 5. 發送請求並詳細記錄
-        try {
-            console.log("5. 發送請求...");
-
-            const response = await fetch(requestUrl, {
-                method: "GET",
-                mode: "cors",
-            });
-
-            console.log("6. 響應資訊:");
-            console.log("  - 狀態:", response.status);
-            console.log("  - 狀態文字:", response.statusText);
-            console.log("  - OK:", response.ok);
-            console.log("  - 類型:", response.type);
-            console.log("  - URL:", response.url);
-
-            // 檢查響應標頭
-            console.log("7. 響應標頭:");
-            for (const [key, value] of response.headers.entries()) {
-                console.log(`  - ${key}: ${value}`);
-            }
-
-            // 獲取響應內容
-            const responseText = await response.text();
-            console.log("8. 響應內容 (原始):", responseText);
-
-            // 嘗試解析 JSON
-            let result;
-            try {
-                result = JSON.parse(responseText);
-                console.log("9. 解析後的 JSON:", result);
-            } catch (parseError) {
-                console.error("9. JSON 解析失敗:", parseError);
-                console.log("響應內容不是有效的 JSON 格式");
-                return { success: false, error: "JSON 解析失敗" };
-            }
-
-            // 檢查結果
-            console.log("10. 結果分析:");
-            console.log("  - 成功:", result.success);
-            console.log("  - 訊息:", result.message);
-            if (result.data) {
-                console.log("  - 資料:", result.data);
-            }
-
-            console.log("=== 詳細診斷完成 ===");
-            return result;
-        } catch (error) {
-            console.error("❌ 請求失敗:", error);
-            console.log("錯誤詳情:", error.toString());
-            console.log("=== 詳細診斷失敗 ===");
-            return { success: false, error: error.toString() };
+// 為圖表數據點添加動畫
+function animateChartDataUpdate() {
+    if (!co2Chart) return;
+    
+    // 為圖表添加更新動畫
+    co2Chart.options.animation = {
+        duration: 1000,
+        easing: 'easeOutQuart',
+        onProgress: function(animation) {
+            const progress = animation.currentStep / animation.numSteps;
+            co2Chart.canvas.style.filter = `brightness(${0.9 + 0.1 * Math.sin(progress * Math.PI)})`;
+        },
+        onComplete: function() {
+            co2Chart.canvas.style.filter = '';
         }
     };
-
-    // 新增簡化的測試函數
-    window.quickTest = async function () {
-        const now = new Date();
-        const dateStr = now.toISOString().split("T")[0];
-        const timeStr = now.toTimeString().split(" ")[0].substring(0, 5);
-
-        console.log("🚀 快速測試開始...");
-        return await window.detailedDebugSubmit(dateStr, timeStr, "600", "700", "800");
-    };
-
-    console.log("✅ 測試功能已載入，可以在控制台中使用:");
-    console.log("  - testGoogleAppsScriptConnection() - 測試 Google Apps Script 連線");
-    console.log("  - submitCO2Data(date, time, officeA, officeB, officeC) - 提交 CO2 數據");
-    console.log("  - detailedDebugSubmit(date, time, officeA, officeB, officeC) - 詳細診斷提交");
-    console.log("  - quickTest() - 快速測試 (使用當前時間)");
 }
+
+// 數字脈衝動畫效果
+function addPulseEffect(element) {
+    if (!element) return;
+    
+    element.style.animation = 'numberPulse 0.6s ease-in-out';
+    
+    setTimeout(() => {
+        element.style.animation = '';
+    }, 600);
+}
+
+// 為新數據添加高亮效果
+function highlightNewData(row) {
+    if (!row) return;
+    
+    row.style.backgroundColor = 'rgba(0, 122, 255, 0.1)';
+    row.style.transform = 'translateX(-5px)';
+    row.style.transition = 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
+    
+    setTimeout(() => {
+        row.style.backgroundColor = '';
+        row.style.transform = '';
+    }, 1500);
+}
+
+// =============== 原有代碼繼續 ===============

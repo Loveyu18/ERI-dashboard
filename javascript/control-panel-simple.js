@@ -122,4 +122,94 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     console.log("✅ Simple control panel ready!");
+    
+    // 手動刷新按鈕處理
+    const manualRefreshBtn = document.getElementById('manualRefreshBtn');
+    if (manualRefreshBtn) {
+        manualRefreshBtn.addEventListener('click', function() {
+            console.log("🔄 Manual refresh clicked");
+            
+            // 添加點擊動畫效果
+            this.style.transform = 'scale(0.95)';
+            this.style.opacity = '0.8';
+            
+            // 添加旋轉動畫
+            const refreshIcon = this.querySelector('.refresh-icon');
+            if (refreshIcon) {
+                refreshIcon.style.transform = 'rotate(360deg)';
+                refreshIcon.style.transition = 'transform 0.6s ease-in-out';
+            }
+            
+            setTimeout(() => {
+                this.style.transform = '';
+                this.style.opacity = '';
+                if (refreshIcon) {
+                    refreshIcon.style.transform = '';
+                }
+            }, 600);
+            
+            // 執行刷新功能（確保函數存在）
+            if (typeof loadCO2Data === 'function') {
+                loadCO2Data();
+            }
+        });
+    }
+    
+    // 修正控制面板定位
+    function fixControlGroupPositioning() {
+        const historyBtn = document.getElementById("historyModeBtn");
+        const compareBtn = document.getElementById("compareModeBtn"); 
+        const inputBtn = document.getElementById("inputModeBtn");
+        
+        if (historyBtn && historyControls) {
+            positionControlGroup(historyBtn, historyControls);
+        }
+        if (compareBtn && compareControls) {
+            positionControlGroup(compareBtn, compareControls);
+        }
+        if (inputBtn && inputControls) {
+            positionControlGroup(inputBtn, inputControls);
+        }
+    }
+    
+    // 控制組定位函數
+    function positionControlGroup(button, controlGroup) {
+        if (!button || !controlGroup) return;
+        
+        const buttonRect = button.getBoundingClientRect();
+        const modeControlBar = document.querySelector('.mode-control-bar');
+        
+        if (!modeControlBar) return;
+        
+        const modeControlBarRect = modeControlBar.getBoundingClientRect();
+        const buttonLeft = buttonRect.left - modeControlBarRect.left;
+        const buttonWidth = buttonRect.width;
+        const controlGroupWidth = controlGroup.offsetWidth || 280;
+        
+        const centerPosition = buttonLeft + (buttonWidth / 2) - (controlGroupWidth / 2);
+        const containerWidth = modeControlBar.offsetWidth;
+        const minLeft = 8;
+        const maxLeft = containerWidth - controlGroupWidth - 8;
+        const finalLeft = Math.max(minLeft, Math.min(maxLeft, centerPosition));
+        
+        controlGroup.style.left = `${finalLeft}px`;
+    }
+    
+    // 監聽視窗大小變化
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            fixControlGroupPositioning();
+        }, 100);
+    });
+    
+    // 在顯示控制組時進行定位
+    const originalShowOnly = showOnly;
+    showOnly = function(targetControl) {
+        originalShowOnly(targetControl);
+        setTimeout(() => {
+            fixControlGroupPositioning();
+        }, 60);
+    };
 });

@@ -7,6 +7,9 @@ const CO2_THRESHOLDS = {
     // 超過 1000 ppm 為危險
 };
 
+// 儲存前一次的數據用於比較
+let previousDataCache = [];
+
 // 格式化日期時間
 function formatDateTime(dateStr, timeStr = null) {
     // 如果日期字符串不存在或不是字符串類型
@@ -82,7 +85,7 @@ function getCO2StatusClass(value) {
 // 格式化 CO2 數值顯示
 function formatCO2Value(value) {
     if (!value || value === "") return "--";
-    return `${value} ppm`;
+    return `${value}`;
 }
 
 // 顯示最新數據記錄
@@ -186,7 +189,9 @@ function displayRecentData(data) {
         const recentData = sortedData.slice(0, 10);
 
         // 生成表格內容
-        recentData.forEach((record) => {
+        let tableContent = "";
+        
+        recentData.forEach((record, index) => {
             if (!record) {
                 console.warn("遇到無效記錄");
                 return;
@@ -219,13 +224,17 @@ function displayRecentData(data) {
 
                 const formattedDate = formatDateTime(dateStr, null);
 
+                // 檢查是否為新數據
+                const isNewData = index === 0 && previousDataCache.length > 0;
+                const rowClass = isNewData ? 'new-data' : '';
+
                 tableContent += `
-                <tr>
+                <tr class="${rowClass}" data-row-index="${index}">
                     <td>${formattedDate}</td>
                     <td>${timeStr}</td>
-                    <td class="${getCO2StatusClass(co2A)}">${formatCO2Value(co2A)}</td>
-                    <td class="${getCO2StatusClass(co2B)}">${formatCO2Value(co2B)}</td>
-                    <td class="${getCO2StatusClass(co2C)}">${formatCO2Value(co2C)}</td>
+                    <td class="${getCO2StatusClass(co2A)}" data-value="${co2A}">${formatCO2Value(co2A)}</td>
+                    <td class="${getCO2StatusClass(co2B)}" data-value="${co2B}">${formatCO2Value(co2B)}</td>
+                    <td class="${getCO2StatusClass(co2C)}" data-value="${co2C}">${formatCO2Value(co2C)}</td>
                 </tr>`;
             } catch (recordError) {
                 console.error("處理記錄時出錯:", recordError, record);
@@ -236,11 +245,74 @@ function displayRecentData(data) {
             tableContent = `<tr><td colspan="5" class="loading-data">處理數據時發生錯誤，無法顯示記錄</td></tr>`;
         }
 
+        // 添加表格更新動畫
+        if (typeof animateTableData === 'function') {
+            animateTableData(previousDataCache, recentData);
+        }
+
         tableBody.innerHTML = tableContent;
+        
+        // 為數值變化添加動畫效果
+        addNumberAnimations(tableBody, previousDataCache, recentData);
+        
+        // 保存當前數據用於下次比較
+        previousDataCache = [...recentData];
     } catch (mainError) {
         console.error("處理數據時發生主要錯誤:", mainError);
         tableBody.innerHTML = `<tr><td colspan="5" class="loading-data">處理數據時發生錯誤: ${mainError.message}</td></tr>`;
     }
+}
+
+// 為數值變化添加動畫效果
+function addNumberAnimations(tableBody, oldData, newData) {
+    if (!tableBody || !newData || newData.length === 0) return;
+    
+    // 為每個數值單元格添加動畫
+    const rows = tableBody.querySelectorAll('tr');
+    rows.forEach((row, index) => {
+        if (index >= newData.length) return;
+        
+        const newRecord = newData[index];
+        const oldRecord = oldData[index] || null;
+        
+        // 獲取數值單元格（跳過日期和時間列）
+        const valueCells = row.querySelectorAll('td:nth-child(n+3)');
+        valueCells.forEach((cell, cellIndex) => {
+            const newValue = cell.dataset.value;
+            const oldValue = oldRecord ? getValueByIndex(oldRecord, cellIndex) : null;
+            
+            if (newValue && newValue !== '--' && typeof animateNumber === 'function') {
+                // 添加脈衝動畫效果
+                if (typeof addPulseEffect === 'function') {
+                    setTimeout(() => {
+                        addPulseEffect(cell);
+                    }, index * 100);
+                }
+                
+                // 如果值發生變化，添加變化指示器
+                if (oldValue && oldValue !== newValue && typeof addValueChangeEffect === 'function') {
+                    addValueChangeEffect(cell, parseFloat(oldValue), parseFloat(newValue));
+                }
+            }
+        });
+        
+        // 為新數據行添加高亮效果
+        if (index === 0 && oldData.length > 0 && typeof highlightNewData === 'function') {
+            setTimeout(() => {
+                highlightNewData(row);
+            }, 200);
+        }
+    });
+}
+
+// 根據索引獲取記錄中的數值
+function getValueByIndex(record, index) {
+    const values = [
+        record.office_a || record["辦公室 A"] || record["中華辦7樓"] || record["office_a"],
+        record.office_b || record["辦公室 B"] || record["中華辦8樓"] || record["office_b"],
+        record.office_c || record["辦公室 C"] || record["衡陽辦"] || record["office_c"]
+    ];
+    return values[index];
 }
 
 // 導出函數，使其可以被其他 JS 文件調用
