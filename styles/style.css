@@ -84,27 +84,27 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(20px) saturate(1.8);
-    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    background: rgba(255, 255, 255, 0.075);
+    backdrop-filter: blur(5px) saturate(1.5);
+    -webkit-backdrop-filter: blur(5px) saturate(1.5);
     z-index: 0;
     pointer-events: none;
 }
 
-/* 主要容器 - 增強液態玻璃效果 */
+/* 主要容器 - 優化版液態玻璃效果 (方案A) */
 .container {
     max-width: 1400px;
     margin: 20px auto;
-    background: rgba(255, 255, 255, 0.25);
-    padding: 40px;
-    border-radius: 28px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.04),
-        0 1px 0 rgba(255, 255, 255, 0.8) inset, 0 0 0 1px rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(40px) saturate(1.8);
-    -webkit-backdrop-filter: blur(40px) saturate(1.8);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.18); /* 降低不透明度，更輕盈 */
+    padding: 24px; /* 減少內邊距，讓內容更突出 */
+    border-radius: 32px; /* 增加圓角，更現代 */
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.06), 0 6px 24px rgba(0, 0, 0, 0.03),
+        0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 0 0 1px rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(50px) saturate(1.6); /* 增強毛玻璃效果 */
+    -webkit-backdrop-filter: blur(50px) saturate(1.6);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     position: relative;
-    overflow: hidden;
+    overflow: visible; /* 允許子元素突出 */
     min-height: calc(100vh - 40px);
 }
 
@@ -135,13 +135,15 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 32px;
-    letter-spacing: -0.03em;
+    font-size: 2.8rem; /* 增大字體 */
+    font-weight: 800; /* 增加字重 */
+    margin: 8px 0 24px 0; /* 調整邊距 */
+    letter-spacing: -0.04em; /* 增加字距緊縮 */
     position: relative;
-    padding: 20px 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 24px 0; /* 增加內邊距 */
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* 增強陰影 */
+    backdrop-filter: blur(10px); /* 添加毛玻璃效果 */
+    border-radius: 16px; /* 添加圓角 */
 }
 
 h1::before {
@@ -186,9 +188,9 @@ h1::after {
 .status-section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-    margin: 20px 0;
-    padding: 0 4px;
+    gap: 8px; /* 減少網格間距，讓房間卡片的 margin 生效 */
+    margin: 16px 0; /* 減少上下邊距 */
+    padding: 0; /* 移除側邊距 */
     overflow: visible; /* 允許比較數據顯示在外部 */
 }
 
@@ -196,7 +198,7 @@ h1::after {
 @media (min-width: 1024px) {
     .status-section {
         grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
+        gap: 4px; /* 進一步減少間距 */
     }
 }
 
@@ -268,15 +270,15 @@ h1::after {
 
 /* 房間狀態卡片 - 增強液態玻璃效果 */
 .room {
-    background: rgba(255, 255, 255, 0.35);
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.42); /* 增強不透明度，更突出 */
+    border-radius: 24px; /* 增加圓角 */
     padding: 0;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(30px) saturate(1.8);
-    -webkit-backdrop-filter: blur(30px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.6); /* 增強邊框 */
+    backdrop-filter: blur(35px) saturate(1.9); /* 增強毛玻璃效果 */
+    -webkit-backdrop-filter: blur(35px) saturate(1.9);
     transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04),
-        0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 0 0 1px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 56px rgba(0, 0, 0, 0.08), 0 6px 20px rgba(0, 0, 0, 0.05),
+        0 1px 0 rgba(255, 255, 255, 0.95) inset, 0 0 0 1px rgba(255, 255, 255, 0.3); /* 增強陰影 */
     position: relative;
     overflow: hidden;
     min-height: 120px;
@@ -284,14 +286,15 @@ h1::after {
     flex-direction: column;
     aspect-ratio: 1 / 0.75;
     max-width: 100%;
+    margin: 8px; /* 增加外邊距，與主容器分離 */
 }
 
 .room:hover {
-    transform: translateY(-8px) scale(1.03);
-    background: rgba(255, 255, 255, 0.45);
-    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.12), 0 16px 32px rgba(0, 0, 0, 0.08),
-        0 1px 0 rgba(255, 255, 255, 0.95) inset, 0 0 0 1px rgba(255, 255, 255, 0.4);
-    border-color: rgba(255, 255, 255, 0.7);
+    transform: translateY(-10px) scale(1.04); /* 增強懸停效果 */
+    background: rgba(255, 255, 255, 0.5); /* 懸停時更不透明 */
+    box-shadow: 0 36px 90px rgba(0, 0, 0, 0.14), 0 18px 36px rgba(0, 0, 0, 0.1),
+        0 1px 0 rgba(255, 255, 255, 1) inset, 0 0 0 1px rgba(255, 255, 255, 0.5); /* 增強懸停陰影 */
+    border-color: rgba(255, 255, 255, 0.8);
 }
 
 /* 房間頂部彩色指示條 - 增強液態玻璃效果 */
@@ -555,18 +558,27 @@ h1::after {
 
 /* 建議區域 - 增強液態玻璃效果 */
 .advice-section {
-    margin-top: 20px;
-    padding: 32px;
-    background: rgba(255, 255, 255, 0.35);
-    border-radius: 24px;
+    margin: 16px 8px 20px 8px; /* 增加側邊距，與主容器分離 */
+    padding: 36px; /* 增加內邊距 */
+    background: rgba(255, 255, 255, 0.42); /* 增強不透明度 */
+    border-radius: 28px; /* 增加圓角 */
     font-size: 15px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04),
-        0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 0 0 1px rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(30px) saturate(1.8);
-    -webkit-backdrop-filter: blur(30px) saturate(1.8);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 56px rgba(0, 0, 0, 0.08), 0 6px 20px rgba(0, 0, 0, 0.05),
+        0 1px 0 rgba(255, 255, 255, 0.95) inset, 0 0 0 1px rgba(255, 255, 255, 0.4); /* 增強陰影 */
+    backdrop-filter: blur(35px) saturate(1.9); /* 增強毛玻璃效果 */
+    -webkit-backdrop-filter: blur(35px) saturate(1.9);
+    border: 1px solid rgba(255, 255, 255, 0.5); /* 增強邊框 */
     position: relative;
     overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 添加過渡動畫 */
+}
+
+.advice-section:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.48);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.06),
+        0 1px 0 rgba(255, 255, 255, 1) inset, 0 0 0 1px rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.6);
 }
 
 .advice-section::before {
@@ -612,17 +624,26 @@ h1::after {
 
 /* 圖表區域 - 增強液態玻璃效果 */
 .chart-section {
-    margin-top: 20px;
-    padding: 32px;
-    background: rgba(255, 255, 255, 0.35);
-    border-radius: 24px;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04),
-        0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 0 0 1px rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(30px) saturate(1.8);
-    -webkit-backdrop-filter: blur(30px) saturate(1.8);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    margin: 20px 8px 16px 8px; /* 增加側邊距，與主容器分離 */
+    padding: 36px; /* 增加內邊距 */
+    background: rgba(255, 255, 255, 0.42); /* 增強不透明度 */
+    border-radius: 28px; /* 增加圓角 */
+    box-shadow: 0 20px 56px rgba(0, 0, 0, 0.08), 0 6px 20px rgba(0, 0, 0, 0.05),
+        0 1px 0 rgba(255, 255, 255, 0.95) inset, 0 0 0 1px rgba(255, 255, 255, 0.4); /* 增強陰影 */
+    backdrop-filter: blur(35px) saturate(1.9); /* 增強毛玻璃效果 */
+    -webkit-backdrop-filter: blur(35px) saturate(1.9);
+    border: 1px solid rgba(255, 255, 255, 0.5); /* 增強邊框 */
     position: relative;
     overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 添加過渡動畫 */
+}
+
+.chart-section:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.48);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.06),
+        0 1px 0 rgba(255, 255, 255, 1) inset, 0 0 0 1px rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.6);
 }
 
 .chart-section::before {
@@ -2332,6 +2353,23 @@ h1::after {
     animation: overlayFadeIn 0.4s ease-out;
 }
 
+/* 頁面切換專用的 Loading 覆蓋層 */
+.page-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(40px) saturate(1.8);
+    -webkit-backdrop-filter: blur(40px) saturate(1.8);
+    animation: overlayFadeIn 0.4s ease-out;
+}
+
 .ai-loading-container {
     background: rgba(255, 255, 255, 0.25);
     border-radius: 32px;
@@ -2955,7 +2993,7 @@ h1::after {
 }
 
 .notification-close:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     color: #1d1d1f;
 }
 
@@ -3148,4 +3186,185 @@ h1::after {
     background: linear-gradient(135deg, #5856d6, #4a47c7);
     color: white;
     box-shadow: 0 4px 20px rgba(88, 86, 214, 0.3);
+}
+
+/* =============== 即時數據更新指示器樣式 =============== */
+
+/* 數據更新指示器 */
+.data-update-indicator {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, #34c759, #30d158);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(52, 199, 89, 0.4), 0 2px 4px rgba(0, 0, 0, 0.1), 0 0 0 2px white,
+        0 0 0 3px rgba(52, 199, 89, 0.3);
+    animation: updatePulse 1s ease-in-out;
+    z-index: 100;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 更新指示器動畫 */
+@keyframes updatePulse {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    30% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 房間卡片更新動畫 */
+.room.updating {
+    animation: roomDataUpdate 0.6s ease-out;
+}
+
+@keyframes roomDataUpdate {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 20px 56px rgba(0, 0, 0, 0.08), 0 6px 20px rgba(0, 0, 0, 0.05),
+            0 1px 0 rgba(255, 255, 255, 0.95) inset, 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+    30% {
+        transform: scale(1.02);
+        box-shadow: 0 24px 64px rgba(52, 199, 89, 0.12), 0 8px 24px rgba(52, 199, 89, 0.08),
+            0 1px 0 rgba(255, 255, 255, 1) inset, 0 0 0 2px rgba(52, 199, 89, 0.2);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 20px 56px rgba(0, 0, 0, 0.08), 0 6px 20px rgba(0, 0, 0, 0.05),
+            0 1px 0 rgba(255, 255, 255, 0.95) inset, 0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+}
+
+/* 數值更新動畫 */
+.room .value.updating {
+    animation: valueFlicker 0.4s ease-out;
+}
+
+@keyframes valueFlicker {
+    0% {
+        color: #1d1d1f;
+        transform: scale(1);
+    }
+    50% {
+        color: #34c759;
+        transform: scale(1.05);
+    }
+    100% {
+        color: #1d1d1f;
+        transform: scale(1);
+    }
+}
+
+/* 手動刷新按鈕樣式 */
+.manual-refresh-btn {
+    background: rgba(0, 122, 255, 0.1);
+    border: 1px solid rgba(0, 122, 255, 0.2);
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #007aff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 70px;
+    height: 32px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.manual-refresh-btn:hover {
+    background: rgba(0, 122, 255, 0.15);
+    box-shadow: 0 4px 8px rgba(0, 122, 255, 0.2);
+    border-color: rgba(0, 122, 255, 0.3);
+}
+
+.manual-refresh-btn:active {
+    transform: scale(0.95);
+}
+
+.manual-refresh-btn .refresh-icon {
+    animation: none;
+    transition: transform 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+}
+
+.manual-refresh-btn .refresh-text {
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+}
+
+.manual-refresh-btn.refreshing .refresh-icon {
+    animation: spin 1s linear infinite;
+}
+
+.manual-refresh-btn.refreshing {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* 更新狀態文字樣式 */
+.update-status {
+    font-size: 11px;
+    color: #6d6d70;
+    font-weight: 500;
+    margin-left: 8px;
+    opacity: 0.8;
+}
+
+.update-status.success {
+    color: #34c759;
+}
+
+.update-status.error {
+    color: #ff3b30;
+}
+
+.update-status.checking {
+    color: #007aff;
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .data-update-indicator {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        top: -6px;
+        right: -6px;
+    }
+
+    .manual-refresh-btn {
+        position: static;
+        margin: 8px auto;
+        display: flex;
+    }
 }

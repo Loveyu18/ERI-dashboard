@@ -27,10 +27,10 @@ function validateGoogleAppsScriptUrl() {
 
 // 全域變數
 let co2Chart = null;
-let autoRefreshInterval = null;
-let countdownInterval = null;
+// 倒計時變數已移除 - 改為手動刷新模式
+// countdown 變數已移除 - 改為手動刷新模式
 const REFRESH_INTERVAL = 10000; // 10秒自動更新
-let countdown = 10;
+// countdown 計數變數已移除 - 改為手動刷新模式
 
 // 新增：歷史數據功能相關變數
 let isHistoryMode = false;
@@ -1045,73 +1045,7 @@ function updateChart(todayData) {
     co2Chart.update();
 }
 
-// 開始倒數計時
-function startCountdown() {
-    const lastUpdateEl = document.getElementById("lastUpdate");
-
-    // 清除現有的倒數計時器
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-    }
-
-    countdownInterval = setInterval(() => {
-        countdown--;
-
-        // 更新顯示
-        const currentText = lastUpdateEl.textContent;
-        const baseText = currentText.split(" | ")[0]; // 取得 "📊 最後更新：XX:XX:XX" 部分
-        lastUpdateEl.textContent = `${baseText} | ⏱️ 下次更新：${countdown}秒`;
-
-        // 倒數到0時停止
-        if (countdown <= 0) {
-            clearInterval(countdownInterval);
-        }
-    }, 1000);
-}
-
-// 停止倒數計時
-function stopCountdown() {
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-        countdownInterval = null;
-    }
-}
-
-// 啟動自動更新
-function startAutoRefresh() {
-    // 如果在歷史模式或手動輸入模式，不啟動自動更新
-    if (isHistoryMode) {
-        console.log("歷史模式中，不啟動自動更新");
-        return;
-    }
-
-    if (isInputMode) {
-        console.log("手動輸入模式中，不啟動自動更新");
-        return;
-    }
-
-    // 清除現有的定時器
-    if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-    }
-
-    // 設定新的定時器
-    autoRefreshInterval = setInterval(() => {
-        loadCO2Data();
-    }, REFRESH_INTERVAL);
-
-    console.log(`自動更新已啟動，每 ${REFRESH_INTERVAL / 1000} 秒更新一次`);
-}
-
-// 停止自動更新
-function stopAutoRefresh() {
-    if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-        autoRefreshInterval = null;
-    }
-    stopCountdown();
-    console.log("自動更新已停止");
-}
+// 手動刷新模式 - 已移除自動更新與倒計時功能
 
 // 當頁面載入時自動執行
 window.addEventListener("DOMContentLoaded", function () {
@@ -1124,9 +1058,9 @@ window.addEventListener("DOMContentLoaded", function () {
     console.log("系統初始化中...");
 });
 
-// 頁面關閉時清理定時器
+// 頁面關閉時清理（手動刷新模式不需要清理定時器）
 window.addEventListener("beforeunload", function () {
-    stopAutoRefresh();
+    console.log("頁面關閉");
 });
 
 // =============== 歷史數據功能 ===============
@@ -1246,8 +1180,7 @@ function switchToTodayMode() {
     // 更新圖表標題
     chartTitle.textContent = "今日 CO₂ 趨勢圖";
 
-    // 重新啟動自動更新
-    startAutoRefresh();
+    // 手動刷新模式 - 不需要重新啟動自動更新
 
     // 載入今日數據
     loadCO2Data();
@@ -1290,8 +1223,7 @@ function switchToHistoryMode() {
     // 隱藏比較數據顯示
     hideCompareDataDisplay();
 
-    // 停止自動更新
-    stopAutoRefresh();
+    // 手動刷新模式下不需要停止自動更新
 
     // 載入選定日期的數據
     const datePicker = document.getElementById("datePicker");
@@ -1336,8 +1268,7 @@ function switchToCompareMode() {
     // 更新圖表標題
     chartTitle.textContent = "CO₂ 數據對比圖";
 
-    // 停止自動更新
-    stopAutoRefresh();
+    // 手動刷新模式下不需要停止自動更新
 
     // 載入比較數據
     loadCompareData();
@@ -1380,8 +1311,7 @@ function switchToInputMode() {
     // 更新圖表標題
     chartTitle.textContent = "手動輸入 CO₂ 數據";
 
-    // 停止自動更新
-    stopAutoRefresh();
+    // 手動刷新模式下不需要停止自動更新
 
     // 隱藏比較數據顯示
     hideCompareDataDisplay();
@@ -1956,8 +1886,13 @@ document.addEventListener("DOMContentLoaded", () => {
         // 載入數據
         loadCO2Data();
 
-        // 開始自動更新
-        startAutoRefresh();
+        // 初始化手動數據更新系統
+        if (typeof ManualDataUpdater !== 'undefined') {
+            manualDataUpdater = new ManualDataUpdater();
+            console.log("✅ 手動數據更新系統已初始化");
+        } else {
+            console.warn("手動數據更新模組未載入");
+        }
 
         // 初始化AI聊天機器人
         if (typeof initAIChatbot === "function") {

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CO₂ 監測儀表板</title>
+    <link rel="icon" href="./image/eri-logo.png" type="image/x-icon" />
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/control-panel.css" />
+    <link rel="stylesheet" href="./styles/recent-data.css" />
+    <link rel="stylesheet" href="./styles/error-handling.css" />
+    <link rel="stylesheet" href="./styles/sidebar-nav.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- 側邊導覽列容器 (將由 JavaScript 載入組件) -->
+    <div id="sidebarContainer"></div>
+
+    <div class="container main-content">
+        <!-- 頂部控制列 -->
+        <div class="dashboard-toolbar">
+            <div class="toolbar-header">
+                <h1 class="dashboard-title">CO₂ 監測儀表板</h1>
+                <div class="update-info-compact">
+                    <span class="update-icon">🕒</span>
+                    <span id="lastUpdate">載入數據...</span>
+                    <button class="manual-refresh-btn" id="manualRefreshBtn" title="手動刷新數據">
+                        <span class="refresh-icon">🔄</span>
+                        <span class="refresh-text">刷新</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 模式選擇區域 -->
+            <div class="mode-control-bar">
+                <div class="mode-buttons">
+                    <button id="todayModeBtn" class="mode-btn active">
+                        <span class="btn-icon">📊</span>
+                        <span class="btn-text">即時模式</span>
+                    </button>
+                    <button id="historyModeBtn" class="mode-btn">
+                        <span class="btn-icon">📅</span>
+                        <span class="btn-text">歷史查看</span>
+                    </button>
+                    <button id="compareModeBtn" class="mode-btn">
+                        <span class="btn-icon">⚖️</span>
+                        <span class="btn-text">對比模式</span>
+                    </button>
+                    <button id="inputModeBtn" class="mode-btn">
+                        <span class="btn-icon">📝</span>
+                        <span class="btn-text">手動輸入</span>
+                    </button>
+                </div>
+
+                <!-- 動態控制區域 -->
+                <div class="dynamic-controls">
+                    <!-- 歷史模式控制 -->
+                    <div class="control-group history-controls" id="historyControls" style="display: none;">
+                        <label for="datePicker" class="control-label">📅 選擇日期</label>
+                        <input type="date" id="datePicker" class="date-input" />
+                        <button id="backToTodayBtn" class="action-btn secondary">
+                            <span class="btn-icon">🏠</span>
+                            <span class="btn-text">回到今日</span>
+                        </button>
+                    </div>
+
+                    <!-- 對比模式控制 -->
+                    <div class="control-group compare-controls" id="compareControls" style="display: none;">
+                        <label for="compareDatePicker" class="control-label">📊 對比日期</label>
+                        <input type="date" id="compareDatePicker" class="date-input" />
+                        <button id="resetCompareBtn" class="action-btn secondary">
+                            <span class="btn-icon">🔄</span>
+                            <span class="btn-text">重設對比</span>
+                        </button>
+                    </div>
+
+                    <!-- 手動輸入快速入口 -->
+                    <div class="control-group input-controls" id="inputControls" style="display: none;">
+                        <button id="openInputFormBtn" class="action-btn primary">
+                            <span class="btn-icon">📝</span>
+                            <span class="btn-text">開始輸入數據</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 手動輸入表單模態框 -->
+        <div class="input-modal" id="inputModal" style="display: none;">
+            <div class="modal-overlay" id="modalOverlay"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>📝 手動輸入 CO₂ 數據</h3>
+                    <button class="modal-close" id="closeModalBtn">×</button>
+                </div>
+                <div class="modal-body">
+                    <p class="input-description">手動輸入 CO₂ 數據將同步到 Google Sheet</p>
+
+                    <form class="co2-input-form" id="co2InputForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inputDate">📅 日期</label>
+                                <input type="date" id="inputDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputTime">⏰ 時間</label>
+                                <input type="time" id="inputTime" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inputOfficeA">🏢 中華辦7樓 (ppm)</label>
+                                <input type="number" id="inputOfficeA" min="300" max="5000" placeholder="例: 650">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputOfficeB">🏢 中華辦8樓 (ppm)</label>
+                                <input type="number" id="inputOfficeB" min="300" max="5000" placeholder="例: 720">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputOfficeC">🏢 衡陽辦 (ppm)</label>
+                                <input type="number" id="inputOfficeC" min="300" max="5000" placeholder="例: 580">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="clearFormBtn">🗑️ 清空</button>
+                            <button type="submit" class="btn-primary" id="submitDataBtn">
+                                <span class="btn-icon">📤</span>
+                                <span class="btn-text">提交數據</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- 數據提交進度條 -->
+                    <div class="submit-progress" id="submitProgress">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div class="progress-text">正在提交數據...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="status-section">
+            <div class="room" id="roomA">
+                <div class="room-header">
+                    <div class="room-icon">🏢</div>
+                    <h3 class="name">辦公室 A</h3>
+                </div>
+                <div class="room-content">
+                    <div class="co2-reading">
+                        <span class="value">載入中...</span>
+                        <span class="unit">ppm</span>
+                    </div>
+                    <div class="status-indicator">
+                        <span class="status">載入中...</span>
+                    </div>
+                </div>
+                <div class="room-footer">
+                    <span class="last-update">🕒 載入中...</span>
+                </div>
+                <!-- 比較數據顯示區域 -->
+                <div class="compare-data">
+                    <div class="compare-data-header">
+                        <span class="compare-date-label">📅 對比日期</span>
+                    </div>
+                    <div class="compare-values">
+                        <span class="compare-value">--</span>
+                        <span class="compare-status">--</span>
+                        <div class="compare-diff">
+                            <span class="diff-indicator">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="room" id="roomB">
+                <div class="room-header">
+                    <div class="room-icon">🏢</div>
+                    <h3 class="name">辦公室 B</h3>
+                </div>
+                <div class="room-content">
+                    <div class="co2-reading">
+                        <span class="value">載入中...</span>
+                        <span class="unit">ppm</span>
+                    </div>
+                    <div class="status-indicator">
+                        <span class="status">載入中...</span>
+                    </div>
+                </div>
+                <div class="room-footer">
+                    <span class="last-update">🕒 載入中...</span>
+                </div>
+                <!-- 比較數據顯示區域 -->
+                <div class="compare-data">
+                    <div class="compare-data-header">
+                        <span class="compare-date-label">📅 對比日期</span>
+                    </div>
+                    <div class="compare-values">
+                        <span class="compare-value">--</span>
+                        <span class="compare-status">--</span>
+                        <div class="compare-diff">
+                            <span class="diff-indicator">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="room" id="roomC">
+                <div class="room-header">
+                    <div class="room-icon">🏢</div>
+                    <h3 class="name">辦公室 C</h3>
+                </div>
+                <div class="room-content">
+                    <div class="co2-reading">
+                        <span class="value">載入中...</span>
+                        <span class="unit">ppm</span>
+                    </div>
+                    <div class="status-indicator">
+                        <span class="status">載入中...</span>
+                    </div>
+                </div>
+                <div class="room-footer">
+                    <span class="last-update">🕒 載入中...</span>
+                </div>
+                <!-- 比較數據顯示區域 -->
+                <div class="compare-data">
+                    <div class="compare-data-header">
+                        <span class="compare-date-label">📅 對比日期</span>
+                    </div>
+                    <div class="compare-values">
+                        <span class="compare-value">--</span>
+                        <span class="compare-status">--</span>
+                        <div class="compare-diff">
+                            <span class="diff-indicator">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 主要內容區域：建議和圖表 -->
+        <div class="main-content-wrapper">
+            <section class="advice-section">
+                <div class="advice-header">
+                    <h3>📝 數據分析與建議</h3>
+                </div>
+                <div class="advice-content" id="advice">
+                    🔍 正在載入 Google Sheet 數據...
+                </div>
+                <div class="recent-data-section">
+                    <div class="recent-data-header">
+                        <h3>📊 最新數據記錄</h3>
+                        <span class="data-count">(最新10筆)</span>
+                    </div>
+                    <div class="recent-data-table-wrapper">
+                        <table class="recent-data-table" id="recentDataTable">
+                            <thead>
+                                <tr>
+                                    <th>日期</th>
+                                    <th>時間</th>
+                                    <th>中華辦7樓</th>
+                                    <th>中華辦8樓</th>
+                                    <th>衡陽辦</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentDataBody">
+                                <tr>
+                                    <td colspan="5" class="loading-data">載入中...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="chart-section">
+                <h2 id="chartTitle">今日 CO₂ 趨勢圖</h2>
+                <div class="chart-container">
+                    <canvas id="co2Chart"></canvas>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- AI 聊天機器人 -->
+    <div class="chatbot-container">
+        <!-- 聊天機器人按鈕 -->
+        <div class="chatbot-button" id="chatbotButton">
+            <div class="bot-icon">🤖</div>
+            <div class="pulse-ring"></div>
+        </div>
+
+        <!-- 聊天視窗 -->
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <div class="bot-avatar">🤖</div>
+                <div class="bot-info">
+                    <h3>CO₂ 助手</h3>
+                    <span class="bot-status">線上服務</span>
+                </div>
+                <button class="close-btn" id="closeChatbot">×</button>
+            </div>
+
+            <div class="chatbot-body">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message show">
+                        <div class="message-avatar">🤖</div>
+                        <div class="message-content">
+                            <p>您好！我是 CO₂ 監測助手 👋</p>
+                            <p>我可以幫助您了解如何使用這個監測儀表板，請選擇您想了解的問題：</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-questions-panel">
+                    <!-- 快速問題觸發按鈕 -->
+                    <div class="quick-questions-toggle" id="quickQuestionsToggle">
+                        <span class="toggle-icon">❓</span>
+                        <span class="toggle-text">快速問題</span>
+                        <span class="toggle-arrow">▼</span>
+                    </div>
+
+                    <!-- 摺疊式問題區域 -->
+                    <div class="quick-questions-content" id="quickQuestionsContent">
+                        <div class="question-category expanded" data-category="basic">
+                            <div class="category-header">
+                                <h4>📊 基本操作</h4>
+                                <span class="expand-icon">▲</span>
+                            </div>
+                            <div class="question-cards-container">
+                                <div class="question-card" data-question="basic-usage">
+                                    <div class="card-icon">📱</div>
+                                    <div class="card-title">即時數據</div>
+                                    <div class="card-subtitle">查看即時 CO₂ 數據</div>
+                                </div>
+                                <div class="question-card" data-question="understanding-data">
+                                    <div class="card-icon">📊</div>
+                                    <div class="card-title">數據解讀</div>
+                                    <div class="card-subtitle">理解數據和狀態指示</div>
+                                </div>
+                                <div class="question-card" data-question="refresh-data">
+                                    <div class="card-icon">🔄</div>
+                                    <div class="card-title">更新數據</div>
+                                    <div class="card-subtitle">如何更新數據</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-category" data-category="advanced">
+                            <div class="category-header">
+                                <h4>📅 進階功能</h4>
+                                <span class="expand-icon">▼</span>
+                            </div>
+                            <div class="question-cards-container">
+                                <div class="question-card" data-question="manual-input">
+                                    <div class="card-icon">📝</div>
+                                    <div class="card-title">手動輸入</div>
+                                    <div class="card-subtitle">使用手動輸入模式</div>
+                                </div>
+                                <div class="question-card" data-question="history-mode">
+                                    <div class="card-icon">📈</div>
+                                    <div class="card-title">歷史數據</div>
+                                    <div class="card-subtitle">查看歷史數據</div>
+                                </div>
+                                <div class="question-card" data-question="compare-mode">
+                                    <div class="card-icon">⚖️</div>
+                                    <div class="card-title">對比模式</div>
+                                    <div class="card-subtitle">使用對比模式</div>
+                                </div>
+                                <div class="question-card" data-question="chart-analysis">
+                                    <div class="card-icon">📊</div>
+                                    <div class="card-title">圖表分析</div>
+                                    <div class="card-subtitle">分析趨勢圖表</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="question-category" data-category="tips">
+                            <div class="category-header">
+                                <h4>💡 建議與提醒</h4>
+                                <span class="expand-icon">▼</span>
+                            </div>
+                            <div class="question-cards-container">
+                                <div class="question-card" data-question="safety-levels">
+                                    <div class="card-icon">🛡️</div>
+                                    <div class="card-title">安全標準</div>
+                                    <div class="card-subtitle">CO₂ 安全標準</div>
+                                </div>
+                                <div class="question-card" data-question="improvement-tips">
+                                    <div class="card-icon">💨</div>
+                                    <div class="card-title">改善品質</div>
+                                    <div class="card-subtitle">改善室內空氣品質</div>
+                                </div>
+                                <div class="question-card" data-question="alerts">
+                                    <div class="card-icon">🚨</div>
+                                    <div class="card-title">警示處理</div>
+                                    <div class="card-subtitle">注意警示情況</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 輸入區域 -->
+                <div class="chat-input-area">
+                    <div class="input-container">
+                        <input type="text" id="chatInput" placeholder="輸入您的問題..." maxlength="200">
+                        <button id="sendButton" class="send-btn">
+                            <span class="send-icon">📤</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./javascript/sidebar-nav.js"></script>
+    <script src="./javascript/chatbot.js"></script>
+    <script src="./javascript/control-panel-simple.js"></script>
+    <script src="./javascript/realtime-updater.js"></script>
+    <script src="./javascript/recent-data.js"></script>
+    <script src="./javascript/diagnostics.js"></script>
+    <script src="./javascript/main.js"></script>
+</body>
+
+</html>

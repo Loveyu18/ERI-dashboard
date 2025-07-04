@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CO₂ 監測儀表板</title>
+    <title>個人工作台 - 環資國際</title>
     <link rel="icon" href="./image/eri-logo.png" type="image/x-icon" />
     <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/homepage.css" />
     <link rel="stylesheet" href="./styles/control-panel.css" />
     <link rel="stylesheet" href="./styles/recent-data.css" />
     <link rel="stylesheet" href="./styles/error-handling.css" />
@@ -15,412 +16,382 @@
 </head>
 
 <body>
-    <!-- AI風格Loading覆蓋層 -->
-    <div class="ai-loading-overlay" id="aiLoadingOverlay">
-        <div class="ai-loading-container">
-            <div class="ai-loading-icon">
-                <div class="ai-brain"></div>
-            </div>
-            <div class="loading-dots">
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-            </div>
-            <div class="loading-text" id="loadingText">AI 正在切換模式...</div>
-            <div class="loading-subtext" id="loadingSubtext">正在優化數據顯示</div>
-        </div>
-    </div>
+    <!-- 側邊導覽列容器 (將由 JavaScript 載入組件) -->
+    <div id="sidebarContainer"></div>
 
-
-
-
-
-
+    <!-- 主要內容區域 -->
     <div class="container main-content">
-        <!-- 模式控制面板 -->
-        <div class="dashboard-controls">
-            <!-- 控制面板開關 -->
-            <button id="controlToggleBtn" class="control-toggle-btn">
-                <span class="toggle-icon">⚙️</span>
-                <span class="toggle-text">控制面板</span>
-            </button>
-
-            <!-- 側面控制面板 -->
-            <div class="control-panel" id="controlPanel" style="transform: translateX(110%);">
-                <div class="panel-header">
-                    <h3>儀表板控制</h3>
-                    <button class="close-panel-btn" id="closePanelBtn">×</button>
+        <!-- 首頁標題區域 -->
+        <div class="homepage-header">
+            <div class="welcome-section">
+                <h1 class="page-title">
+                    <span class="title-icon">👋</span>
+                    歡迎回來，UltraPocky!
+                </h1>
+                <p class="page-subtitle">今天也要加油！查看您的工作狀態與個人資訊</p>
+                <div class="current-time">
+                    <span class="time-icon">🕐</span>
+                    <span id="currentTime">載入中...</span>
                 </div>
+            </div>
+        </div>
 
-                <!-- 模式切換區塊 -->
-                <div class="panel-section">
-                    <h4 class="section-title">模式選擇</h4>
-                    <div class="mode-toggle">
-                        <button id="todayModeBtn" class="mode-btn active">📊 即時模式</button>
-                        <button id="historyModeBtn" class="mode-btn">📅 歷史查看</button>
-                        <button id="compareModeBtn" class="mode-btn">⚖️ 對比模式</button>
-                        <button id="inputModeBtn" class="mode-btn">📝 手動輸入</button>
+        <!-- 個人資訊儀表板區域 -->
+        <div class="dashboard-grid">
+            <!-- 個人資訊卡片 -->
+            <div class="dashboard-card personal-info">
+                <div class="card-header">
+                    <h3>
+                        <span class="card-icon">👤</span>
+                        個人資訊
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="personal-details">
+                        <div class="personal-item">
+                            <span class="personal-label">姓名</span>
+                            <span class="personal-value" id="employeeName">UltraPocky</span>
+                        </div>
+                        <div class="personal-item">
+                            <span class="personal-label">員工編號</span>
+                            <span class="personal-value" id="employeeId">ERI-2024-001</span>
+                        </div>
+                        <div class="personal-item">
+                            <span class="personal-label">部門</span>
+                            <span class="personal-value" id="department">資訊技術部</span>
+                        </div>
+                        <div class="personal-item">
+                            <span class="personal-label">職稱</span>
+                            <span class="personal-value" id="position">系統工程師</span>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- 歷史日期選擇區塊 -->
-                <div class="panel-section history-controls" id="historyControls" style="display: none;">
-                    <h4 class="section-title">歷史數據</h4>
-                    <div class="date-picker-wrapper">
-                        <label for="datePicker">選擇日期</label>
-                        <input type="date" id="datePicker" />
-                    </div>
-                    <button id="backToTodayBtn" class="panel-btn">🏠 回到今日</button>
+            <!-- 今日簽到卡片 -->
+            <div class="dashboard-card checkin-status">
+                <div class="card-header">
+                    <h3>
+                        <span class="card-icon">📍</span>
+                        今日簽到
+                    </h3>
                 </div>
-
-                <!-- 比較模式控制區塊 -->
-                <div class="panel-section compare-controls" id="compareControls" style="display: none;">
-                    <h4 class="section-title">對比設定</h4>
-                    <div class="date-picker-wrapper">
-                        <label for="compareDatePicker">對比日期</label>
-                        <input type="date" id="compareDatePicker" />
+                <div class="card-body">
+                    <div class="checkin-info">
+                        <div class="checkin-item">
+                            <span class="checkin-label">簽到時間</span>
+                            <span class="checkin-value checked-in" id="checkinTime">08:45</span>
+                        </div>
+                        <div class="checkin-item">
+                            <span class="checkin-label">簽退時間</span>
+                            <span class="checkin-value pending" id="checkoutTime">尚未簽退</span>
+                        </div>
+                        <div class="checkin-item">
+                            <span class="checkin-label">狀態</span>
+                            <span class="checkin-status normal" id="workStatus">正常上班</span>
+                        </div>
                     </div>
-                    <button id="resetCompareBtn" class="panel-btn">🔄 重設對比</button>
                 </div>
+            </div>
 
-                <!-- 手動輸入控制區塊 -->
-                <div class="panel-section input-controls" id="inputControls" style="display: none;">
-                    <h4 class="section-title">手動輸入</h4>
-                    <div class="input-form-container">
-                        <p class="input-description">手動輸入 CO₂ 數據將同步到 Google Sheet</p>
-
-                        <form class="co2-input-form" id="co2InputForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="inputDate">📅 日期</label>
-                                    <input type="date" id="inputDate" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputTime">⏰ 時間</label>
-                                    <input type="time" id="inputTime" required>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="inputOfficeA">🏢 中華辦7樓 (ppm)</label>
-                                    <input type="number" id="inputOfficeA" min="300" max="5000" placeholder="例: 650">
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputOfficeB">🏢 中華辦8樓 (ppm)</label>
-                                    <input type="number" id="inputOfficeB" min="300" max="5000" placeholder="例: 720">
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputOfficeC">🏢 衡陽辦 (ppm)</label>
-                                    <input type="number" id="inputOfficeC" min="300" max="5000" placeholder="例: 580">
-                                </div>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="button" class="btn-secondary" id="clearFormBtn">🗑️ 清空</button>
-                                <button type="submit" class="btn-primary" id="submitDataBtn">
-                                    <span class="btn-icon">📤</span>
-                                    <span class="btn-text">提交數據</span>
-                                </button>
-                            </div>
-                        </form>
-
-                        <!-- 數據提交進度條 -->
-                        <div class="submit-progress" id="submitProgress">
+            <!-- 本周工時卡片 -->
+            <div class="dashboard-card weekly-hours">
+                <div class="card-header">
+                    <h3>
+                        <span class="card-icon">⏰</span>
+                        本周工時
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="hours-stats">
+                        <div class="hours-main">
+                            <div class="hours-value" id="currentWeekHours">32.5</div>
+                            <div class="hours-label">小時</div>
+                        </div>
+                        <div class="hours-progress">
                             <div class="progress-bar">
-                                <div class="progress-fill"></div>
+                                <div class="progress-fill" id="hoursProgress" style="width: 81.25%"></div>
                             </div>
-                            <div class="progress-text">正在提交數據...</div>
+                            <div class="progress-text">
+                                <span>已完成</span>
+                                <span id="hoursPercentage">81.25%</span>
+                            </div>
+                        </div>
+                        <div class="hours-target">
+                            <span>目標: 40小時</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- 更新資訊 (精簡版) -->
-        <div class="update-info-compact">
-            <span class="update-icon">🕒</span>
-            <span id="lastUpdate">載入數據...</span>
-        </div>
-        <h1>CO₂ 監測儀表板</h1>
 
-        <section class="status-section">
-            <div class="room" id="roomA">
-                <div class="room-header">
-                    <div class="room-icon">🏢</div>
-                    <h3 class="name">辦公室 A</h3>
+            <!-- 工時比較卡片 -->
+            <div class="dashboard-card hours-comparison">
+                <div class="card-header">
+                    <h3>
+                        <span class="card-icon">📈</span>
+                        工時比較
+                    </h3>
                 </div>
-                <div class="room-content">
-                    <div class="co2-reading">
-                        <span class="value">載入中...</span>
-                        <span class="unit">ppm</span>
-                    </div>
-                    <div class="status-indicator">
-                        <span class="status">載入中...</span>
-                    </div>
-                </div>
-                <div class="room-footer">
-                    <span class="last-update">🕒 載入中...</span>
-                </div>
-                <!-- 比較數據顯示區域 -->
-                <div class="compare-data">
-                    <div class="compare-data-header">
-                        <span class="compare-date-label">📅 對比日期</span>
-                    </div>
-                    <div class="compare-values">
-                        <span class="compare-value">--</span>
-                        <span class="compare-status">--</span>
-                        <div class="compare-diff">
-                            <span class="diff-indicator">--</span>
+                <div class="card-body">
+                    <div class="comparison-stats">
+                        <div class="comparison-item">
+                            <div class="comparison-period">vs 上週同期</div>
+                            <div class="comparison-value increase" id="weekComparison">
+                                <span class="comparison-icon">↗</span>
+                                <span class="comparison-number">+2.5小時</span>
+                            </div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="comparison-period">vs 本月平均</div>
+                            <div class="comparison-value normal" id="monthComparison">
+                                <span class="comparison-icon">→</span>
+                                <span class="comparison-number">持平</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="room" id="roomB">
-                <div class="room-header">
-                    <div class="room-icon">🏢</div>
-                    <h3 class="name">辦公室 B</h3>
+
+            <!-- 剩餘假期卡片 -->
+            <div class="dashboard-card leave-balance">
+                <div class="card-header">
+                    <h3>
+                        <span class="card-icon">🏖️</span>
+                        剩餘假期
+                    </h3>
                 </div>
-                <div class="room-content">
-                    <div class="co2-reading">
-                        <span class="value">載入中...</span>
-                        <span class="unit">ppm</span>
-                    </div>
-                    <div class="status-indicator">
-                        <span class="status">載入中...</span>
-                    </div>
-                </div>
-                <div class="room-footer">
-                    <span class="last-update">🕒 載入中...</span>
-                </div>
-                <!-- 比較數據顯示區域 -->
-                <div class="compare-data">
-                    <div class="compare-data-header">
-                        <span class="compare-date-label">📅 對比日期</span>
-                    </div>
-                    <div class="compare-values">
-                        <span class="compare-value">--</span>
-                        <span class="compare-status">--</span>
-                        <div class="compare-diff">
-                            <span class="diff-indicator">--</span>
+                <div class="card-body">
+                    <div class="leave-stats">
+                        <div class="leave-item">
+                            <span class="leave-type">特休假</span>
+                            <span class="leave-value" id="annualLeave">12.5天</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="leave-type">補休假</span>
+                            <span class="leave-value" id="compensatoryLeave">3天</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="leave-type">病假</span>
+                            <span class="leave-value" id="sickLeave">30天</span>
+                        </div>
+                        <div class="leave-item">
+                            <span class="leave-type">事假</span>
+                            <span class="leave-value" id="personalLeave">14天</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="room" id="roomC">
-                <div class="room-header">
-                    <div class="room-icon">🏢</div>
-                    <h3 class="name">辦公室 C</h3>
-                </div>
-                <div class="room-content">
-                    <div class="co2-reading">
-                        <span class="value">載入中...</span>
-                        <span class="unit">ppm</span>
-                    </div>
-                    <div class="status-indicator">
-                        <span class="status">載入中...</span>
-                    </div>
-                </div>
-                <div class="room-footer">
-                    <span class="last-update">🕒 載入中...</span>
-                </div>
-                <!-- 比較數據顯示區域 -->
-                <div class="compare-data">
-                    <div class="compare-data-header">
-                        <span class="compare-date-label">📅 對比日期</span>
-                    </div>
-                    <div class="compare-values">
-                        <span class="compare-value">--</span>
-                        <span class="compare-status">--</span>
-                        <div class="compare-diff">
-                            <span class="diff-indicator">--</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- 主要內容區域：建議和圖表 -->
-        <div class="main-content-wrapper">
-            <section class="advice-section">
-                <div class="advice-header">
-                    <h3>📝 數據分析與建議</h3>
+            <!-- 快速功能卡片 -->
+            <div class="dashboard-card quick-actions">
+                <div class="card-header">
+                    <h3>
+                        <span class="card-icon">⚡</span>
+                        快速功能
+                    </h3>
                 </div>
-                <div class="advice-content" id="advice">
-                    🔍 正在載入 Google Sheet 數據...
-                </div>
-                <div class="recent-data-section">
-                    <div class="recent-data-header">
-                        <h3>📊 最新數據記錄</h3>
-                        <span class="data-count">(最新10筆)</span>
-                    </div>
-                    <div class="recent-data-table-wrapper">
-                        <table class="recent-data-table" id="recentDataTable">
-                            <thead>
-                                <tr>
-                                    <th>日期</th>
-                                    <th>時間</th>
-                                    <th>中華辦7樓</th>
-                                    <th>中華辦8樓</th>
-                                    <th>衡陽辦</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentDataBody">
-                                <tr>
-                                    <td colspan="5" class="loading-data">載入中...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <section class="chart-section">
-                <h2 id="chartTitle">今日 CO₂ 趨勢圖</h2>
-                <div class="chart-container">
-                    <canvas id="co2Chart"></canvas>
-                </div>
-            </section>
-        </div>
-    </div>
-
-    <!-- AI 聊天機器人 -->
-    <div class="chatbot-container">
-        <!-- 聊天機器人按鈕 -->
-        <div class="chatbot-button" id="chatbotButton">
-            <div class="bot-icon">🤖</div>
-            <div class="pulse-ring"></div>
-        </div>
-
-        <!-- 聊天視窗 -->
-        <div class="chatbot-window" id="chatbotWindow">
-            <div class="chatbot-header">
-                <div class="bot-avatar">🤖</div>
-                <div class="bot-info">
-                    <h3>CO₂ 助手</h3>
-                    <span class="bot-status">線上服務</span>
-                </div>
-                <button class="close-btn" id="closeChatbot">×</button>
-            </div>
-
-            <div class="chatbot-body">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message bot-message show">
-                        <div class="message-avatar">🤖</div>
-                        <div class="message-content">
-                            <p>您好！我是 CO₂ 監測助手 👋</p>
-                            <p>我可以幫助您了解如何使用這個監測儀表板，請選擇您想了解的問題：</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="quick-questions-panel">
-                    <!-- 快速問題觸發按鈕 -->
-                    <div class="quick-questions-toggle" id="quickQuestionsToggle">
-                        <span class="toggle-icon">❓</span>
-                        <span class="toggle-text">快速問題</span>
-                        <span class="toggle-arrow">▼</span>
-                    </div>
-
-                    <!-- 摺疊式問題區域 -->
-                    <div class="quick-questions-content" id="quickQuestionsContent">
-                        <div class="question-category expanded" data-category="basic">
-                            <div class="category-header">
-                                <h4>📊 基本操作</h4>
-                                <span class="expand-icon">▲</span>
-                            </div>
-                            <div class="question-cards-container">
-                                <div class="question-card" data-question="basic-usage">
-                                    <div class="card-icon">📱</div>
-                                    <div class="card-title">即時數據</div>
-                                    <div class="card-subtitle">查看即時 CO₂ 數據</div>
-                                </div>
-                                <div class="question-card" data-question="understanding-data">
-                                    <div class="card-icon">📊</div>
-                                    <div class="card-title">數據解讀</div>
-                                    <div class="card-subtitle">理解數據和狀態指示</div>
-                                </div>
-                                <div class="question-card" data-question="refresh-data">
-                                    <div class="card-icon">🔄</div>
-                                    <div class="card-title">更新數據</div>
-                                    <div class="card-subtitle">如何更新數據</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="question-category" data-category="advanced">
-                            <div class="category-header">
-                                <h4>📅 進階功能</h4>
-                                <span class="expand-icon">▼</span>
-                            </div>
-                            <div class="question-cards-container">
-                                <div class="question-card" data-question="manual-input">
-                                    <div class="card-icon">📝</div>
-                                    <div class="card-title">手動輸入</div>
-                                    <div class="card-subtitle">使用手動輸入模式</div>
-                                </div>
-                                <div class="question-card" data-question="history-mode">
-                                    <div class="card-icon">📈</div>
-                                    <div class="card-title">歷史數據</div>
-                                    <div class="card-subtitle">查看歷史數據</div>
-                                </div>
-                                <div class="question-card" data-question="compare-mode">
-                                    <div class="card-icon">⚖️</div>
-                                    <div class="card-title">對比模式</div>
-                                    <div class="card-subtitle">使用對比模式</div>
-                                </div>
-                                <div class="question-card" data-question="chart-analysis">
-                                    <div class="card-icon">📊</div>
-                                    <div class="card-title">圖表分析</div>
-                                    <div class="card-subtitle">分析趨勢圖表</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="question-category" data-category="tips">
-                            <div class="category-header">
-                                <h4>💡 建議與提醒</h4>
-                                <span class="expand-icon">▼</span>
-                            </div>
-                            <div class="question-cards-container">
-                                <div class="question-card" data-question="safety-levels">
-                                    <div class="card-icon">🛡️</div>
-                                    <div class="card-title">安全標準</div>
-                                    <div class="card-subtitle">CO₂ 安全標準</div>
-                                </div>
-                                <div class="question-card" data-question="improvement-tips">
-                                    <div class="card-icon">💨</div>
-                                    <div class="card-title">改善品質</div>
-                                    <div class="card-subtitle">改善室內空氣品質</div>
-                                </div>
-                                <div class="question-card" data-question="alerts">
-                                    <div class="card-icon">🚨</div>
-                                    <div class="card-title">警示處理</div>
-                                    <div class="card-subtitle">注意警示情況</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 輸入區域 -->
-                <div class="chat-input-area">
-                    <div class="input-container">
-                        <input type="text" id="chatInput" placeholder="輸入您的問題..." maxlength="200">
-                        <button id="sendButton" class="send-btn">
-                            <span class="send-icon">📤</span>
+                <div class="card-body">
+                    <div class="action-buttons">
+                        <button class="action-btn primary" id="punchCardBtn">
+                            <span class="btn-icon">📍</span>
+                            <span class="btn-text">打卡簽到</span>
                         </button>
+                        <button class="action-btn secondary" id="leaveRequestBtn">
+                            <span class="btn-icon">📝</span>
+                            <span class="btn-text">請假申請</span>
+                        </button>
+                        <button class="action-btn secondary" id="overtimeRequestBtn">
+                            <span class="btn-icon">⏱️</span>
+                            <span class="btn-text">加班申請</span>
+                        </button>
+                        <a href="co2-monitor.html" class="action-btn secondary">
+                            <span class="btn-icon">🌱</span>
+                            <span class="btn-text">環境監測</span>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- JavaScript -->
     <script src="./javascript/sidebar-nav.js"></script>
-    <script src="./javascript/chatbot.js"></script>
-    <script src="./javascript/control-panel.js"></script>
-    <script src="./javascript/recent-data.js"></script>
-    <script src="./javascript/diagnostics.js"></script>
-    <script src="./javascript/main.js"></script>
+    <script>
+        // 首頁專用 JavaScript
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('首頁 DOM 載入完成');
+
+            // 更新當前時間
+            function updateCurrentTime() {
+                const now = new Date();
+                const timeString = now.toLocaleString('zh-TW', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    weekday: 'long',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                document.getElementById('currentTime').textContent = timeString;
+            }
+
+            // 個人工時資料管理
+            const personalData = {
+                currentWeekHours: 32.5,
+                targetHours: 40,
+                checkinTime: '08:45',
+                checkoutTime: null,
+                leaves: {
+                    annual: 12.5,
+                    compensatory: 3,
+                    sick: 30,
+                    personal: 14
+                },
+                comparison: {
+                    weeklyChange: 2.5,
+                    monthlyStatus: 'normal'
+                }
+            };
+
+            // 更新工時進度
+            function updateHoursProgress() {
+                const percentage = (personalData.currentWeekHours / personalData.targetHours) * 100;
+                const progressBar = document.getElementById('hoursProgress');
+                const percentageDisplay = document.getElementById('hoursPercentage');
+
+                if (progressBar) {
+                    progressBar.style.width = `${Math.min(percentage, 100)}%`;
+                }
+                if (percentageDisplay) {
+                    percentageDisplay.textContent = `${percentage.toFixed(1)}%`;
+                }
+            }
+
+            // 更新簽到狀態
+            function updateCheckinStatus() {
+                const now = new Date();
+                const currentTime = now.toTimeString().substr(0, 5);
+
+                // 模擬簽退時間（如果過了下班時間）
+                if (now.getHours() >= 18) {
+                    const checkoutElement = document.getElementById('checkoutTime');
+                    if (checkoutElement && checkoutElement.textContent === '尚未簽退') {
+                        checkoutElement.textContent = '18:05';
+                        checkoutElement.className = 'checkin-value checked-out';
+
+                        const statusElement = document.getElementById('workStatus');
+                        if (statusElement) {
+                            statusElement.textContent = '已完成工作';
+                            statusElement.className = 'checkin-status completed';
+                        }
+                    }
+                }
+            }
+
+            // 更新工時比較顯示
+            function updateHoursComparison() {
+                const weekComparison = document.getElementById('weekComparison');
+                const monthComparison = document.getElementById('monthComparison');
+
+                if (weekComparison) {
+                    const change = personalData.comparison.weeklyChange;
+                    if (change > 0) {
+                        weekComparison.innerHTML = `
+                            <span class="comparison-icon">↗</span>
+                            <span class="comparison-number">+${change}小時</span>
+                        `;
+                        weekComparison.className = 'comparison-value increase';
+                    } else if (change < 0) {
+                        weekComparison.innerHTML = `
+                            <span class="comparison-icon">↘</span>
+                            <span class="comparison-number">${change}小時</span>
+                        `;
+                        weekComparison.className = 'comparison-value decrease';
+                    } else {
+                        weekComparison.innerHTML = `
+                            <span class="comparison-icon">→</span>
+                            <span class="comparison-number">持平</span>
+                        `;
+                        weekComparison.className = 'comparison-value normal';
+                    }
+                }
+            }
+
+            // 快速功能按鈕事件
+            function setupQuickActions() {
+                const punchCardBtn = document.getElementById('punchCardBtn');
+                const leaveRequestBtn = document.getElementById('leaveRequestBtn');
+                const overtimeRequestBtn = document.getElementById('overtimeRequestBtn');
+
+                if (punchCardBtn) {
+                    punchCardBtn.addEventListener('click', function () {
+                        const now = new Date();
+                        const currentTime = now.toTimeString().substr(0, 5);
+
+                        // 簡單的打卡模擬
+                        const checkoutElement = document.getElementById('checkoutTime');
+                        if (checkoutElement && checkoutElement.textContent === '尚未簽退') {
+                            checkoutElement.textContent = currentTime;
+                            checkoutElement.className = 'checkin-value checked-out';
+
+                            const statusElement = document.getElementById('workStatus');
+                            if (statusElement) {
+                                statusElement.textContent = '已簽退';
+                                statusElement.className = 'checkin-status completed';
+                            }
+
+                            alert(`簽退成功！時間：${currentTime}`);
+                        } else {
+                            alert('今日已完成打卡');
+                        }
+                    });
+                }
+
+                if (leaveRequestBtn) {
+                    leaveRequestBtn.addEventListener('click', function () {
+                        alert('請假申請功能開發中...');
+                    });
+                }
+
+                if (overtimeRequestBtn) {
+                    overtimeRequestBtn.addEventListener('click', function () {
+                        alert('加班申請功能開發中...');
+                    });
+                }
+            }
+
+            // 模擬工時更新（每分鐘增加一點點工時）
+            function simulateWorkingHours() {
+                const now = new Date();
+                const isWorkingHours = now.getHours() >= 9 && now.getHours() < 18;
+                const isWeekday = now.getDay() >= 1 && now.getDay() <= 5;
+
+                if (isWorkingHours && isWeekday) {
+                    personalData.currentWeekHours += 0.02; // 每分鐘增加 0.02 小時
+
+                    const hoursElement = document.getElementById('currentWeekHours');
+                    if (hoursElement) {
+                        hoursElement.textContent = personalData.currentWeekHours.toFixed(1);
+                    }
+
+                    updateHoursProgress();
+                }
+            }
+
+            // 初始化所有功能
+            updateCurrentTime();
+            updateHoursProgress();
+            updateHoursComparison();
+            updateCheckinStatus();
+            setupQuickActions();
+
+            // 定時更新
+            setInterval(updateCurrentTime, 1000); // 每秒更新時間
+            setInterval(updateCheckinStatus, 60000); // 每分鐘檢查簽到狀態
+            setInterval(simulateWorkingHours, 60000); // 每分鐘模擬工時增加
+        });
+    </script>
 </body>
 
 </html>

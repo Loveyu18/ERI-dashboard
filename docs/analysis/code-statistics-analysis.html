@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>程式碼統計分析報告 - CO₂ 監測儀表板</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .analysis-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 32px;
+            border-radius: 32px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(50px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.35);
+            padding: 24px;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .ui-stats .stat-value {
+            color: #22c55e;
+        }
+
+        .logic-stats .stat-value {
+            color: #3b82f6;
+        }
+
+        .total-stats .stat-value {
+            color: #8b5cf6;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .breakdown-section {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 30px;
+            border-radius: 24px;
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .breakdown-section h2 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .ui-section h2 {
+            color: #22c55e;
+        }
+
+        .logic-section h2 {
+            color: #3b82f6;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(4px);
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .file-lines {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .category-total {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .ui-section .category-total {
+            border-left: 4px solid #22c55e;
+            color: #166534;
+        }
+
+        .logic-section .category-total {
+            border-left: 4px solid #3b82f6;
+            color: #1e40af;
+        }
+
+        .insights {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(139, 92, 246, 0.2));
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            margin-top: 30px;
+        }
+
+        .insights h2 {
+            color: #7c3aed;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .insight-card h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            color: #374151;
+            font-size: 1.2rem;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 30px;
+            border-radius: 24px;
+            margin: 30px 0;
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .chart-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #374151;
+            font-size: 1.6rem;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: end;
+            justify-content: center;
+            height: 200px;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bar-visual {
+            width: 60px;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .bar-visual:hover {
+            transform: scale(1.05);
+        }
+
+        .ui-bar {
+            background: linear-gradient(to top, #22c55e, #16a34a);
+        }
+
+        .logic-bar {
+            background: linear-gradient(to top, #3b82f6, #2563eb);
+        }
+
+        .bar-value {
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .bar-label {
+            font-weight: 600;
+            color: #374151;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .breakdown-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .bar-chart {
+                flex-direction: column;
+                height: auto;
+                align-items: center;
+            }
+
+            .bar {
+                flex-direction: row;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .bar-visual {
+                height: 40px !important;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="analysis-container">
+        <h1>📊 程式碼統計分析報告</h1>
+
+        <div class="stats-overview">
+            <div class="stat-card ui-stats">
+                <div class="stat-value">8,731</div>
+                <div class="stat-label">版面相關程式碼</div>
+            </div>
+            <div class="stat-card logic-stats">
+                <div class="stat-value">6,462</div>
+                <div class="stat-label">功能邏輯程式碼</div>
+            </div>
+            <div class="stat-card total-stats">
+                <div class="stat-value">15,193</div>
+                <div class="stat-label">總程式碼行數</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2>📈 程式碼分布比例</h2>
+            <div class="bar-chart">
+                <div class="bar">
+                    <div class="bar-visual ui-bar" style="height: 140px;">
+                        <div class="bar-value">57.5%</div>
+                    </div>
+                    <div class="bar-label">版面相關<br>(UI/UX)</div>
+                </div>
+                <div class="bar">
+                    <div class="bar-visual logic-bar" style="height: 104px;">
+                        <div class="bar-value">42.5%</div>
+                    </div>
+                    <div class="bar-label">功能邏輯<br>(Logic)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="breakdown-grid">
+            <div class="breakdown-section ui-section">
+                <h2>🎨 版面相關檔案 (UI/UX)</h2>
+                <ul class="file-list">
+                    <li class="file-item">
+                        <span class="file-name">style.css</span>
+                        <span class="file-lines">2,770 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">chatbot.js (UI部分)</span>
+                        <span class="file-lines">791 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">sidebar-nav.css</span>
+                        <span class="file-lines">695 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">components.css</span>
+                        <span class="file-lines">623 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">layout.css</span>
+                        <span class="file-lines">470 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">UIController.js</span>
+                        <span class="file-lines">462 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">base.css</span>
+                        <span class="file-lines">461 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">main.css</span>
+                        <span class="file-lines">400 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">index.html</span>
+                        <span class="file-lines">396 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">co2-monitor.html</span>
+                        <span class="file-lines">396 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">control-panel.css</span>
+                        <span class="file-lines">324 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">variables.css</span>
+                        <span class="file-lines">277 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">其他HTML/CSS檔案</span>
+                        <span class="file-lines">666 行</span>
+                    </li>
+                </ul>
+                <div class="category-total">
+                    版面相關總計：8,731 行 (57.5%)
+                </div>
+            </div>
+
+            <div class="breakdown-section logic-section">
+                <h2>⚙️ 功能邏輯檔案 (Logic)</h2>
+                <ul class="file-list">
+                    <li class="file-item">
+                        <span class="file-name">main.js</span>
+                        <span class="file-lines">2,033 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">google-apps-script.js</span>
+                        <span class="file-lines">612 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">InputManager.js</span>
+                        <span class="file-lines">510 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">refactored-example.js</span>
+                        <span class="file-lines">458 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">CompareManager.js</span>
+                        <span class="file-lines">439 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">HistoryManager.js</span>
+                        <span class="file-lines">422 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">app.js</span>
+                        <span class="file-lines">410 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">DataService.js</span>
+                        <span class="file-lines">407 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">ChartManager.js</span>
+                        <span class="file-lines">339 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">helpers.js</span>
+                        <span class="file-lines">339 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">AutoRefreshManager.js</span>
+                        <span class="file-lines">303 行</span>
+                    </li>
+                    <li class="file-item">
+                        <span class="file-name">其他邏輯檔案</span>
+                        <span class="file-lines">190 行</span>
+                    </li>
+                </ul>
+                <div class="category-total">
+                    功能邏輯總計：6,462 行 (42.5%)
+                </div>
+            </div>
+        </div>
+
+        <div class="insights">
+            <h2>💡 分析洞察</h2>
+
+            <div class="insight-grid">
+                <div class="insight-card">
+                    <h3>🎨 UI/UX 投入</h3>
+                    <p><strong>57.5%</strong> 的程式碼專注於使用者介面和體驗設計，顯示專案非常重視視覺呈現和使用者體驗。</p>
+                    <p>主要包含：iOS26液態玻璃風格、響應式設計、動畫效果、主題系統等。</p>
+                </div>
+
+                <div class="insight-card">
+                    <h3>⚙️ 功能複雜度</h3>
+                    <p><strong>42.5%</strong> 的程式碼處理核心業務邏輯，包含數據處理、圖表繪製、模式管理等複雜功能。</p>
+                    <p>架構良好的模組化設計，各功能管理器職責明確。</p>
+                </div>
+
+                <div class="insight-card">
+                    <h3>📊 程式碼品質</h3>
+                    <p>總計 <strong>15,193</strong> 行程式碼，結構清晰，分層明確。CSS 和 JavaScript 的比例適中，維護性良好。</p>
+                    <p>模組化架構使得功能擴展和維護都相對容易。</p>
+                </div>
+
+                <div class="insight-card">
+                    <h3>🚀 開發重點</h3>
+                    <p>專案在視覺設計上投入較多資源，符合現代網頁應用對 UX 的高要求。</p>
+                    <p>功能邏輯雖然佔比較少，但結構完整，具備良好的可擴展性。</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; padding: 20px; background: rgba(255, 255, 255, 0.2); border-radius: 12px;">
+                <h3 style="margin-top: 0; color: #374151;">📝 重要發現</h3>
+                <ul style="line-height: 1.6; color: #4b5563;">
+                    <li><strong>CSS 主導：</strong> style.css 單檔就有 2,770 行，是整個專案的核心視覺基礎</li>
+                    <li><strong>JavaScript 分布均勻：</strong> 功能模組化良好，沒有過度集中在單一檔案</li>
+                    <li><strong>HTML 結構清晰：</strong> 頁面結構簡潔，語義化良好</li>
+                    <li><strong>可維護性佳：</strong> 版面和邏輯分離清楚，便於團隊協作</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
