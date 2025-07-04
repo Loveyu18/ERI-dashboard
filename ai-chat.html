@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Chat Assistant - CO₂ 監測助手</title>
+    <link rel="icon" href="./image/eri-logo.png" type="image/x-icon" />
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/ai-chat.css" />
+    <link rel="stylesheet" href="./styles/sidebar-nav.css" />
+</head>
+
+<body>
+    <!-- 側邊導覽列容器 -->
+    <div id="sidebarContainer"></div>
+
+    <!-- 主要內容區域 -->
+    <div class="ai-chat-container">
+        <!-- 頂部標題欄 -->
+        <header class="chat-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 class="chat-title">
+                        <span class="title-icon">🤖</span>
+                        <span class="title-text">CO₂ 智能助手</span>
+                    </h1>
+                    <p class="chat-subtitle">基於您的 CO₂ 監測數據提供智能分析與建議</p>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn" id="newChatBtn">
+                        <span class="btn-icon">➕</span>
+                        <span class="btn-text">新對話</span>
+                    </button>
+                    <button class="header-btn" id="settingsBtn">
+                        <span class="btn-icon">⚙️</span>
+                        <span class="btn-text">設定</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主要佈局容器 -->
+        <div class="main-layout">
+            <!-- 左側面板 - 對話列表 -->
+            <aside class="chat-sidebar">
+                <div class="sidebar-header">
+                    <h3 class="sidebar-title">對話紀錄</h3>
+                    <button class="sidebar-btn" id="clearAllBtn">
+                        <span class="btn-icon">🗑️</span>
+                    </button>
+                </div>
+
+                <div class="chat-list" id="chatList">
+                    <!-- 對話項目將在這裡動態生成 -->
+                    <div class="chat-item active" data-chat-id="current">
+                        <div class="chat-item-header">
+                            <span class="chat-item-title">當前對話</span>
+                            <span class="chat-item-time">剛剛</span>
+                        </div>
+                        <div class="chat-item-preview">開始與 AI 助手對話...</div>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <div class="usage-info">
+                        <div class="usage-text">今日對話次數</div>
+                        <div class="usage-count">0 / 100</div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 中央對話區域 -->
+            <main class="chat-main">
+                <!-- 對話內容區域 -->
+                <div class="chat-content" id="chatContent">
+                    <!-- 歡迎訊息 -->
+                    <div class="welcome-section">
+                        <div class="welcome-avatar">
+                            <div class="avatar-icon">🤖</div>
+                        </div>
+                        <div class="welcome-text">
+                            <h2>您好！我是 CO₂ 智能助手</h2>
+                            <p>我可以幫助您分析 CO₂ 數據、提供空氣品質建議，以及回答相關問題。</p>
+                        </div>
+
+                        <!-- 快速功能卡片 -->
+                        <div class="quick-actions">
+                            <div class="action-card" data-action="analyze-current">
+                                <div class="card-icon">📊</div>
+                                <div class="card-content">
+                                    <h4>分析當前數據</h4>
+                                    <p>獲取即時 CO₂ 濃度分析</p>
+                                </div>
+                            </div>
+
+                            <div class="action-card" data-action="trend-analysis">
+                                <div class="card-icon">📈</div>
+                                <div class="card-content">
+                                    <h4>趨勢分析</h4>
+                                    <p>查看歷史數據趨勢變化</p>
+                                </div>
+                            </div>
+
+                            <div class="action-card" data-action="health-advice">
+                                <div class="card-icon">💡</div>
+                                <div class="card-content">
+                                    <h4>健康建議</h4>
+                                    <p>根據數據提供改善建議</p>
+                                </div>
+                            </div>
+
+                            <div class="action-card" data-action="export-report">
+                                <div class="card-icon">📄</div>
+                                <div class="card-content">
+                                    <h4>生成報告</h4>
+                                    <p>匯出詳細分析報告</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 對話訊息區域 -->
+                    <div class="messages-container" id="messagesContainer">
+                        <!-- 對話訊息將在這裡動態生成 -->
+                    </div>
+                </div>
+
+                <!-- 底部輸入區域 -->
+                <div class="chat-input-area">
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <textarea id="chatInput" placeholder="請輸入您的問題..." rows="1" maxlength="2000">
+                            </textarea>
+                            <div class="input-actions">
+                                <button class="input-btn" id="attachBtn" title="附件">
+                                    <span class="btn-icon">📎</span>
+                                </button>
+                                <button class="input-btn primary" id="sendBtn" title="發送">
+                                    <span class="btn-icon">📤</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="input-footer">
+                            <div class="input-tips">
+                                <span class="tip-text">按 Enter 發送，Shift + Enter 換行</span>
+                            </div>
+                            <div class="input-counter">
+                                <span id="charCounter">0 / 2000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 載入中的覆蓋層 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            <div class="loading-text">AI 正在思考中...</div>
+        </div>
+    </div>
+
+    <!-- JavaScript 檔案 -->
+    <script src="./javascript/sidebar-nav.js"></script>
+    <script src="./javascript/ai-chat.js"></script>
+</body>
+
+</html>
