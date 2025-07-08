@@ -765,7 +765,7 @@ function updateRoom(roomKey, value, displayName, timestamp) {
                 throw new Error("日期或時間字串為空");
             }
 
-            // 支援兩種日期格式：2025/7/1 和 2025-07-01
+            // 支援多種日期格式：2025/7/1、2025-07-01、7/4（只有月/日）
             let dateParts;
             if (dateStr.includes("/")) {
                 dateParts = dateStr.split("/");
@@ -779,11 +779,22 @@ function updateRoom(roomKey, value, displayName, timestamp) {
 
             console.log("日期部分:", dateParts, "時間部分:", timeParts);
 
-            if (dateParts.length < 3 || timeParts.length < 2) {
+            if (dateParts.length < 2 || timeParts.length < 2) {
                 throw new Error("日期或時間格式不正確");
             }
 
-            const [year, month, day] = dateParts;
+            // 處理只有月/日的情況，自動補上當前年份
+            let year, month, day;
+            if (dateParts.length === 2) {
+                // 只有月/日，補上當前年份
+                const currentYear = new Date().getFullYear();
+                year = currentYear.toString();
+                month = dateParts[0];
+                day = dateParts[1];
+            } else {
+                // 完整的年/月/日格式
+                [year, month, day] = dateParts;
+            }
             const [hour, minute] = timeParts;
 
             // 檢查是否有有效值
@@ -975,21 +986,20 @@ function updateChart(todayData) {
     co2Chart.data.datasets[0].data = dataA;
     co2Chart.data.datasets[1].data = dataB;
     co2Chart.data.datasets[2].data = dataC;
-    
+
     // 為圖表容器添加更新中的樣式
-    const chartContainer = document.querySelector('.chart-container');
+    const chartContainer = document.querySelector(".chart-container");
     if (chartContainer) {
-        chartContainer.classList.add('updating');
+        chartContainer.classList.add("updating");
         setTimeout(() => {
-            chartContainer.classList.remove('updating');
+            chartContainer.classList.remove("updating");
         }, 1000);
     }
-    
+
     co2Chart.update();
 }
 
 // 手動刷新按鈕事件處理 - 將移動到主要的初始化函數中
-
 
 // 當頁面載入時自動執行
 window.addEventListener("DOMContentLoaded", function () {
@@ -1057,28 +1067,28 @@ function initHistoryFeature() {
     // 今日模式按鈕
     todayModeBtn.addEventListener("click", function () {
         if (!todayModeBtn.classList.contains("active")) {
-            switchModeWithLoading("today", switchToTodayMode);
+            switchToTodayMode();
         }
     });
 
     // 歷史模式按鈕
     historyModeBtn.addEventListener("click", function () {
         if (!historyModeBtn.classList.contains("active")) {
-            switchModeWithLoading("history", switchToHistoryMode);
+            switchToHistoryMode();
         }
     });
 
     // 比較模式按鈕
     compareModeBtn.addEventListener("click", function () {
         if (!compareModeBtn.classList.contains("active")) {
-            switchModeWithLoading("compare", switchToCompareMode);
+            switchToCompareMode();
         }
     });
 
     // 手動輸入模式按鈕
     inputModeBtn.addEventListener("click", function () {
         if (!inputModeBtn.classList.contains("active")) {
-            switchModeWithLoading("input", switchToInputMode);
+            switchToInputMode();
         }
     });
 
@@ -1110,6 +1120,35 @@ function initHistoryFeature() {
 
     // 設置控制組動態定位
     setupControlGroupPositioning();
+
+    // 初始化手動輸入功能
+    initInputFeature();
+}
+
+// 初始化手動輸入功能
+function initInputFeature() {
+    const co2InputForm = document.getElementById("co2InputForm");
+    const clearFormBtn = document.getElementById("clearFormBtn");
+    const submitProgress = document.getElementById("submitProgress");
+
+    // 檢查元素是否存在
+    if (!co2InputForm) {
+        console.warn("⚠️ 手動輸入功能元素缺失");
+        return;
+    }
+
+    // 清空表單按鈕事件
+    if (clearFormBtn) {
+        clearFormBtn.addEventListener("click", function () {
+            clearInputForm();
+        });
+    }
+
+    // 表單提交事件
+    co2InputForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        submitInputData();
+    });
 }
 
 // 動態定位控制組的函數
@@ -1815,7 +1854,6 @@ function updateChartWithCompareData(todayData, compareData) {
 
     // 動態調整 Y 軸
     const allValues = allDatasets.flatMap((dataset) =>
-       
         dataset.data.filter((value) => value !== null)
     );
 
@@ -1839,13 +1877,13 @@ function updateLastUpdateTime() {
     // 添加更新動畫效果
     if (lastUpdateEl) {
         addPulseEffect(lastUpdateEl);
-        
+
         // 添加閃爍效果表示數據正在更新
-        lastUpdateEl.style.opacity = '0.7';
-        lastUpdateEl.style.transition = 'opacity 0.3s ease-in-out';
-        
+        lastUpdateEl.style.opacity = "0.7";
+        lastUpdateEl.style.transition = "opacity 0.3s ease-in-out";
+
         setTimeout(() => {
-            lastUpdateEl.style.opacity = '';
+            lastUpdateEl.style.opacity = "";
         }, 300);
     }
 
@@ -1858,7 +1896,10 @@ function updateLastUpdateTime() {
     } else if (isHistoryMode) {
         lastUpdateEl.textContent = `📅 歷史查看模式 - ${selectedDate}`;
     } else {
-        const timeString = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+        const timeString = `${now.getHours().toString().padStart(2, "0")}:${now
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}`;
         lastUpdateEl.textContent = `📊 最後更新：${timeString}`;
     }
 }
@@ -1876,95 +1917,45 @@ function updateUI(options) {
 // =============== AI風格Loading控制 ===============
 
 // Loading狀態追蹤
-let isLoadingMode = false;
-
-// 顯示AI Loading
-function showAILoading(mode) {
-    const overlay = document.getElementById("aiLoadingOverlay");
-    const loadingText = document.getElementById("loadingText");
-    const loadingSubtext = document.getElementById("loadingSubtext");
-
-    // 設定loading狀態
-    isLoadingMode = true;
-
-    // 使用通用的loading訊息，不再根據模式變化
-    loadingText.textContent = "🤖 AI 正在智能切換模式...";
-    loadingSubtext.textContent = "正在優化界面與數據載入";
-
-    overlay.classList.add("show");
-    console.log(`🤖 顯示AI Loading: ${mode} 模式`);
-}
-
-// 隱藏AI Loading
-function hideAILoading() {
-    const overlay = document.getElementById("aiLoadingOverlay");
-    overlay.classList.remove("show");
-    isLoadingMode = false;
-    console.log("🤖 隱藏AI Loading");
-}
-
-// 帶Loading的模式切換包裝函數
-function switchModeWithLoading(mode, switchFunction) {
-    // 如果正在loading，忽略點擊
-    if (isLoadingMode) {
-        console.log("⚠️ 正在loading中，忽略點擊");
-        return;
-    }
-
-    // 顯示Loading
-    showAILoading(mode);
-
-    // 立即執行模式切換（在loading期間進行）
-    setTimeout(() => {
-        switchFunction();
-        console.log(`🔄 ${mode} 模式切換完成，界面正在優化中...`);
-
-        // 模式切換完成後隱藏 Loading
-        setTimeout(() => {
-            hideAILoading();
-        }, 500);
-    }, 300);
-}
-
 // =============== 數字動畫效果 ===============
 
 // 數字計數動畫函數
-function animateNumber(element, startValue, endValue, duration = 1000, suffix = '') {
+function animateNumber(element, startValue, endValue, duration = 1000, suffix = "") {
     if (!element) return;
-    
+
     // 清理數值，確保是數字
-    const start = typeof startValue === 'number' ? startValue : parseFloat(startValue) || 0;
-    const end = typeof endValue === 'number' ? endValue : parseFloat(endValue) || 0;
-    
+    const start = typeof startValue === "number" ? startValue : parseFloat(startValue) || 0;
+    const end = typeof endValue === "number" ? endValue : parseFloat(endValue) || 0;
+
     if (isNaN(start) || isNaN(end)) return;
-    
+
     const startTime = Date.now();
     const difference = end - start;
-    
+
     function updateNumber() {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
+
         // 使用緩動函數讓動畫更自然
         const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-        const currentValue = start + (difference * easeOutQuart);
-        
+        const currentValue = start + difference * easeOutQuart;
+
         // 更新元素內容
         element.textContent = Math.round(currentValue) + suffix;
-        
+
         // 添加動畫樣式
         element.style.transform = `scale(${1 + Math.sin(progress * Math.PI) * 0.1})`;
         element.style.color = getAnimationColor(progress);
-        
+
         if (progress < 1) {
             requestAnimationFrame(updateNumber);
         } else {
             // 動畫結束，恢復原始樣式
-            element.style.transform = '';
-            element.style.color = '';
+            element.style.transform = "";
+            element.style.color = "";
         }
     }
-    
+
     requestAnimationFrame(updateNumber);
 }
 
@@ -1972,47 +1963,47 @@ function animateNumber(element, startValue, endValue, duration = 1000, suffix = 
 function getAnimationColor(progress) {
     // 從藍色漸變到默認顏色
     const blue = Math.round(255 * (1 - progress));
-    const opacity = 0.3 + (0.7 * progress);
+    const opacity = 0.3 + 0.7 * progress;
     return `rgba(0, 122, ${blue}, ${opacity})`;
 }
 
 // 為表格數據添加動畫效果
 function animateTableData(oldData, newData) {
-    const table = document.getElementById('recentDataTable');
+    const table = document.getElementById("recentDataTable");
     if (!table) return;
-    
+
     // 添加表格更新動畫
-    table.style.opacity = '0.7';
-    table.style.transform = 'translateY(-5px)';
-    table.style.transition = 'all 0.3s cubic-bezier(0.23, 1, 0.32, 1)';
-    
+    table.style.opacity = "0.7";
+    table.style.transform = "translateY(-5px)";
+    table.style.transition = "all 0.3s cubic-bezier(0.23, 1, 0.32, 1)";
+
     setTimeout(() => {
-        table.style.opacity = '';
-        table.style.transform = '';
+        table.style.opacity = "";
+        table.style.transform = "";
     }, 300);
 }
 
 // 為數值單元格添加閃爍效果
 function addValueChangeEffect(cell, oldValue, newValue) {
     if (!cell || oldValue === newValue) return;
-    
+
     // 添加變化指示器
-    const indicator = document.createElement('span');
-    indicator.className = 'value-change-indicator';
-    indicator.textContent = newValue > oldValue ? '↗' : '↘';
+    const indicator = document.createElement("span");
+    indicator.className = "value-change-indicator";
+    indicator.textContent = newValue > oldValue ? "↗" : "↘";
     indicator.style.cssText = `
         position: absolute;
         right: -15px;
         top: 50%;
         transform: translateY(-50%);
         font-size: 12px;
-        color: ${newValue > oldValue ? '#34C759' : '#FF3B30'};
+        color: ${newValue > oldValue ? "#34C759" : "#FF3B30"};
         animation: fadeInOut 2s ease-in-out;
     `;
-    
-    cell.style.position = 'relative';
+
+    cell.style.position = "relative";
     cell.appendChild(indicator);
-    
+
     // 2秒後移除指示器
     setTimeout(() => {
         if (indicator.parentNode) {
@@ -2024,44 +2015,175 @@ function addValueChangeEffect(cell, oldValue, newValue) {
 // 為圖表數據點添加動畫
 function animateChartDataUpdate() {
     if (!co2Chart) return;
-    
+
     // 為圖表添加更新動畫
     co2Chart.options.animation = {
         duration: 1000,
-        easing: 'easeOutQuart',
-        onProgress: function(animation) {
+        easing: "easeOutQuart",
+        onProgress: function (animation) {
             const progress = animation.currentStep / animation.numSteps;
-            co2Chart.canvas.style.filter = `brightness(${0.9 + 0.1 * Math.sin(progress * Math.PI)})`;
+            co2Chart.canvas.style.filter = `brightness(${
+                0.9 + 0.1 * Math.sin(progress * Math.PI)
+            })`;
         },
-        onComplete: function() {
-            co2Chart.canvas.style.filter = '';
-        }
+        onComplete: function () {
+            co2Chart.canvas.style.filter = "";
+        },
     };
 }
 
 // 數字脈衝動畫效果
 function addPulseEffect(element) {
     if (!element) return;
-    
-    element.style.animation = 'numberPulse 0.6s ease-in-out';
-    
+
+    element.style.animation = "numberPulse 0.6s ease-in-out";
+
     setTimeout(() => {
-        element.style.animation = '';
+        element.style.animation = "";
     }, 600);
 }
 
 // 為新數據添加高亮效果
 function highlightNewData(row) {
     if (!row) return;
-    
-    row.style.backgroundColor = 'rgba(0, 122, 255, 0.1)';
-    row.style.transform = 'translateX(-5px)';
-    row.style.transition = 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
-    
+
+    row.style.backgroundColor = "rgba(0, 122, 255, 0.1)";
+    row.style.transform = "translateX(-5px)";
+    row.style.transition = "all 0.5s cubic-bezier(0.23, 1, 0.32, 1)";
+
     setTimeout(() => {
-        row.style.backgroundColor = '';
-        row.style.transform = '';
+        row.style.backgroundColor = "";
+        row.style.transform = "";
     }, 1500);
 }
 
-// =============== 原有代碼繼續 ===============
+// =============== 手動輸入功能 ===============
+
+// 清空輸入表單
+function clearInputForm() {
+    const form = document.getElementById("co2InputForm");
+    if (!form) return;
+
+    // 清空所有數值輸入框
+    const numberInputs = form.querySelectorAll("input[type='number']");
+    numberInputs.forEach((input) => {
+        input.value = "";
+    });
+
+    // 重新設置當前日期和時間
+    const now = new Date();
+    const inputDate = document.getElementById("inputDate");
+    const inputTime = document.getElementById("inputTime");
+
+    if (inputDate) {
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        inputDate.value = `${year}-${month}-${day}`;
+    }
+
+    if (inputTime) {
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        inputTime.value = `${hours}:${minutes}`;
+    }
+}
+
+// 提交輸入數據
+async function submitInputData() {
+    const form = document.getElementById("co2InputForm");
+    const submitProgress = document.getElementById("submitProgress");
+    const submitBtn = document.getElementById("submitDataBtn");
+
+    if (!form || !submitProgress || !submitBtn) {
+        console.error("❌ 找不到表單相關元素");
+        return;
+    }
+
+    // 獲取表單數據
+    const formData = new FormData(form);
+    const inputDate = document.getElementById("inputDate").value;
+    const inputTime = document.getElementById("inputTime").value;
+    const inputOfficeA = document.getElementById("inputOfficeA").value;
+    const inputOfficeB = document.getElementById("inputOfficeB").value;
+    const inputOfficeC = document.getElementById("inputOfficeC").value;
+
+    // 驗證必填字段
+    if (!inputDate || !inputTime) {
+        alert("⚠️ 請填寫日期和時間");
+        return;
+    }
+
+    // 至少需要填寫一個辦公室的數據
+    if (!inputOfficeA && !inputOfficeB && !inputOfficeC) {
+        alert("⚠️ 請至少填寫一個辦公室的 CO₂ 數據");
+        return;
+    }
+
+    // 驗證數值範圍
+    const values = [inputOfficeA, inputOfficeB, inputOfficeC];
+    for (let i = 0; i < values.length; i++) {
+        if (values[i] && (values[i] < 300 || values[i] > 5000)) {
+            alert("⚠️ CO₂ 濃度值應在 300-5000 ppm 範圍內");
+            return;
+        }
+    }
+
+    // 構建時間戳
+    const timestamp = `${inputDate} ${inputTime}`;
+
+    // 準備提交數據
+    const submitData = {
+        timestamp: timestamp,
+        officeA: inputOfficeA || "",
+        officeB: inputOfficeB || "",
+        officeC: inputOfficeC || "",
+    };
+
+    console.log("📤 準備提交數據:", submitData);
+
+    try {
+        // 顯示進度條
+        submitProgress.style.display = "block";
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+            '<span class="btn-icon">⏳</span><span class="btn-text">提交中...</span>';
+
+        // 發送數據到 Google Apps Script
+        const response = await fetch(writeUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(submitData),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log("✅ 數據提交成功:", result);
+
+        // 顯示成功訊息
+        alert("✅ 數據提交成功！");
+
+        // 清空表單
+        clearInputForm();
+
+        // 切換回今日模式
+        switchToTodayMode();
+
+        // 重新載入數據以顯示新提交的數據
+        loadCO2Data();
+    } catch (error) {
+        console.error("❌ 數據提交失敗:", error);
+        alert("❌ 數據提交失敗，請檢查網路連接或稍後重試");
+    } finally {
+        // 隱藏進度條
+        submitProgress.style.display = "none";
+        submitBtn.disabled = false;
+        submitBtn.innerHTML =
+            '<span class="btn-icon">📤</span><span class="btn-text">提交數據</span>';
+    }
+}

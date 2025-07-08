@@ -15,21 +15,6 @@
 </head>
 
 <body>
-    <!-- AI Loading Overlay -->
-    <div class="ai-loading-overlay" id="aiLoadingOverlay">
-        <div class="loading-content">
-            <div class="loading-animation">
-                <div class="loading-spinner">
-                    <div class="spinner-ring"></div>
-                    <div class="spinner-ring"></div>
-                    <div class="spinner-ring"></div>
-                </div>
-            </div>
-            <div class="loading-text" id="loadingText">🤖 AI 正在智能切換模式...</div>
-            <div class="loading-subtext" id="loadingSubtext">正在優化界面與數據載入</div>
-        </div>
-    </div>
-
     <!-- 側邊導覽列容器 (將由 JavaScript 載入組件) -->
     <div id="sidebarContainer"></div>
 
@@ -91,70 +76,61 @@
                         </button>
                     </div>
 
-                    <!-- 手動輸入快速入口 -->
+                    <!-- 手動輸入控制面板 -->
                     <div class="control-group input-controls" id="inputControls" style="display: none;">
-                        <button id="openInputFormBtn" class="action-btn primary">
-                            <span class="btn-icon">📝</span>
-                            <span class="btn-text">開始輸入數據</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 手動輸入表單模態框 -->
-        <div class="input-modal" id="inputModal" style="display: none;">
-            <div class="modal-overlay" id="modalOverlay"></div>
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>📝 手動輸入 CO₂ 數據</h3>
-                    <button class="modal-close" id="closeModalBtn">×</button>
-                </div>
-                <div class="modal-body">
-                    <p class="input-description">手動輸入 CO₂ 數據將同步到 Google Sheet</p>
-
-                    <form class="co2-input-form" id="co2InputForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="inputDate">📅 日期</label>
-                                <input type="date" id="inputDate" required>
+                        <div class="input-form-panel">
+                            <div class="input-form-header">
+                                <h4>📝 手動輸入 CO₂ 數據</h4>
+                                <p class="input-description">手動輸入 CO₂ 數據將同步到 Google Sheet</p>
                             </div>
-                            <div class="form-group">
-                                <label for="inputTime">⏰ 時間</label>
-                                <input type="time" id="inputTime" required>
+
+                            <form class="co2-input-form" id="co2InputForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="inputDate">📅 日期</label>
+                                        <input type="date" id="inputDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputTime">⏰ 時間</label>
+                                        <input type="time" id="inputTime" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="inputOfficeA">🏢 中華辦7樓 (ppm)</label>
+                                        <input type="number" id="inputOfficeA" min="300" max="5000"
+                                            placeholder="例: 650">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputOfficeB">🏢 中華辦8樓 (ppm)</label>
+                                        <input type="number" id="inputOfficeB" min="300" max="5000"
+                                            placeholder="例: 720">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputOfficeC">🏢 衡陽辦 (ppm)</label>
+                                        <input type="number" id="inputOfficeC" min="300" max="5000"
+                                            placeholder="例: 580">
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="button" class="btn-secondary" id="clearFormBtn">🗑️ 清空</button>
+                                    <button type="submit" class="btn-primary" id="submitDataBtn">
+                                        <span class="btn-icon">📤</span>
+                                        <span class="btn-text">提交數據</span>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- 數據提交進度條 -->
+                            <div class="submit-progress" id="submitProgress" style="display: none;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                                <div class="progress-text">正在提交數據...</div>
                             </div>
                         </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="inputOfficeA">🏢 中華辦7樓 (ppm)</label>
-                                <input type="number" id="inputOfficeA" min="300" max="5000" placeholder="例: 650">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputOfficeB">🏢 中華辦8樓 (ppm)</label>
-                                <input type="number" id="inputOfficeB" min="300" max="5000" placeholder="例: 720">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputOfficeC">🏢 衡陽辦 (ppm)</label>
-                                <input type="number" id="inputOfficeC" min="300" max="5000" placeholder="例: 580">
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn-secondary" id="clearFormBtn">🗑️ 清空</button>
-                            <button type="submit" class="btn-primary" id="submitDataBtn">
-                                <span class="btn-icon">📤</span>
-                                <span class="btn-text">提交數據</span>
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- 數據提交進度條 -->
-                    <div class="submit-progress" id="submitProgress">
-                        <div class="progress-bar">
-                            <div class="progress-fill"></div>
-                        </div>
-                        <div class="progress-text">正在提交數據...</div>
                     </div>
                 </div>
             </div>
